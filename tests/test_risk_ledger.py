@@ -140,5 +140,7 @@ def test_private_key_normalization_messages():
         normalize_private_key("019a2b3c-4d5e-6f70-8192-a3b4c5d6e7f8")
     with pytest.raises(ValueError, match="seed phrase"):
         normalize_private_key("word " * 12)
+    with pytest.raises(ValueError, match="API secret"):
+        normalize_private_key("A" * 86 + "==")
     with pytest.raises(ValueError, match="64 hex"):
         normalize_private_key("deadbeef")

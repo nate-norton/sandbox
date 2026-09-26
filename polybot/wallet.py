@@ -36,6 +36,10 @@ def normalize_private_key(private_key: str) -> str:
                          "not the wallet private key. Export the wallet key at https://reveal.magic.link/polymarket")
     if " " in key and len(key.split()) >= 12:
         raise ValueError("this looks like a seed phrase; export the account's private key instead")
+    if len(body) in (43, 44, 86, 88) and any(c in body for c in "+/=") or len(body) in (86, 87, 88):
+        raise ValueError(f"got {len(body)} characters: this looks like an API secret from Settings → Developer "
+                         "(base64), not the wallet private key. The wallet key is 64 hex characters; "
+                         "export it at https://reveal.magic.link/polymarket")
     raise ValueError(f"expected 64 hex characters, got {len(body)} characters")
 
 

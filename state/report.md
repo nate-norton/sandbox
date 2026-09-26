@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 13  |  last run: 2026-09-26T08:18:32Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
+- mode: **live**  |  profile: **aggressive**  |  runs: 14  |  last run: 2026-09-26T08:20:08Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
 - equity: **$0.00** (started $0.00, realized +0.00)
 - cash: $0.00  |  deployed: $0.00  |  open positions: 0
 - P&L today: +0.00  |  **HALTED: no funds in the wallet yet**
@@ -18,7 +18,7 @@
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=24, arb.best_pair_x1000=1000, arb.no_edge=24, books=48, candidates=24, markets=24, sports.games=145, sports.matched=24, sports.moneyline_markets=24, sports.no_model=48
+ai.edge_assessed=0, ai.gate_assessed=24, arb.best_pair_x1000=1000, arb.no_edge=24, books=48, candidates=24, markets=24, sports.games=145, sports.matched=24, sports.moneyline_markets=24, sports.no_edge=46, sports.no_model=2
 
 ## Notes
 

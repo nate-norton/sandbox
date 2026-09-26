@@ -1,11 +1,291 @@
 {
  "ai_info": {
-  "active": false
+  "active": true,
+  "breaker": false,
+  "cache_hits": 0,
+  "calls": 60,
+  "edge_assessed": 30,
+  "errors": 0,
+  "extreme_accuracy": null,
+  "extreme_resolved": 0,
+  "gate_assessed": 30,
+  "model": "~typesafe/jev-latest"
  },
- "ai_log": {},
+ "ai_log": {
+  "0x14cc6f806bf7f724433747c8a56b9a8a3f5f68ea3fc17b0c82a5ae2515a3e868": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.5,
+   "price_yes": 0.54,
+   "q": "Texans vs. Colts",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x1910bca3159c8f3181e8b6e5b4b80173f8b465a9d75a51b75ebe709aeac0c378": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.46,
+   "price_yes": 0.14,
+   "q": "Hangzhou Open: Quentin Halys vs Roman Safiullin",
+   "risk": 1.07,
+   "with_prices": false
+  },
+  "0x4c2175aa69b80651bbcb752e86250930c4e30ffe2504ec3bff71e1e1d133e5a8": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.46,
+   "price_yes": 0.48,
+   "q": "Spread: 49ers (-8.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x522f64ea4548bbed0edf8bbb0b59007c1a55e033b76f06cadaa2118afd1bfe9e": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.47,
+   "price_yes": 0.51,
+   "q": "Spread: Seahawks (-7.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x56fda0f04440ef5a2b8f4cb1d33e256f0e28d5cb635d812b1314c8078a0a1b1d": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.09,
+   "price_yes": 0.19,
+   "q": "Trump renames AI by September 30?",
+   "risk": 0.6,
+   "with_prices": false
+  },
+  "0x57b4e55171072707fc87faa560477f3ab1d9ed637377f91ec98249fa0ef46d1f": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.45,
+   "price_yes": 0.54,
+   "q": "Jets vs. Lions: O/U 47.5",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x5bc57a6b6345a157ec379ce0940c09dcbfdadebc30b915efe993db1805999dea": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.45,
+   "price_yes": 0.45,
+   "q": "Spread: Ravens (-4.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x690fafd3b7bb8b4919ccf0f219b0014b65334411a1076162e76353e76d7f9bec": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.73,
+   "price_yes": 0.9,
+   "q": "US x Iran ceasefire continues through September 30?",
+   "risk": 0.92,
+   "with_prices": false
+  },
+  "0x729ff1e2087b73e1d1a11c31d429450e6b0c231e49b3c7086725e35e9ade66ca": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.52,
+   "price_yes": 0.67,
+   "q": "Bitcoin Up or Down on September 26?",
+   "risk": 1.05,
+   "with_prices": false
+  },
+  "0x7896eecdb75ad7b76b3cd7fcec10c26c6c03fa3b0c359e3498e3b1eaa1e3ef50": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.46,
+   "price_yes": 0.22,
+   "q": "Cardinals vs. 49ers",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x80d5210cd69df03259b8837d798060018c41e0c64ebb4083df717254f32949aa": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.51,
+   "price_yes": 0.33,
+   "q": "Spread: Colts (-3.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x8a2f7f148962cacd883e87cb72fe6cf1cf452f542b1e2d508eb9a80be025025e": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.47,
+   "price_yes": 0.32,
+   "q": "Spread: Broncos (-3.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x9554193b1e44117abad069b6e993fbb68d13ac7abfd60787ab5a003b868227bf": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.51,
+   "price_yes": 0.26,
+   "q": "Spread: Cowboys (-3.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x95a01ebbdfe1d934bd35026d9a8877399d76ecf87b93f408bccd9bbcddd568c8": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.47,
+   "price_yes": 0.49,
+   "q": "Cardinals vs. 49ers: O/U 48.5",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0x9d232fb0b16979c4b3f281d3a53a0441ace232a0b79e1aa0f45fac51e7870be3": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.5,
+   "price_yes": 0.48,
+   "q": "Seahawks vs. Commanders: O/U 40.5",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xa68808ed6b396312c2b90f23b85a8e7ba51d52643ebd736cf46378c97dad0b0b": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.45,
+   "price_yes": 0.49,
+   "q": "Titans vs. Giants: O/U 38.5",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xaa59cf9c41a0455a3cd3a35b506cb2035c00bc5f3df23e441e31b221fddf3783": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.41,
+   "price_yes": 0.21,
+   "q": "Chengdu Open: Federico Cina vs Alexandre Muller",
+   "risk": 1.08,
+   "with_prices": false
+  },
+  "0xb08965e979268e347cd4f3c8b6da098188261d491ecd9af4f157ef651369d8a2": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.47,
+   "price_yes": 0.49,
+   "q": "Spread: Panthers (-2.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xb965e3087c8a61afbc650cd50aee52c5db3e241ace2c49853700caf29f96c9af": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.47,
+   "price_yes": 0.28,
+   "q": "Spread: Steelers (-3.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.47,
+   "price_yes": 0.62,
+   "q": "Bengals vs. Steelers",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xd0ee09bc3955e774c42df27cc3b4685a483f8498000c2de26625f20fc9ed4f78": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.54,
+   "price_yes": 0.51,
+   "q": "Spread: Lions (-6.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xd77acd3c7667659ef75b6026d564c1ba91aaee799a5198d81e37810cc2bc9011": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.49,
+   "price_yes": 0.76,
+   "q": "Dota 2: Xtreme Gaming vs GamerLegion (BO3) - PGL Wallachia Playoffs",
+   "risk": 1.06,
+   "with_prices": false
+  },
+  "0xdff427fce82c22dca74075108b8d6dbe6c97395225b60e20f10ab782e221727c": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.46,
+   "price_yes": 0.49,
+   "q": "Spread: Chiefs (-10.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xe2033349e8343193938b216a1f176ae5fdb1de011fe07374a819456d52aa1992": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.42,
+   "price_yes": 0.47,
+   "q": "Spread: Bengals (-3.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xe4ce3a7bab1a79fe4cf32abdc190858cdfa23eb62c00e2534370b0ebe56dd790": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.49,
+   "price_yes": 0.86,
+   "q": "Dota 2: Xtreme Gaming vs GamerLegion - Game 1 Winner",
+   "risk": 1.03,
+   "with_prices": false
+  },
+  "0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.49,
+   "price_yes": 0.39,
+   "q": "Ole Miss vs. Florida",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xed537832cbf6774d5b54da06732b53ce6866d82941e593ca71292f8e247babc5": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.59,
+   "price_yes": 0.85,
+   "q": "Chiefs vs. Dolphins",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xf006c03ebca5e5657b8f7df03c40681e3d88234cea587435fc2359e729dcf173": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.37,
+   "price_yes": 0.45,
+   "q": "Will Spain win on 2026-09-26?",
+   "risk": 1.01,
+   "with_prices": false
+  },
+  "0xf44ade6df83c8d227bfa92d193f9ea6c820d5377ace87b0f01b836ad3d6c7bb2": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.4,
+   "price_yes": 0.5,
+   "q": "Spread: Bills (-7.5)",
+   "risk": 1.0,
+   "with_prices": false
+  },
+  "0xf7abe329b5bea6a7706fa70041a935053436df8d736a68a63d171a43f360afd3": {
+   "at": "2026-09-26T07:42:40Z",
+   "outcome": null,
+   "p_yes": 0.49,
+   "price_yes": 0.43,
+   "q": "Spread: Lions (-7.5)",
+   "risk": 1.0,
+   "with_prices": false
+  }
+ },
  "cash": 3.4727000000000015,
  "daily": {},
- "last_run": "2026-09-26T07:30:15Z",
+ "last_run": "2026-09-26T07:42:40Z",
  "mode": "paper",
  "notes": [],
  "positions": {
@@ -50,18 +330,21 @@
   }
  },
  "realized_pnl": 0.0,
- "runs": 5,
+ "runs": 6,
  "scan": {
+  "ai.edge_assessed": 30,
+  "ai.gate_assessed": 30,
+  "ai_edge.not_extreme": 30,
   "arb.best_pair_x1000": 1000,
   "arb.no_book": 37,
-  "arb.no_edge": 344,
-  "books": 763,
-  "candidates": 381,
+  "arb.no_edge": 342,
+  "books": 759,
+  "candidates": 379,
   "harvest.below_min_order": 32,
-  "harvest.illiquid": 10,
-  "harvest.in_window": 225,
+  "harvest.illiquid": 7,
+  "harvest.in_window": 223,
   "harvest.no_book": 44,
-  "harvest.price_out_of_range": 353,
+  "harvest.price_out_of_range": 355,
   "harvest.wide_spread": 1,
   "harvest.window": 154,
   "markets": 600

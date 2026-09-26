@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **paper**  |  profile: **aggressive**  |  runs: 5  |  last run: 2026-09-26T07:30:15Z
+- mode: **paper**  |  profile: **aggressive**  |  runs: 6  |  last run: 2026-09-26T07:42:40Z
 - equity: **$24.89** (started $25.00, realized +0.00)
 - cash: $3.47  |  deployed: $21.53  |  open positions: 3
 - P&L today: +0.00
@@ -21,9 +21,10 @@
 
 ## Jev (AI decider)
 
-- inactive: add the `OPENROUTER_API_KEY` secret to enable it
+- model `~typesafe/jev-latest`: 30 favourites gated, 30 markets judged blind, 60 API calls, 0 cache hits, 0 errors
+- blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Last scan
 
-arb.best_pair_x1000=1000, arb.no_book=37, arb.no_edge=344, books=763, candidates=381, harvest.below_min_order=32, harvest.illiquid=10, harvest.in_window=225, harvest.no_book=44, harvest.price_out_of_range=353, harvest.wide_spread=1, harvest.window=154, markets=600
+ai.edge_assessed=30, ai.gate_assessed=30, ai_edge.not_extreme=30, arb.best_pair_x1000=1000, arb.no_book=37, arb.no_edge=342, books=759, candidates=379, harvest.below_min_order=32, harvest.illiquid=7, harvest.in_window=223, harvest.no_book=44, harvest.price_out_of_range=355, harvest.wide_spread=1, harvest.window=154, markets=600
 

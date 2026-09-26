@@ -1,8 +1,8 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 59  |  last run: 2026-09-26T17:11:22Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$56.70** (started $59.49, realized +0.00)
-- cash: $45.00  |  deployed: $14.99  |  open positions: 3
+- mode: **live**  |  profile: **aggressive**  |  runs: 67  |  last run: 2026-09-26T17:37:26Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$57.13** (started $59.49, realized +0.00)
+- cash: $29.18  |  deployed: $30.82  |  open positions: 4
 - P&L today: +0.00
 
 ## Open positions
@@ -10,27 +10,29 @@
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
 | Ole Miss vs. Florida | Rebels | 12.0 | 0.417 | 0.385 |  | external |
-| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.180 |  | external |
+| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.255 |  | external |
 | Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.240 |  | external |
+| UCLA vs. Maryland | Terrapins | 38.0 | 0.416 | 0.400 |  | sports_edge |
 
 ## Recent trades
 
 - 2026-09-26T04:31:35Z BUY 5.0 Ohio State @ 0.962 (harvest) Illinois vs. Ohio State
 - 2026-09-26T04:31:35Z BUY 5.0 No @ 0.980 (harvest) Will San Marino win on 2026-09-26?
 - 2026-09-26T07:17:09Z BUY 12.0 No @ 0.985 (harvest) Exact Score: Júbilo Iwata 0 - 2 Vanraure Hachinohe FC?
+- 2026-09-26T17:35:26Z BUY 38.0 Maryland @ 0.405 (sports_edge) UCLA vs. Maryland
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 17 favourites gated, 0 markets judged blind, 0 API calls, 17 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 27 favourites gated, 0 markets judged blind, 17 API calls, 27 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 2677 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 3028 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=17, books=38, candidates=18, markets=136, obs.rows=36, sports.ai_vetoed=1, sports.candidate=1, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=124, sports.no_edge=22, sports.no_model=34, sports.price_out_of_band=5, sports.too_far_ahead=40
+ai.edge_assessed=0, ai.gate_assessed=27, books=61, candidates=30, markets=136, obs.rows=57, sports.candidate=1, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=102, sports.no_edge=32, sports.no_model=34, sports.price_out_of_band=13, sports.too_far_ahead=40, sports.unstable=2
 
 ## Notes
 
@@ -48,3 +50,5 @@ ai.edge_assessed=0, ai.gate_assessed=17, books=38, candidates=18, markets=136, o
 ## Recent decisions
 
 - 2026-09-26T17:05:54Z NOT FILLED Toledo @ 0.710 x26 (model 0.80, live_wp): unmatched
+- 2026-09-26T17:33:45Z BOUGHT Maryland @ 0.405 x38 (model 0.57, live_wp) for $15.39
+- 2026-09-26T17:37:26Z NOT FILLED Baylor @ 0.785 x33 (model 0.88, live_wp): new: ORD_REJECT_REASON_EXCHANGE_OPTION; expired: ORD_REJECT_REASON_EXCHANGE_OPTION

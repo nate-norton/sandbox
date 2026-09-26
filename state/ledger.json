@@ -2,13 +2,13 @@
  "ai_info": {
   "active": true,
   "breaker": false,
-  "cache_hits": 17,
-  "calls": 0,
+  "cache_hits": 27,
+  "calls": 17,
   "edge_assessed": 0,
   "errors": 0,
   "extreme_accuracy": null,
   "extreme_resolved": 0,
-  "gate_assessed": 17,
+  "gate_assessed": 27,
   "model": "~typesafe/jev-latest"
  },
  "ai_log": {
@@ -319,13 +319,15 @@
    "with_prices": false
   }
  },
- "cash": 45.0044,
+ "cash": 29.1802,
  "daily": {},
  "decisions": [
-  "2026-09-26T17:05:54Z NOT FILLED Toledo @ 0.710 x26 (model 0.80, live_wp): unmatched"
+  "2026-09-26T17:05:54Z NOT FILLED Toledo @ 0.710 x26 (model 0.80, live_wp): unmatched",
+  "2026-09-26T17:33:45Z BOUGHT Maryland @ 0.405 x38 (model 0.57, live_wp) for $15.39",
+  "2026-09-26T17:37:26Z NOT FILLED Baylor @ 0.785 x33 (model 0.88, live_wp): new: ORD_REJECT_REASON_EXCHANGE_OPTION; expired: ORD_REJECT_REASON_EXCHANGE_OPTION"
  ],
  "game_window": true,
- "last_run": "2026-09-26T17:11:22Z",
+ "last_run": "2026-09-26T17:37:26Z",
  "mode": "live",
  "notes": [
   "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters",
@@ -358,7 +360,7 @@
    "condition_id": "cfb-tx-tenn-2026-09-26",
    "end_date": null,
    "kind": "external",
-   "mark": 0.18,
+   "mark": 0.255,
    "neg_risk": false,
    "opened_at": "2026-09-26T16:13:19Z",
    "outcome": "Volunteers",
@@ -378,28 +380,41 @@
    "question": "Texas A&M vs. LSU",
    "size": 19.0,
    "token_id": "us:aec-cfb-txam-lsu-2026-09-26:L"
+  },
+  "us:aec-cfb-ucla-mary-2026-09-26:S": {
+   "avg_price": 0.41642105263157897,
+   "condition_id": "cfb-ucla-mary-2026-09-26",
+   "end_date": null,
+   "kind": "sports_edge",
+   "mark": 0.4,
+   "neg_risk": false,
+   "opened_at": "2026-09-26T17:35:26Z",
+   "outcome": "Terrapins",
+   "question": "UCLA vs. Maryland",
+   "size": 38.0,
+   "token_id": "us:aec-cfb-ucla-mary-2026-09-26:S"
   }
  },
  "realized_pnl": 0.0,
  "resolved_events": [],
- "runs": 59,
+ "runs": 67,
  "scan": {
   "ai.edge_assessed": 0,
-  "ai.gate_assessed": 17,
-  "books": 38,
-  "candidates": 18,
+  "ai.gate_assessed": 27,
+  "books": 61,
+  "candidates": 30,
   "markets": 136,
-  "obs.rows": 36,
-  "sports.ai_vetoed": 1,
+  "obs.rows": 57,
   "sports.candidate": 1,
   "sports.games": 145,
   "sports.matched": 136,
   "sports.moneyline_markets": 136,
-  "sports.no_book": 124,
-  "sports.no_edge": 22,
+  "sports.no_book": 102,
+  "sports.no_edge": 32,
   "sports.no_model": 34,
-  "sports.price_out_of_band": 5,
-  "sports.too_far_ahead": 40
+  "sports.price_out_of_band": 13,
+  "sports.too_far_ahead": 40,
+  "sports.unstable": 2
  },
  "starting_bankroll": 59.48695000000001,
  "trades": [
@@ -438,6 +453,24 @@
    "size": 12.0,
    "t": "2026-09-26T07:17:09Z",
    "token_id": "68143274871491614411603581830764286165556290561886791090717431421870101183922"
+  },
+  {
+   "cost": 15.39,
+   "kind": "sports_edge",
+   "model_p": 0.5672,
+   "model_src": "live_wp",
+   "outcome": "Maryland",
+   "price": 0.405,
+   "q": "UCLA vs. Maryland",
+   "raw": {
+    "orderID": "CQYBJF0PYYCA",
+    "status": "matched",
+    "success": true
+   },
+   "side": "BUY",
+   "size": 38.0,
+   "t": "2026-09-26T17:35:26Z",
+   "token_id": "us:aec-cfb-ucla-mary-2026-09-26:S"
   }
  ],
  "wallet": "polymarket.us key 865b51eb\u2026"

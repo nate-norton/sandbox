@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 29  |  last run: 2026-09-26T14:24:36Z  |  wallet `polymarket.us key 865b51eb…`
+- mode: **live**  |  profile: **aggressive**  |  runs: 30  |  last run: 2026-09-26T14:31:36Z  |  wallet `polymarket.us key 865b51eb…`
 - equity: **$59.18** (started $59.49, realized +0.00)
 - cash: $50.00  |  deployed: $10.00  |  open positions: 2
 - P&L today: +0.00
@@ -20,12 +20,12 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 30 API calls, 0 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 0 API calls, 30 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=30, books=158, candidates=79, markets=136, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=8, sports.no_edge=139, sports.no_model=20, sports.too_far_ahead=50
+ai.edge_assessed=0, ai.gate_assessed=30, books=158, candidates=79, markets=136, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=8, sports.no_edge=129, sports.no_model=20, sports.price_out_of_band=11, sports.too_far_ahead=50
 
 ## Notes
 

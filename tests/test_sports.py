@@ -9,11 +9,13 @@ from tests.fakes import NOW, FakeClob, FakeGamma, mk_book, mk_market
 
 
 def espn_event(eid, home, away, state="pre", hs=None, aws=None, ml_home=None, ml_away=None, wp=None,
-               completed=False, winner_home=None, start=None):
+               completed=False, winner_home=None, start=None, abbrs=None):
+    abbrs = abbrs or {}
+
     def comp(team, ha, score, winner):
         loc, nick = team
         d = {"homeAway": ha, "team": {"displayName": f"{loc} {nick}", "shortDisplayName": nick if len(nick) > 3 else loc,
-                                      "name": nick, "location": loc, "abbreviation": nick[:3].upper()}}
+                                      "name": nick, "location": loc, "abbreviation": abbrs.get(ha, nick[:3].upper())}}
         if score is not None:
             d["score"] = str(score)
         if winner is not None:
@@ -168,7 +170,8 @@ def test_game_window_flag(tmp_path):
 
 
 def test_match_by_alias_when_title_is_truncated():
-    g = parse_event(espn_event("1", ("Buffalo", "Bills"), ("Los Angeles", "Chargers"), ml_home=-345, ml_away=275), "nfl")
+    g = parse_event(espn_event("1", ("Buffalo", "Bills"), ("Los Angeles", "Chargers"), ml_home=-345, ml_away=275,
+                               abbrs={"home": "BUF", "away": "LAC"}), "nfl")
     m = mk_market("c1", "us:x-lac", "us:x-buf", hours=6)
     m.outcomes, m.sports_type = ["Los Angeles C", "Buffalo"], "moneyline"      # truncated title
     m.outcome_aliases = [["lac", "Los Angeles C"], ["buf", "Buffalo"]]

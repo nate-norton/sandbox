@@ -202,8 +202,7 @@ def resolve_wallet(cfg: Config, make_client=None, data: Optional[DataApi] = None
 def _us_fee_ok(us: PolymarketUS, o, cfg: Config) -> bool:
     """Re-check the edge with the exchange's exact commission before spending real money."""
     leg = o.legs[0]
-    from .pmus import slug_of
-    fee = us.preview_fee(slug_of(leg.token_id), "ORDER_INTENT_BUY_LONG", leg.price, int(leg.size))
+    fee = us.preview_fee(leg.token_id, "BUY", leg.price, int(leg.size))
     if fee is None:
         return True
     p = o.ai_p or 0.0
@@ -543,7 +542,8 @@ def main(argv: list[str] | None = None) -> int:
         log.info("sports mode: %s moneylines only", ", ".join(cfg.sports_leagues).upper())
     key_problem = ""
     if cfg.exchange == "us":
-        us = PolymarketUS(make_client(cfg.us_key_id, cfg.us_secret), cfg.us_key_id)
+        us = PolymarketUS(make_client(cfg.us_key_id, cfg.us_secret), cfg.us_key_id,
+                          cache_path=os.path.join(cfg.state_dir, "us_markets.json"))
         if cfg.is_live:
             live = us
             log.info("LIVE mode on polymarket.us (%s)", us.funder)

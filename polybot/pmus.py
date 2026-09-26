@@ -133,7 +133,9 @@ class PolymarketUS:
                              {"slug": ev.get("slug"), "title": ev.get("title"), "startTime": ev.get("startTime"),
                               "tags": [t.get("slug") for t in ev.get("tags") or []], "n_markets": len(all_ms),
                               "moneyline": [(m.get("slug"), m.get("title")) for m in ms],
-                              "winner_slugs": [m.get("slug") for m in all_ms if "winner" in str(m.get("slug") or "")][:12]})
+                              "prefixes": _prefix_histogram(all_ms),
+                              "single_token": [(m.get("slug"), m.get("title")) for m in all_ms
+                                               if _single_token(str(m.get("slug") or ""), str(ev.get("slug") or ""))][:12]})
                 if len(ms) != 2 or not _looks_like_game(ev):
                     continue
                 a, b = ms
@@ -312,6 +314,22 @@ def _order_params(slug: str, intent: str, price: float, qty: int) -> dict:
     return {"marketSlug": slug, "intent": intent, "type": "ORDER_TYPE_LIMIT",
             "price": {"value": f"{price:.2f}", "currency": "USD"}, "quantity": int(qty),
             "tif": "TIME_IN_FORCE_GOOD_TILL_CANCEL"}
+
+
+def _prefix_histogram(markets: list[dict]) -> dict[str, int]:
+    h: dict[str, int] = {}
+    for m in markets:
+        pre = str(m.get("slug") or "").split("-")[0]
+        h[pre] = h.get(pre, 0) + 1
+    return dict(sorted(h.items(), key=lambda kv: -kv[1])[:12])
+
+
+def _single_token(slug: str, ev_slug: str) -> bool:
+    """prefix-<event slug>-<one token>: the shape a plain team market should have."""
+    if not ev_slug or ev_slug not in slug:
+        return False
+    tail = slug.split(ev_slug, 1)[1].strip("-")
+    return bool(tail) and "-" not in tail
 
 
 def _moneyline_markets(ev: dict) -> list[dict]:

@@ -159,8 +159,14 @@ def parse_event(ev: dict, league: str) -> Optional[Game]:
     if odds:
         o = odds[0]
         ho, ao = o.get("homeTeamOdds") or {}, o.get("awayTeamOdds") or {}
+        # older shape: homeTeamOdds.moneyLine; current shape: moneyline.home.{current|close|open}.odds
         g.ml_home = _int_or_none(ho.get("moneyLine"))
         g.ml_away = _int_or_none(ao.get("moneyLine"))
+        ml = o.get("moneyline") or {}
+        if g.ml_home is None:
+            g.ml_home = _line_odds(ml.get("home"))
+        if g.ml_away is None:
+            g.ml_away = _line_odds(ml.get("away"))
         g.spread = _float_or_none(o.get("spread"))
         g.over_under = _float_or_none(o.get("overUnder"))
     sit = comp.get("situation") or {}
@@ -184,6 +190,19 @@ def _debug_sample(ev: dict, g: Game) -> None:
     comp = (ev.get("competitions") or [{}])[0]
     raw = {"odds": comp.get("odds"), "situation": comp.get("situation"), "status": ev.get("status")}
     log.info("espn raw sample (%s, %s): %s", g.state, g.raw_name, json.dumps(raw, default=str)[:1500])
+
+
+def _line_odds(side: Optional[dict]) -> Optional[int]:
+    """American odds from ESPN's {current|close|open: {odds: "-345"}} structure."""
+    if not isinstance(side, dict):
+        return None
+    for k in ("current", "close", "open"):
+        v = (side.get(k) or {}).get("odds") if isinstance(side.get(k), dict) else None
+        if v not in (None, "", "EVEN", "even"):
+            return _int_or_none(str(v).replace("+", ""))
+        if v in ("EVEN", "even"):
+            return 100
+    return None
 
 
 def _int_or_none(v):

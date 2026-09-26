@@ -50,6 +50,24 @@ def test_parse_event_pregame_and_live():
     assert parse_event({"id": "x"}, "nfl") is None
 
 
+def test_parse_current_espn_odds_shape():
+    """Exact structure seen in the CI log on 2026-09-26 (DraftKings provider)."""
+    ev = espn_event("9", ("Buffalo", "Bills"), ("Los Angeles", "Chargers"))
+    ev["competitions"][0]["odds"] = [{
+        "provider": {"id": "100", "name": "DraftKings"}, "details": "BUF -7", "overUnder": 50.5, "spread": -7.0,
+        "awayTeamOdds": {"favorite": False, "underdog": True, "team": {"abbreviation": "LAC"}},
+        "homeTeamOdds": {"favorite": True, "underdog": False, "team": {"abbreviation": "BUF"}},
+        "moneyline": {"displayName": "Moneyline", "home": {"close": {"odds": "-345"}, "open": {"odds": "-330"}},
+                      "away": {"close": {"odds": "+270"}, "open": {"odds": "+260"}}},
+    }]
+    g = parse_event(ev, "nfl")
+    assert g.ml_home == -345 and g.ml_away == 270 and g.spread == -7.0 and g.over_under == 50.5
+    p = g.pregame_p_home()
+    assert abs(p - (345 / 445) / (345 / 445 + 100 / 370)) < 1e-9
+    ev["competitions"][0]["odds"][0]["moneyline"]["home"]["current"] = {"odds": "EVEN"}
+    assert parse_event(ev, "nfl").ml_home == 100
+
+
 def test_match_markets_by_outcomes_and_timing():
     g = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), ml_home=-150, ml_away=130), "nfl")
     m = mk_market("c1", "ty", "tn", hours=6)

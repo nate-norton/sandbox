@@ -1,8 +1,8 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 33  |  last run: 2026-09-26T14:55:35Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$59.18** (started $59.49, realized +0.00)
-- cash: $50.00  |  deployed: $10.00  |  open positions: 2
+- mode: **live**  |  profile: **aggressive**  |  runs: 49  |  last run: 2026-09-26T16:33:26Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$58.17** (started $59.49, realized +0.00)
+- cash: $45.00  |  deployed: $14.99  |  open positions: 3
 - P&L today: +0.00
 
 ## Open positions
@@ -10,6 +10,7 @@
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
 | Ole Miss vs. Florida | Rebels | 12.0 | 0.417 | 0.385 |  | external |
+| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.285 |  | external |
 | Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.240 |  | external |
 
 ## Recent trades
@@ -20,16 +21,16 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 0 API calls, 30 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 72 API calls, 18 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 144 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 2327 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=30, books=158, candidates=79, markets=136, obs.rows=144, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=8, sports.no_edge=129, sports.no_model=20, sports.price_out_of_band=11, sports.too_far_ahead=50
+ai.edge_assessed=0, ai.gate_assessed=30, books=137, candidates=68, markets=136, obs.rows=127, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=30, sports.no_edge=112, sports.no_model=32, sports.price_out_of_band=10, sports.too_far_ahead=41
 
 ## Notes
 

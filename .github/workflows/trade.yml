@@ -3,6 +3,8 @@ name: polybot
 on:
   schedule:
     - cron: "*/30 * * * *"      # every 30 min: ~1,400 free minutes/month at ~1 min per run
+  push:
+    paths: ["polybot/**", "requirements.txt", ".github/workflows/trade.yml"]   # a code change runs one cycle
   workflow_dispatch:
     inputs:
       live:

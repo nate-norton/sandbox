@@ -321,7 +321,7 @@
  },
  "cash": 25.0,
  "daily": {},
- "last_run": "2026-09-26T08:32:29Z",
+ "last_run": "2026-09-26T08:34:15Z",
  "mode": "paper",
  "notes": [
   "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters",
@@ -334,7 +334,7 @@
  ],
  "positions": {},
  "realized_pnl": 0.0,
- "runs": 17,
+ "runs": 18,
  "scan": {
   "ai.edge_assessed": 0,
   "ai.gate_assessed": 0,

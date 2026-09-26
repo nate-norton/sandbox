@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **paper**  |  profile: **aggressive**  |  runs: 9  |  last run: 2026-09-26T08:02:07Z
-- equity: **$17.38** (started $25.00, realized +0.00)
+- mode: **paper**  |  profile: **aggressive**  |  runs: 10  |  last run: 2026-09-26T08:03:24Z
+- equity: **$24.90** (started $25.00, realized +0.00)
 - cash: $3.47  |  deployed: $21.53  |  open positions: 3
 - P&L today: +0.00
 
@@ -9,7 +9,7 @@
 
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
-| Exact Score: Júbilo Iwata 0 - 2 Vanraure Hachinohe FC? | No | 12.0 | 0.985 | 0.352 | 2026-09-26T08:00 | harvest |
+| Exact Score: Júbilo Iwata 0 - 2 Vanraure Hachinohe FC? | No | 12.0 | 0.985 | 0.979 | 2026-09-26T08:00 | harvest |
 | Illinois vs. Ohio State | Ohio State | 5.0 | 0.962 | 0.960 | 2026-09-26T16:00 | harvest |
 | Will San Marino win on 2026-09-26? | No | 5.0 | 0.980 | 0.976 | 2026-09-26T16:00 | harvest |
 
@@ -21,7 +21,7 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 30 favourites gated, 30 markets judged blind, 4 API calls, 56 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 30 favourites gated, 30 markets judged blind, 0 API calls, 60 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Last scan
@@ -31,3 +31,4 @@ ai.edge_assessed=30, ai.gate_assessed=30, ai_edge.gap_too_small=1, ai_edge.not_e
 ## Notes
 
 - 2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters
+- 2026-09-26T08:03:24Z POLYMARKET_PRIVATE_KEY rejected: got 88 characters: this looks like an API secret from Settings → Developer (base64), not the wallet private key. The wallet key is 64 hex characters; export it at https://reveal.magic.link/polymarket

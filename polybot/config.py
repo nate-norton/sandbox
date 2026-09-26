@@ -60,6 +60,7 @@ class Config:
     harvest_min_liquidity: float = field(default_factory=lambda: _f("HARVEST_MIN_LIQUIDITY", 3000.0))
     harvest_min_volume24h: float = field(default_factory=lambda: _f("HARVEST_MIN_VOLUME24H", 500.0))
     harvest_max_spread: float = field(default_factory=lambda: _f("HARVEST_MAX_SPREAD", 0.03))
+    harvest_max_fee_bps: int = field(default_factory=lambda: _i("HARVEST_MAX_FEE_BPS", 1000))
     harvest_min_annualized: float = field(default_factory=lambda: _f("HARVEST_MIN_ANNUALIZED", 1.5))
     # assumed underpricing of heavy favourites (favourite-longshot bias), net of resolution risk
     harvest_assumed_edge: float = field(default_factory=lambda: _f("HARVEST_ASSUMED_EDGE", 0.015))

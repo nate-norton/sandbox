@@ -12,8 +12,13 @@ log = logging.getLogger(__name__)
 
 
 def est_fee(bps: int, size: float, price: float) -> float:
-    """Conservative taker-fee estimate in USD (upper bound of Polymarket's fee formula)."""
-    return bps / 10_000.0 * size * price
+    """Taker-fee estimate in USD.
+
+    Polymarket charges taker fees proportional to `rate * price * (1 - price)` per share, so
+    a 1000 bps market costs about 0.4% of notional at 96c and 2.5% at 50c. Using min(p, 1-p)
+    instead of p*(1-p) keeps this a strict upper bound.
+    """
+    return bps / 10_000.0 * size * min(price, 1.0 - price)
 
 
 def _round_down(x: float, step: float) -> float:
@@ -139,13 +144,14 @@ def find_harvests(markets: list[Market], books: dict[str, Book], cfg: Config, no
             if ask < cfg.harvest_min_price or ask > cfg.harvest_max_price:
                 st["harvest.price_out_of_range"] += 1
                 continue
-            if b.fee_bps > 0:
+            if b.fee_bps > cfg.harvest_max_fee_bps:
                 st["harvest.fee_market"] += 1
-                continue                                  # fees eat the whole edge at 95c+
+                continue
             if ask - bid > cfg.harvest_max_spread:
                 st["harvest.wide_spread"] += 1
                 continue
-            gross = (1.0 - ask) / ask                     # return if it resolves YES
+            fee_ps = est_fee(b.fee_bps, 1, ask)
+            gross = (1.0 - ask - fee_ps) / ask            # net return if it resolves YES
             annualized = gross * (365 * 24 / max(hrs, 1.0))
             if annualized < cfg.harvest_min_annualized:
                 st["harvest.low_annualized"] += 1
@@ -165,6 +171,8 @@ def find_harvests(markets: list[Market], books: dict[str, Book], cfg: Config, no
             # Expected value assumes the favourite is underpriced by `harvest_assumed_edge`
             # (net of bad-resolution risk). Paying up through the book erodes that edge.
             p_win = min(0.999, ask + cfg.harvest_assumed_edge)
+            fee = est_fee(b.fee_bps, size, worst)
+            cost += fee
             ev = size * p_win - cost
             if ev <= 0:
                 st["harvest.negative_ev"] += 1
@@ -173,7 +181,7 @@ def find_harvests(markets: list[Market], books: dict[str, Book], cfg: Config, no
             out.append(Opportunity(
                 "harvest", m, [Leg(m.token_ids[idx], "BUY", worst, size, m.outcomes[idx])],
                 cost, ev, 1.0 - worst,
-                note=f"{m.outcomes[idx]} @ {ask:.3f}, {hrs:.1f}h to end, {gross*100:.1f}% if right, liq ${m.liquidity:,.0f}",
+                note=f"{m.outcomes[idx]} @ {ask:.3f}, {hrs:.1f}h to end, {gross*100:.1f}% net if right, fee {b.fee_bps}bps, liq ${m.liquidity:,.0f}",
             ))
     # Prefer soonest resolution and highest liquidity (capital turns over faster, less can go wrong)
     out.sort(key=lambda o: (o.market.hours_to_end(now) or 1e9, -o.market.liquidity))

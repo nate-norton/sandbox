@@ -44,6 +44,7 @@ class Ledger:
     ai_info: dict = field(default_factory=dict)                     # last run's Jev usage summary
     wallet: str = ""                                                # live wallet address in use
     game_window: bool = False                                       # a matched game is live or imminent
+    resolved_events: list = field(default_factory=list)             # events whose outcome is already logged
 
     # ---------- persistence ----------
     @classmethod
@@ -72,7 +73,7 @@ class Ledger:
     def save(self, path: str) -> None:
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
         d = asdict(self)
-        d["trades"] = d["trades"][-500:]      # keep the file bounded
+        d["trades"] = d["trades"][-5000:]     # keep the file bounded (years of trades at this pace)
         d["notes"] = d["notes"][-100:]
         tmp = path + ".tmp"
         with open(tmp, "w") as f:

@@ -22,6 +22,7 @@ from .executor import Executor
 from .gamma import Gamma
 from .ledger import Ledger, Position
 from .models import Book, Market, parse_iso
+from . import observe
 from .pmus import PolymarketUS, make_client
 from .risk import RiskManager, RiskState, state_from_ledger
 from .sports import Matched, find_sports_edges, match_markets, near_misses, sports_exits
@@ -132,6 +133,13 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
         led.ai_info = ai_info
         opps = find_sports_edges(matched, books, cfg, now, st.equity, rm.per_position_budget(st), held_cids, stats)
         opps = _apply_gate(opps, gate, cfg, stats)
+        # observation log: every quote next to the model, and each game's final outcome (once)
+        stats["obs.rows"] = observe.append(cfg.state_dir, f"{now:%Y-%m-%d}.jsonl", observe.snapshot_rows(matched, books, cfg, now))
+        outs = observe.outcome_rows(matched, set(led.resolved_events), now)
+        if outs:
+            observe.append(cfg.state_dir, "outcomes.jsonl", outs)
+            led.resolved_events = (led.resolved_events + [o["event"] for o in outs])[-2000:]
+            stats["obs.outcomes"] = len(outs)
         if us is None:
             opps += find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)   # ties break the pair on US markets
         for line in near_misses(matched, books, now):
@@ -520,6 +528,9 @@ def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Opt
                   ""]
     elif cfg.ai_enabled:
         lines += ["## Jev (AI decider)", "", "- inactive: add the `OPENROUTER_API_KEY` secret to enable it", ""]
+    obs = observe.summarize(cfg.state_dir)
+    if obs:
+        lines += ["## Observation log", "", f"- {obs['snapshots']} quote/model snapshots and {obs['outcomes']} game outcomes across {obs['files']} files in `state/obs/`", ""]
     if led.scan:
         lines += ["## Last scan", "", ", ".join(f"{k}={v}" for k, v in led.scan.items()), ""]
     if led.notes:

@@ -243,3 +243,26 @@ def test_stability_check_runs_when_a_matched_game_is_live(tmp_path):
     espn = FakeEspn([live])
     led = run_once(c, FakeGamma([m]), FakeClob(books), now=NOW, espn=espn)
     assert len(led.positions) == 1 and led.trades[-1]["model_p"] == 0.88 and led.trades[-1]["model_src"] == "live_wp"
+
+
+def test_observation_log_written_each_cycle(tmp_path):
+    import json, os
+    c = cfg(tmp_path)
+    m = mk_market("c1", "hou", "ind", hours=2)
+    m.question, m.outcomes, m.sports_type = "Texans vs. Colts", ["Texans", "Colts"], "moneyline"
+    live = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), state="in", hs=14, aws=0, wp=0.88), "nfl")
+    live.period, live.clock = 2, "10:00"
+    books = {"hou": mk_book("hou", [(0.78, 100)], [(0.76, 100)], fee=600), "ind": mk_book("ind", [(0.23, 100)], [(0.21, 100)], fee=600)}
+    run_once(c, FakeGamma([m]), FakeClob(books), now=NOW, espn=FakeEspn([live]))
+    rows = [json.loads(l) for l in open(tmp_path / "obs" / f"{NOW:%Y-%m-%d}.jsonl")]
+    assert len(rows) == 2 and {r["side"] for r in rows} == {"home", "away"}
+    r = next(r for r in rows if r["side"] == "home")
+    assert r["p"] == 0.88 and r["ask"] == 0.78 and r["src"] == "live_wp" and r["stable"] is True and r["margin"] > 0.05
+    # final: outcome logged exactly once across runs
+    done = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), state="post", hs=28, aws=10,
+                                  completed=True, winner_home=True), "nfl")
+    led = run_once(c, FakeGamma([m]), FakeClob(books), now=NOW + timedelta(hours=3), espn=FakeEspn([done]))
+    led = run_once(c, FakeGamma([m]), FakeClob(books), now=NOW + timedelta(hours=4), espn=FakeEspn([done]))
+    outs = [json.loads(l) for l in open(tmp_path / "obs" / "outcomes.jsonl")]
+    assert len(outs) == 1 and outs[0]["winner_home"] is True and led.resolved_events == ["c1"]
+    assert "Observation log" in open(tmp_path / "report.md").read()

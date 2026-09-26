@@ -16,8 +16,8 @@ The bot only trades games ESPN knows about, priced against ESPN's numbers:
 | final, market not yet resolved | 1 or 0 from the final score | ESPN scoreboard | 1c |
 
 For every Polymarket moneyline market matched to a game (both outcome names must be the game's teams, timing must agree),
-edge = model − ask − taker fee. Trades need edge above the margin and are sized with half-Kelly on the net odds at the ask,
-capped by the risk profile (50% of equity per position on `aggressive`). Jev sees the game state and prices and can veto a
+edge = model − ask − taker fee. Trades need edge above the margin and are sized with Kelly on the net odds at the ask (full Kelly on
+`aggressive`, half-Kelly on `conservative`), capped by the risk profile (50% of equity per position on `aggressive`). Jev sees the game state and prices and can veto a
 trade when it leans the other way. Held positions are sold when the market bids more than the model says they are worth
 (by 5c after fees), so a lead that evaporates is cut rather than ridden to zero. Pair arbitrage still runs on the same markets.
 

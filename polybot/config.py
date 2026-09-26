@@ -36,6 +36,7 @@ PROFILES: dict[str, dict] = {
         "harvest_min_price": 0.80,
         "harvest_max_spread": 0.04,
         "ai_edge_position_frac": 0.35,
+        "sports_kelly_frac": 1.0,             # full Kelly: fastest long-run compounding the math allows
     },
 }
 
@@ -45,6 +46,7 @@ ENV_NAMES = {
     "daily_loss_limit_frac": "DAILY_LOSS_LIMIT_FRAC", "min_equity_frac": "MIN_EQUITY_FRAC",
     "stop_loss_drop": "STOP_LOSS_DROP", "harvest_min_price": "HARVEST_MIN_PRICE",
     "harvest_max_spread": "HARVEST_MAX_SPREAD", "ai_edge_position_frac": "AI_EDGE_POSITION_FRAC",
+    "sports_kelly_frac": "SPORTS_KELLY_FRAC",
 }
 
 

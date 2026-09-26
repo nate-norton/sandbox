@@ -87,6 +87,7 @@ def test_profiles(monkeypatch):
     monkeypatch.delenv("MAX_POSITION_FRAC", raising=False)
     a = Config(profile="aggressive")
     assert a.max_position_frac == 0.5 and a.cash_reserve == 0 and a.stop_loss_drop == 0 and a.harvest_min_price == 0.80
+    assert a.sports_kelly_frac == 1.0 and c.sports_kelly_frac == 0.5
     c = Config(profile="conservative")
     assert c.max_position_frac == 0.2 and c.stop_loss_drop == 0.25 and c.min_equity_frac == 0.5
     monkeypatch.setenv("MAX_POSITION_FRAC", "0.3")       # explicit env var beats the profile

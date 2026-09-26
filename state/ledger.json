@@ -2,8 +2,8 @@
  "ai_info": {
   "active": true,
   "breaker": false,
-  "cache_hits": 0,
-  "calls": 60,
+  "cache_hits": 56,
+  "calls": 4,
   "edge_assessed": 30,
   "errors": 0,
   "extreme_accuracy": null,
@@ -25,7 +25,7 @@
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
    "p_yes": 0.46,
-   "price_yes": 0.14,
+   "price_yes": 0.22,
    "q": "Hangzhou Open: Quentin Halys vs Roman Safiullin",
    "risk": 1.07,
    "with_prices": false
@@ -88,7 +88,7 @@
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
    "p_yes": 0.52,
-   "price_yes": 0.67,
+   "price_yes": 0.66,
    "q": "Bitcoin Up or Down on September 26?",
    "risk": 1.05,
    "with_prices": false
@@ -160,7 +160,7 @@
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
    "p_yes": 0.41,
-   "price_yes": 0.21,
+   "price_yes": 0.19,
    "q": "Chengdu Open: Federico Cina vs Alexandre Muller",
    "risk": 1.08,
    "with_prices": false
@@ -192,6 +192,15 @@
    "risk": 1.0,
    "with_prices": false
   },
+  "0xca6189581f97c5b82d256a196e708e21f6b95e1a982b9928e29eb69fe7ca222e": {
+   "at": "2026-09-26T07:44:53Z",
+   "outcome": null,
+   "p_yes": 0.49,
+   "price_yes": 0.62,
+   "q": "Ravens vs. Cowboys",
+   "risk": 1.0,
+   "with_prices": false
+  },
   "0xd0ee09bc3955e774c42df27cc3b4685a483f8498000c2de26625f20fc9ed4f78": {
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
@@ -205,7 +214,7 @@
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
    "p_yes": 0.49,
-   "price_yes": 0.76,
+   "price_yes": 0.8,
    "q": "Dota 2: Xtreme Gaming vs GamerLegion (BO3) - PGL Wallachia Playoffs",
    "risk": 1.06,
    "with_prices": false
@@ -285,7 +294,7 @@
  },
  "cash": 3.4727000000000015,
  "daily": {},
- "last_run": "2026-09-26T07:42:40Z",
+ "last_run": "2026-09-26T07:44:53Z",
  "mode": "paper",
  "notes": [],
  "positions": {
@@ -330,21 +339,22 @@
   }
  },
  "realized_pnl": 0.0,
- "runs": 6,
+ "runs": 7,
  "scan": {
   "ai.edge_assessed": 30,
   "ai.gate_assessed": 30,
-  "ai_edge.not_extreme": 30,
+  "ai_edge.gap_too_small": 1,
+  "ai_edge.not_extreme": 29,
   "arb.best_pair_x1000": 1000,
-  "arb.no_book": 37,
-  "arb.no_edge": 342,
+  "arb.no_book": 38,
+  "arb.no_edge": 341,
   "books": 759,
   "candidates": 379,
-  "harvest.below_min_order": 32,
+  "harvest.below_min_order": 33,
   "harvest.illiquid": 7,
   "harvest.in_window": 223,
-  "harvest.no_book": 44,
-  "harvest.price_out_of_range": 355,
+  "harvest.no_book": 46,
+  "harvest.price_out_of_range": 352,
   "harvest.wide_spread": 1,
   "harvest.window": 154,
   "markets": 600

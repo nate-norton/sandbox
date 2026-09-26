@@ -21,6 +21,7 @@ from .ledger import Ledger, Position
 from .models import Book, Market, parse_iso
 from .risk import RiskManager, RiskState, state_from_ledger
 from .strategies import find_ai_edges, find_harvests, find_negrisk_arbs, find_pair_arbs
+from .wallet import candidate_funders
 
 log = logging.getLogger("polybot")
 
@@ -108,6 +109,37 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
 
 
 # ----------------------------------------------------------------------------- helpers
+def resolve_wallet(cfg: Config, make_client=None, data: Optional[DataApi] = None) -> LiveClob:
+    """Build the live client. With no POLYMARKET_FUNDER, derive the wallet from the key and pick
+    the candidate that actually holds USDC (or open positions): proxy (email login), Safe
+    (browser-wallet login), then the bare signer."""
+    make = make_client or (lambda funder, sig: LiveClob(cfg.clob_host, cfg.chain_id, cfg.private_key, funder, sig))
+    if cfg.funder:
+        return make(cfg.funder, cfg.signature_type)
+    cands = candidate_funders(cfg.private_key)
+    order = [cfg.signature_type] + [t for t in (1, 2, 0) if t != cfg.signature_type]
+    first = None
+    for sig in order:
+        addr = cands[sig]
+        try:
+            client = make(addr, sig)
+            bal = client.usdc_balance()
+        except Exception as e:
+            log.warning("wallet candidate type %d %s failed: %s", sig, addr, e)
+            continue
+        first = first or client
+        has_positions = bool(data and data.positions(addr))
+        log.info("wallet candidate type %d %s: $%.2f USDC%s", sig, addr, bal, ", has positions" if has_positions else "")
+        if bal > 0 or has_positions:
+            log.info("using wallet %s (signature type %d)", addr, sig)
+            return client
+    if first is None:
+        raise SystemExit("could not reach the CLOB with any derived wallet; check POLYMARKET_PRIVATE_KEY")
+    log.warning("no derived wallet holds USDC yet; defaulting to %s (type %d). Candidates: %s",
+                first.funder, first.signature_type, ", ".join(f"type {k}: {v}" for k, v in cands.items()))
+    return first
+
+
 def _sync_live(led: Ledger, live: LiveClob, data: Optional[DataApi], cfg: Config) -> None:
     """Live truth comes from the exchange: cash from the CLOB, positions from the data API."""
     try:
@@ -115,9 +147,10 @@ def _sync_live(led: Ledger, live: LiveClob, data: Optional[DataApi], cfg: Config
     except Exception as e:
         log.error("balance lookup failed: %s", e)
         raise SystemExit(2)
+    led.wallet = live.funder
     if led.cash <= 0 and not led.positions:
-        msg = (f"{led.last_run} live wallet {live.funder[:6]}…{live.funder[-4:]} shows $0 USDC. "
-               "If you have deposited, POLYMARKET_FUNDER is probably not your Polymarket wallet address.")
+        msg = (f"{led.last_run} live wallet {live.funder} shows $0 USDC. If you have deposited, compare this "
+               "with the address on your Polymarket profile and set POLYMARKET_FUNDER to that one.")
         log.warning(msg)
         if not any("shows $0 USDC" in n for n in led.notes[-3:]):
             led.notes.append(msg)
@@ -332,7 +365,8 @@ def _finish(led: Ledger, path: str, cfg: Config, st: RiskState, done: list, halt
 
 def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Optional[str]) -> None:
     lines = [f"# polybot report", "",
-             f"- mode: **{led.mode}**  |  profile: **{cfg.profile}**  |  runs: {led.runs}  |  last run: {led.last_run}",
+             f"- mode: **{led.mode}**  |  profile: **{cfg.profile}**  |  runs: {led.runs}  |  last run: {led.last_run}"
+             + (f"  |  wallet `{led.wallet}`" if led.wallet else ""),
              f"- equity: **${led.equity:.2f}** (started ${led.starting_bankroll:.2f}, realized {led.realized_pnl:+.2f})",
              f"- cash: ${led.cash:.2f}  |  deployed: ${led.deployed:.2f}  |  open positions: {len(led.positions)}",
              f"- P&L today: {led.pnl_today():+.2f}" + (f"  |  **HALTED: {halt}**" if halt else ""), ""]
@@ -380,11 +414,11 @@ def main(argv: list[str] | None = None) -> int:
     else:
         log.info("AI decider off (set OPENROUTER_API_KEY to enable Jev)")
     if cfg.is_live:
-        live = LiveClob(cfg.clob_host, cfg.chain_id, cfg.private_key, cfg.funder, cfg.signature_type)
         data = DataApi(cfg.data_host)
-        log.info("LIVE mode: funder %s…%s", cfg.funder[:6], cfg.funder[-4:])
+        live = resolve_wallet(cfg, data=data)
+        log.info("LIVE mode: wallet %s (signature type %d)", live.funder, live.signature_type)
     else:
-        log.info("PAPER mode (set POLYMARKET_PRIVATE_KEY and POLYMARKET_FUNDER to go live)")
+        log.info("PAPER mode (set POLYMARKET_PRIVATE_KEY to go live)")
     run_once(cfg, gamma, clob, live, data, decider=decider)
     return 0
 

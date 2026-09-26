@@ -61,14 +61,13 @@ Both profiles share these guards (all overridable by env vars / repo variables, 
 ## One-time setup (about 10 minutes, no paid services)
 
 1. **Fund Polymarket with $25.** Sign up at polymarket.com with an email (this creates a gasless proxy wallet), deposit $25.
-2. **Get the two values the bot needs.**
-   - Private key: Polymarket → profile menu → *Settings* → *Export private key*.
-   - Funder address: your Polymarket wallet address shown on your profile / deposit page (the `0x…` proxy address, **not** the exporting wallet's address).
-3. **Add them as GitHub Actions secrets** (repo → *Settings* → *Secrets and variables* → *Actions*):
-   - `POLYMARKET_PRIVATE_KEY`
-   - `POLYMARKET_FUNDER`
+2. **Export your private key**: Polymarket → *Settings* → *Developer* (or https://reveal.magic.link/polymarket for email accounts).
+3. **Add it as a GitHub Actions secret** (repo → *Settings* → *Secrets and variables* → *Actions*):
+   - `POLYMARKET_PRIVATE_KEY` (required)
    - `OPENROUTER_API_KEY` or `OPEN_ROUTER_SECRET` (turns on the Jev decider; optional but recommended)
-   - If you signed up with a browser wallet instead of email, also add a repository **variable** `POLYMARKET_SIGNATURE_TYPE=2` (email/Magic login is `1`, the default).
+   - `POLYMARKET_FUNDER` (optional). Your Polymarket wallet address is derived from the key automatically, using the
+     same formula as Polymarket's own client, and the bot picks whichever derived wallet holds your USDC. Set this
+     only if the report shows a $0 balance after you have deposited.
 4. **Merge this branch into `main`.** GitHub only runs scheduled workflows from the default branch. Until then you can start a cycle by hand from the *Actions* tab (*polybot* → *Run workflow*).
 
 That is everything. From then on:

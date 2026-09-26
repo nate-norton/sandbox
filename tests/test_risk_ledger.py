@@ -106,3 +106,26 @@ def test_aggressive_sizing_and_halts():
     assert rm.approve(opp("harvest", 12.5), st) is None
     assert rm.halted(RiskState(cash=13, deployed=0, equity=13, open_positions=0, pnl_today=-12)) is None   # one loss doesn't freeze it
     assert "floor" in rm.halted(RiskState(cash=4, deployed=0, equity=4, open_positions=0, pnl_today=0))
+
+
+def test_wallet_derivation_is_deterministic_and_well_formed():
+    from polybot.wallet import candidate_funders, derive_proxy_wallet, derive_safe_wallet, signer_address
+    key = "0x" + "11" * 32
+    s = signer_address(key)
+    assert s == signer_address("11" * 32) == "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A"
+    c = candidate_funders(key)
+    assert c[0] == s and c[1] == derive_proxy_wallet(s) and c[2] == derive_safe_wallet(s)
+    assert len({c[0], c[1], c[2]}) == 3 and all(len(a) == 42 and a.startswith("0x") for a in c.values())
+
+
+def test_create2_matches_eip1014_vectors():
+    from eth_utils import keccak
+    from polybot.wallet import _create2
+    # Examples from EIP-1014
+    assert _create2("0x0000000000000000000000000000000000000000", bytes(32), keccak(bytes.fromhex("00"))) == \
+        "0x4D1A2e2bB4F88F0250f26Ffff098B0b30B26BF38"
+    assert _create2("0xdeadbeef00000000000000000000000000000000", bytes(32), keccak(bytes.fromhex("00"))) == \
+        "0xB928f69Bb1D91Cd65274e3c79d8986362984fDA3"
+    salt = bytes.fromhex("000000000000000000000000feed000000000000000000000000000000000000")
+    assert _create2("0xdeadbeef00000000000000000000000000000000", salt, keccak(bytes.fromhex("00"))) == \
+        "0xD04116cDd17beBE565EB2422F2497E06cC1C9833"

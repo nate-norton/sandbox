@@ -42,6 +42,7 @@ class Ledger:
     scan: dict[str, int] = field(default_factory=dict)              # last scan's filter statistics
     ai_log: dict[str, dict] = field(default_factory=dict)           # condition_id -> Jev call vs outcome
     ai_info: dict = field(default_factory=dict)                     # last run's Jev usage summary
+    wallet: str = ""                                                # live wallet address in use
 
     # ---------- persistence ----------
     @classmethod

@@ -140,4 +140,5 @@ class Config:
 
     @property
     def is_live(self) -> bool:
-        return bool(self.private_key and self.funder and self.live_enabled)
+        # the funder (wallet address) is optional: it is derived from the key when absent
+        return bool(self.private_key and self.live_enabled)

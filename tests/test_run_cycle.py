@@ -72,3 +72,26 @@ def test_partial_arb_is_unwound(tmp_path, monkeypatch):
     assert not led.positions                                    # YES leg sold back at the bid
     assert abs(led.realized_pnl - (-0.01 * 10)) < 1e-9          # paid 0.55, sold 0.54
     assert abs(led.cash - 24.9) < 1e-9
+
+
+def test_resolve_wallet_picks_funded_candidate(tmp_path):
+    from polybot.run import resolve_wallet
+    from polybot.wallet import candidate_funders
+    c = make_cfg(tmp_path)
+    c.private_key = "0x" + "22" * 32
+    cands = candidate_funders(c.private_key)
+
+    class FakeLive:
+        def __init__(self, funder, sig, bal):
+            self.funder, self.signature_type, self._bal = funder, sig, bal
+        def usdc_balance(self):
+            return self._bal
+    balances = {cands[1]: 0.0, cands[2]: 25.0, cands[0]: 0.0}
+    live = resolve_wallet(c, make_client=lambda f, s: FakeLive(f, s, balances[f]))
+    assert live.funder == cands[2] and live.signature_type == 2          # the Safe holds the money
+    balances[cands[2]] = 0.0
+    live = resolve_wallet(c, make_client=lambda f, s: FakeLive(f, s, balances[f]))
+    assert live.funder == cands[1] and live.signature_type == 1          # nothing funded: default to proxy
+    c.funder = "0x" + "ab" * 20
+    live = resolve_wallet(c, make_client=lambda f, s: FakeLive(f, s, 0.0))
+    assert live.funder == c.funder                                       # explicit setting wins

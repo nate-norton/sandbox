@@ -177,8 +177,14 @@ class PolymarketUS:
             ev = (self.c.events.retrieve_by_slug(slug) or {}).get("event") or {}
             ms = ev.get("markets") or []
             log.info("probe events.retrieve_by_slug: n_markets=%d prefixes=%s keys=%s", len(ms), _prefix_histogram(ms), sorted(ev.keys())[:40])
-            odd = [(m.get("slug"), m.get("title")) for m in ms if str(m.get("slug", "")).split("-")[0] in ("aec", "tsc")][:6]
-            log.info("probe aec/tsc examples: %s", odd)
+            import json as _json
+            aec = [m for m in ms if str(m.get("slug", "")).startswith("aec-")]
+            log.info("probe aec market full: %s", _json.dumps(aec[:1], default=str)[:1500])
+            log.info("probe marketGroups: %s", _json.dumps(ev.get("marketGroups"), default=str)[:1500])
+            log.info("probe marketCounts: %s teams: %s participants: %s", _json.dumps(ev.get("marketCounts"), default=str)[:300],
+                     _json.dumps(ev.get("teams"), default=str)[:600], _json.dumps(ev.get("participants"), default=str)[:400])
+            atc = [(m.get("slug"), m.get("title"), m.get("outcome")) for m in ms if str(m.get("slug", "")).startswith("atc-")][:3]
+            log.info("probe atc examples: %s", atc)
         except Exception as e:
             log.info("probe retrieve_by_slug failed: %s", e)
         try:

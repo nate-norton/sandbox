@@ -21,7 +21,7 @@ from .ledger import Ledger, Position
 from .models import Book, Market, parse_iso
 from .risk import RiskManager, RiskState, state_from_ledger
 from .strategies import find_ai_edges, find_harvests, find_negrisk_arbs, find_pair_arbs
-from .wallet import candidate_funders
+from .wallet import candidate_funders, normalize_private_key
 
 log = logging.getLogger("polybot")
 
@@ -34,6 +34,9 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
     led = Ledger.load(path, cfg.starting_bankroll, mode)
     led.runs += 1
     led.last_run = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    problem = os.environ.get("POLYBOT_KEY_PROBLEM")
+    if problem and not any(problem in n for n in led.notes[-3:]):
+        led.notes.append(f"{led.last_run} {problem}")
     log.info("=== polybot run %d (%s mode, %s profile) ===", led.runs, mode, cfg.profile)
 
     if live:
@@ -413,12 +416,21 @@ def main(argv: list[str] | None = None) -> int:
         log.info("AI decider: %s via OpenRouter", cfg.ai_model)
     else:
         log.info("AI decider off (set OPENROUTER_API_KEY to enable Jev)")
+    key_problem = ""
     if cfg.is_live:
+        try:
+            cfg.private_key = normalize_private_key(cfg.private_key)
+        except ValueError as e:
+            key_problem = f"POLYMARKET_PRIVATE_KEY rejected: {e}"
+            log.error("%s; running in PAPER mode", key_problem)
+    if cfg.is_live and not key_problem:
         data = DataApi(cfg.data_host)
         live = resolve_wallet(cfg, data=data)
         log.info("LIVE mode: wallet %s (signature type %d)", live.funder, live.signature_type)
     else:
         log.info("PAPER mode (set POLYMARKET_PRIVATE_KEY to go live)")
+    if key_problem:
+        os.environ["POLYBOT_KEY_PROBLEM"] = key_problem
     run_once(cfg, gamma, clob, live, data, decider=decider)
     return 0
 

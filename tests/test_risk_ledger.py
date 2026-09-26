@@ -129,3 +129,16 @@ def test_create2_matches_eip1014_vectors():
     salt = bytes.fromhex("000000000000000000000000feed000000000000000000000000000000000000")
     assert _create2("0xdeadbeef00000000000000000000000000000000", salt, keccak(bytes.fromhex("00"))) == \
         "0xD04116cDd17beBE565EB2422F2497E06cC1C9833"
+
+
+def test_private_key_normalization_messages():
+    import pytest
+    from polybot.wallet import normalize_private_key
+    assert normalize_private_key("  AB" * 32 + " ") == "0x" + "ab" * 32
+    assert normalize_private_key("0x" + "ab" * 32) == "0x" + "ab" * 32
+    with pytest.raises(ValueError, match="API key"):
+        normalize_private_key("019a2b3c-4d5e-6f70-8192-a3b4c5d6e7f8")
+    with pytest.raises(ValueError, match="seed phrase"):
+        normalize_private_key("word " * 12)
+    with pytest.raises(ValueError, match="64 hex"):
+        normalize_private_key("deadbeef")

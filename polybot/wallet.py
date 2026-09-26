@@ -25,11 +25,22 @@ def _create2(factory: str, salt: bytes, init_code_hash: bytes) -> str:
     return to_checksum_address("0x" + digest[-20:].hex())
 
 
+def normalize_private_key(private_key: str) -> str:
+    """Return the key as 0x + 64 hex chars, or raise ValueError explaining what was given instead."""
+    key = private_key.strip().strip('"').strip("'")
+    body = key[2:] if key.lower().startswith("0x") else key
+    if len(body) == 64 and all(c in "0123456789abcdefABCDEF" for c in body):
+        return "0x" + body.lower()
+    if len(body) == 36 and body.count("-") == 4:
+        raise ValueError("this looks like a Polymarket API key (UUID with dashes) from Settings → Developer, "
+                         "not the wallet private key. Export the wallet key at https://reveal.magic.link/polymarket")
+    if " " in key and len(key.split()) >= 12:
+        raise ValueError("this looks like a seed phrase; export the account's private key instead")
+    raise ValueError(f"expected 64 hex characters, got {len(body)} characters")
+
+
 def signer_address(private_key: str) -> str:
-    key = private_key.strip()
-    if not key.startswith("0x"):
-        key = "0x" + key
-    return Account.from_key(key).address
+    return Account.from_key(normalize_private_key(private_key)).address
 
 
 def derive_proxy_wallet(signer: str) -> str:

@@ -3,12 +3,12 @@
   "active": true,
   "breaker": false,
   "cache_hits": 0,
-  "calls": 0,
+  "calls": 30,
   "edge_assessed": 0,
   "errors": 0,
   "extreme_accuracy": null,
   "extreme_resolved": 0,
-  "gate_assessed": 0,
+  "gate_assessed": 30,
   "model": "~typesafe/jev-latest"
  },
  "ai_log": {
@@ -322,7 +322,7 @@
  "cash": 25.0,
  "daily": {},
  "game_window": false,
- "last_run": "2026-09-26T08:47:06Z",
+ "last_run": "2026-09-26T08:51:39Z",
  "mode": "paper",
  "notes": [
   "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters",
@@ -337,14 +337,18 @@
  ],
  "positions": {},
  "realized_pnl": 0.0,
- "runs": 25,
+ "runs": 26,
  "scan": {
   "ai.edge_assessed": 0,
-  "ai.gate_assessed": 0,
-  "books": 0,
-  "candidates": 0,
-  "markets": 0,
-  "sports.games": 145
+  "ai.gate_assessed": 30,
+  "books": 42,
+  "candidates": 136,
+  "markets": 136,
+  "sports.games": 145,
+  "sports.illiquid": 86,
+  "sports.matched": 136,
+  "sports.moneyline_markets": 136,
+  "sports.too_far_ahead": 50
  },
  "starting_bankroll": 25.0,
  "trades": [

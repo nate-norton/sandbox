@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **paper**  |  profile: **aggressive**  |  runs: 25  |  last run: 2026-09-26T08:47:06Z
+- mode: **paper**  |  profile: **aggressive**  |  runs: 26  |  last run: 2026-09-26T08:51:39Z
 - equity: **$25.00** (started $25.00, realized +0.00)
 - cash: $25.00  |  deployed: $0.00  |  open positions: 0
 - P&L today: +0.00
@@ -13,12 +13,12 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 0 favourites gated, 0 markets judged blind, 0 API calls, 0 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 30 API calls, 0 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=0, books=0, candidates=0, markets=0, sports.games=145
+ai.edge_assessed=0, ai.gate_assessed=30, books=42, candidates=136, markets=136, sports.games=145, sports.illiquid=86, sports.matched=136, sports.moneyline_markets=136, sports.too_far_ahead=50
 
 ## Notes
 

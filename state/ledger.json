@@ -319,10 +319,11 @@
    "with_prices": false
   }
  },
- "cash": 25.0,
+ "cash": 50.00265,
  "daily": {},
- "last_run": "2026-09-26T08:34:15Z",
- "mode": "paper",
+ "game_window": false,
+ "last_run": "2026-09-26T08:37:18Z",
+ "mode": "live",
  "notes": [
   "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters",
   "2026-09-26T08:03:24Z POLYMARKET_PRIVATE_KEY rejected: got 88 characters: this looks like an API secret from Settings \u2192 Developer (base64), not the wallet private key. The wallet key is 64 hex characters; export it at https://reveal.magic.link/polymarket",
@@ -330,20 +331,48 @@
   "2026-09-26T08:13:38Z live wallet 0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2 shows $0 USDC. If you have deposited, compare this with the address on your Polymarket profile and set POLYMARKET_FUNDER to that one.",
   "2026-09-26T08:13:38Z halted: equity 0.00 below floor 5.00 (20% of start); stopping to preserve capital",
   "2026-09-26T08:17:12Z halted: no funds in the wallet yet",
-  "2026-09-26T08:30:44Z mode changed live -> paper; simulated positions cleared"
+  "2026-09-26T08:30:44Z mode changed live -> paper; simulated positions cleared",
+  "2026-09-26T08:37:18Z mode changed paper -> live; simulated positions cleared"
  ],
- "positions": {},
+ "positions": {
+  "us:aec-cfb-miss-fl-2026-09-26": {
+   "avg_price": 0.3999333333333333,
+   "condition_id": "cfb-miss-fl-2026-09-26",
+   "end_date": null,
+   "kind": "external",
+   "mark": 0.39,
+   "neg_risk": false,
+   "opened_at": "2026-09-26T08:37:18Z",
+   "outcome": "Rebels",
+   "question": "Ole Miss vs. Florida",
+   "size": 12.0,
+   "token_id": "us:aec-cfb-miss-fl-2026-09-26"
+  },
+  "us:aec-cfb-txam-lsu-2026-09-26": {
+   "avg_price": 0.2499,
+   "condition_id": "cfb-txam-lsu-2026-09-26",
+   "end_date": null,
+   "kind": "external",
+   "mark": 0.24,
+   "neg_risk": false,
+   "opened_at": "2026-09-26T08:37:18Z",
+   "outcome": "Aggies",
+   "question": "Texas A&M vs. LSU",
+   "size": 19.0,
+   "token_id": "us:aec-cfb-txam-lsu-2026-09-26"
+  }
+ },
  "realized_pnl": 0.0,
- "runs": 18,
+ "runs": 19,
  "scan": {
   "ai.edge_assessed": 0,
   "ai.gate_assessed": 0,
-  "books": 0,
+  "books": 2,
   "candidates": 0,
   "markets": 0,
   "sports.games": 145
  },
- "starting_bankroll": 25.0,
+ "starting_bankroll": 59.48695000000001,
  "trades": [
   {
    "cost": 4.81,
@@ -382,5 +411,5 @@
    "token_id": "68143274871491614411603581830764286165556290561886791090717431421870101183922"
   }
  ],
- "wallet": "0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2"
+ "wallet": "polymarket.us key 865b51eb\u2026"
 }

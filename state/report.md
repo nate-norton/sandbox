@@ -1,9 +1,16 @@
 # polybot report
 
-- mode: **paper**  |  profile: **aggressive**  |  runs: 18  |  last run: 2026-09-26T08:34:15Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
-- equity: **$25.00** (started $25.00, realized +0.00)
-- cash: $25.00  |  deployed: $0.00  |  open positions: 0
+- mode: **live**  |  profile: **aggressive**  |  runs: 19  |  last run: 2026-09-26T08:37:18Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$59.24** (started $59.49, realized +0.00)
+- cash: $50.00  |  deployed: $9.55  |  open positions: 2
 - P&L today: +0.00
+
+## Open positions
+
+| market | side | size | entry | mark | ends | kind |
+|---|---|---|---|---|---|---|
+| Ole Miss vs. Florida | Rebels | 12.0 | 0.400 | 0.390 |  | external |
+| Texas A&M vs. LSU | Aggies | 19.0 | 0.250 | 0.240 |  | external |
 
 ## Recent trades
 
@@ -18,7 +25,7 @@
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=0, books=0, candidates=0, markets=0, sports.games=145
+ai.edge_assessed=0, ai.gate_assessed=0, books=2, candidates=0, markets=0, sports.games=145
 
 ## Notes
 
@@ -29,3 +36,4 @@ ai.edge_assessed=0, ai.gate_assessed=0, books=0, candidates=0, markets=0, sports
 - 2026-09-26T08:13:38Z halted: equity 0.00 below floor 5.00 (20% of start); stopping to preserve capital
 - 2026-09-26T08:17:12Z halted: no funds in the wallet yet
 - 2026-09-26T08:30:44Z mode changed live -> paper; simulated positions cleared
+- 2026-09-26T08:37:18Z mode changed paper -> live; simulated positions cleared

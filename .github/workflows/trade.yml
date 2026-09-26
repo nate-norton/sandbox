@@ -43,7 +43,8 @@ jobs:
           POLYMARKET_PRIVATE_KEY: ${{ secrets.POLYMARKET_PRIVATE_KEY }}
           POLYMARKET_FUNDER: ${{ secrets.POLYMARKET_FUNDER }}
           POLYMARKET_SIGNATURE_TYPE: ${{ vars.POLYMARKET_SIGNATURE_TYPE || '1' }}
-          LIVE: ${{ github.event.inputs.live || 'true' }}
+          # only the default branch trades real money; every other branch paper-trades
+          LIVE: ${{ github.ref_name == 'main' && (github.event.inputs.live || 'true') || 'false' }}
           BANKROLL_USD: ${{ vars.BANKROLL_USD || '25' }}
           RISK_PROFILE: ${{ vars.RISK_PROFILE || 'aggressive' }}
           SPORTS_ONLY: ${{ vars.SPORTS_ONLY || 'true' }}

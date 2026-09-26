@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 54  |  last run: 2026-09-26T16:53:06Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$57.12** (started $59.49, realized +0.00)
+- mode: **live**  |  profile: **aggressive**  |  runs: 59  |  last run: 2026-09-26T17:11:22Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$56.70** (started $59.49, realized +0.00)
 - cash: $45.00  |  deployed: $14.99  |  open positions: 3
 - P&L today: +0.00
 
@@ -10,7 +10,7 @@
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
 | Ole Miss vs. Florida | Rebels | 12.0 | 0.417 | 0.385 |  | external |
-| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.210 |  | external |
+| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.180 |  | external |
 | Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.240 |  | external |
 
 ## Recent trades
@@ -21,16 +21,16 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 15 favourites gated, 0 markets judged blind, 11 API calls, 15 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 17 favourites gated, 0 markets judged blind, 0 API calls, 17 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 2497 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 2677 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=15, books=34, candidates=16, markets=136, obs.rows=34, sports.ai_vetoed=1, sports.candidate=2, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=128, sports.no_edge=17, sports.no_model=32, sports.price_out_of_band=3, sports.too_far_ahead=41, sports.unstable=2
+ai.edge_assessed=0, ai.gate_assessed=17, books=38, candidates=18, markets=136, obs.rows=36, sports.ai_vetoed=1, sports.candidate=1, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=124, sports.no_edge=22, sports.no_model=34, sports.price_out_of_band=5, sports.too_far_ahead=40
 
 ## Notes
 
@@ -44,3 +44,7 @@ ai.edge_assessed=0, ai.gate_assessed=15, books=34, candidates=16, markets=136, o
 - 2026-09-26T08:37:18Z mode changed paper -> live; simulated positions cleared
 - 2026-09-26T08:38:23Z mode changed live -> paper; simulated positions cleared
 - 2026-09-26T08:56:32Z mode changed paper -> live; simulated positions cleared
+
+## Recent decisions
+
+- 2026-09-26T17:05:54Z NOT FILLED Toledo @ 0.710 x26 (model 0.80, live_wp): unmatched

@@ -368,7 +368,10 @@ class PolymarketUS:
             if t in ("EXECUTION_TYPE_FILL", "EXECUTION_TYPE_PARTIAL_FILL"):
                 shares = float(ex.get("lastShares") or 0)
                 filled += shares
-                notional += shares * (_amount(ex.get("lastPx")) or leg.price)
+                px = _amount(ex.get("lastPx"))
+                if px is not None and params["intent"].endswith("_SHORT"):
+                    px = 1.0 - px                    # venue reports the long price; we hold the short
+                notional += shares * (px if px is not None else leg.price)
                 fee += _amount(ex.get("commissionNotionalCollected")) or 0.0
             else:
                 detail = " ".join(str(ex.get(k)) for k in ("orderRejectReason", "text") if ex.get(k))
@@ -386,9 +389,15 @@ class PolymarketUS:
 
 
 def _order_params(slug: str, intent: str, price: float, qty: int, tick: float = 0.005) -> dict:
-    """Snap the price to the tick: buys round up so a fill-or-kill still crosses, sells round down."""
+    """Build the order. `price` is the price of the contract named by the intent (a short at 0.94
+    costs $0.94); the venue's price field is ALWAYS the long side's price, so short intents send
+    1 - price. Buys round in the taker's favour (long up, short's long-price down) so an
+    immediate-or-cancel still crosses; sells the other way."""
+    short = intent.endswith("_SHORT")
     buying = intent.endswith("BUY_LONG") or intent.endswith("BUY_SHORT")
-    steps = math.ceil(price / tick - 1e-9) if buying else math.floor(price / tick + 1e-9)
+    long_px = 1.0 - price if short else price
+    up = buying != short                       # buy long / sell short: round up; sell long / buy short: round down
+    steps = math.ceil(long_px / tick - 1e-9) if up else math.floor(long_px / tick + 1e-9)
     px = max(tick, min(1.0 - tick, steps * tick))
     decimals = max(2, len(f"{tick:.6f}".rstrip("0").split(".")[1]))
     return {"marketSlug": slug, "intent": intent, "type": "ORDER_TYPE_LIMIT",

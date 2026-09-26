@@ -85,6 +85,8 @@ class FakeSDK:
                 px = params["price"]
                 if rest and params["intent"] in ("ORDER_INTENT_BUY_LONG", "ORDER_INTENT_SELL_LONG"):
                     px = {"value": f"{rest[0][0]:.3f}", "currency": "USD"}
+                elif rest and params["intent"] == "ORDER_INTENT_BUY_SHORT":
+                    px = {"value": f"{book['bids'][0][0]:.3f}", "currency": "USD"}      # short buys match long bids
                 return {"id": "ord-1", "executions": [{"type": "EXECUTION_TYPE_FILL", "lastShares": str(qty), "lastPx": px,
                                                        "commissionNotionalCollected": {"value": "0.05", "currency": "USD"}}]}
 
@@ -139,7 +141,11 @@ def test_books_mirror_short_side_and_orders_use_the_right_intent(tmp_path):
     assert filled == 20 and raw["status"] == "matched"
     req = sdk.created[-1]
     assert req["intent"] == "ORDER_INTENT_BUY_SHORT" and req["tif"] == "TIME_IN_FORCE_IMMEDIATE_OR_CANCEL"
-    assert req["price"] == {"value": "0.470", "currency": "USD"} and req["quantity"] == 20
+    # the venue prices every order on the long side: a short at 0.47 is sent as 1 - 0.47
+    assert req["price"] == {"value": "0.530", "currency": "USD"} and req["quantity"] == 20
+    assert abs(raw["avgPx"] - 0.47) < 1e-9
+    assert _order_params("x", "ORDER_INTENT_BUY_SHORT", 0.9425, 5, 0.005)["price"]["value"] == "0.055"   # pay up to 0.945
+    assert _order_params("x", "ORDER_INTENT_SELL_SHORT", 0.9425, 5, 0.005)["price"]["value"] == "0.060"  # accept 0.94+
     assert _order_params("x", "ORDER_INTENT_BUY_LONG", 0.5525, 5, 0.005)["price"]["value"] == "0.555"
     assert _order_params("x", "ORDER_INTENT_SELL_LONG", 0.5525, 5, 0.005)["price"]["value"] == "0.550"
     assert _order_params("x", "ORDER_INTENT_BUY_LONG", 0.55, 5, 0.01)["price"]["value"] == "0.55"

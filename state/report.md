@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 59  |  last run: 2026-09-26T17:11:22Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$56.70** (started $59.49, realized +0.00)
+- mode: **live**  |  profile: **aggressive**  |  runs: 63  |  last run: 2026-09-26T17:23:29Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$56.28** (started $59.49, realized +0.00)
 - cash: $45.00  |  deployed: $14.99  |  open positions: 3
 - P&L today: +0.00
 
@@ -10,7 +10,7 @@
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
 | Ole Miss vs. Florida | Rebels | 12.0 | 0.417 | 0.385 |  | external |
-| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.180 |  | external |
+| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.150 |  | external |
 | Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.240 |  | external |
 
 ## Recent trades
@@ -26,11 +26,11 @@
 
 ## Observation log
 
-- 2677 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 2821 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=17, books=38, candidates=18, markets=136, obs.rows=36, sports.ai_vetoed=1, sports.candidate=1, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=124, sports.no_edge=22, sports.no_model=34, sports.price_out_of_band=5, sports.too_far_ahead=40
+ai.edge_assessed=0, ai.gate_assessed=17, books=38, candidates=18, markets=136, obs.rows=36, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=124, sports.no_edge=18, sports.no_model=34, sports.price_out_of_band=6, sports.too_far_ahead=40, sports.unstable=4
 
 ## Notes
 

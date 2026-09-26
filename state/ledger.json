@@ -325,7 +325,7 @@
   "2026-09-26T17:05:54Z NOT FILLED Toledo @ 0.710 x26 (model 0.80, live_wp): unmatched"
  ],
  "game_window": true,
- "last_run": "2026-09-26T17:11:22Z",
+ "last_run": "2026-09-26T17:23:29Z",
  "mode": "live",
  "notes": [
   "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters",
@@ -358,7 +358,7 @@
    "condition_id": "cfb-tx-tenn-2026-09-26",
    "end_date": null,
    "kind": "external",
-   "mark": 0.18,
+   "mark": 0.15,
    "neg_risk": false,
    "opened_at": "2026-09-26T16:13:19Z",
    "outcome": "Volunteers",
@@ -382,7 +382,7 @@
  },
  "realized_pnl": 0.0,
  "resolved_events": [],
- "runs": 59,
+ "runs": 63,
  "scan": {
   "ai.edge_assessed": 0,
   "ai.gate_assessed": 17,
@@ -390,16 +390,15 @@
   "candidates": 18,
   "markets": 136,
   "obs.rows": 36,
-  "sports.ai_vetoed": 1,
-  "sports.candidate": 1,
   "sports.games": 145,
   "sports.matched": 136,
   "sports.moneyline_markets": 136,
   "sports.no_book": 124,
-  "sports.no_edge": 22,
+  "sports.no_edge": 18,
   "sports.no_model": 34,
-  "sports.price_out_of_band": 5,
-  "sports.too_far_ahead": 40
+  "sports.price_out_of_band": 6,
+  "sports.too_far_ahead": 40,
+  "sports.unstable": 4
  },
  "starting_bankroll": 59.48695000000001,
  "trades": [

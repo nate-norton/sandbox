@@ -27,7 +27,7 @@ PROFILES: dict[str, dict] = {
     "conservative": {},
     "aggressive": {
         "cash_reserve": 0.0,
-        "max_position_frac": 0.50,
+        "max_position_frac": 1.0,             # a single position may use the whole bankroll (Kelly still sizes it)
         "max_deployed_frac": 1.0,
         "max_spend_per_run": 1000.0,
         "daily_loss_limit_frac": 0.60,

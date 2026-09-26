@@ -115,7 +115,7 @@ def test_cache_roundtrip_and_ttl(tmp_path):
 
 
 def test_full_cycle_with_jev_and_grading(tmp_path):
-    c = cfg(tmp_path)
+    c = cfg(tmp_path, max_position_frac=0.5)      # leave room for both trades in one cycle
     fav = mk_market("fav", "fy", "fn", hours=6)                    # favourite Jev approves
     dud = mk_market("dud", "dy", "dn", hours=6)                    # favourite Jev rejects
     mid = mk_market("mid", "my", "mn", hours=48)                   # blind edge

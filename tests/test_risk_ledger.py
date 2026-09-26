@@ -86,7 +86,7 @@ def test_filled_from_response_by_side():
 def test_profiles(monkeypatch):
     monkeypatch.delenv("MAX_POSITION_FRAC", raising=False)
     a = Config(profile="aggressive")
-    assert a.max_position_frac == 0.5 and a.cash_reserve == 0 and a.stop_loss_drop == 0 and a.harvest_min_price == 0.80
+    assert a.max_position_frac == 1.0 and a.cash_reserve == 0 and a.stop_loss_drop == 0 and a.harvest_min_price == 0.80
     c = Config(profile="conservative")
     assert c.max_position_frac == 0.2 and c.stop_loss_drop == 0.25 and c.min_equity_frac == 0.5
     assert a.sports_kelly_frac == 1.0 and c.sports_kelly_frac == 0.5
@@ -103,8 +103,8 @@ def test_aggressive_sizing_and_halts():
     a = Config(profile="aggressive")
     rm = RiskManager(a)
     st = RiskState(cash=25, deployed=0, equity=25, open_positions=0, pnl_today=0)
-    assert rm.spendable(st) == 25 and rm.per_position_budget(st) == 12.5
-    assert rm.approve(opp("harvest", 12.5), st) is None
+    assert rm.spendable(st) == 25 and rm.per_position_budget(st) == 25
+    assert rm.approve(opp("harvest", 25.0), st) is None
     assert rm.halted(RiskState(cash=13, deployed=0, equity=13, open_positions=0, pnl_today=-12)) is None   # one loss doesn't freeze it
     assert "floor" in rm.halted(RiskState(cash=4, deployed=0, equity=4, open_positions=0, pnl_today=0))
 

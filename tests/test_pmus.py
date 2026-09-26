@@ -45,8 +45,12 @@ class FakeSDK:
                 return {"event": {"slug": slug, "startTime": outer._start, "title": "Texans vs Colts"}}
             def list(self, params=None):
                 off = params.get("offset", 0) if params else 0
+                tag = (params or {}).get("tagSlug")
                 groups = {}
                 for m in outer._markets:
+                    lg = m["team"]["league"].lower()
+                    if tag and tag != {"nfl": "nfl", "ncaaf": "ncaaf"}.get(lg, lg):
+                        continue
                     groups.setdefault(m["eventSlug"], []).append(m)
                 evs = [{"slug": ev, "title": ms[0]["title"], "startTime": outer._start, "active": True, "closed": False,
                         "liquidity": sum(m["liquidity"] for m in ms), "volume": 1000,
@@ -80,7 +84,12 @@ class FakeSDK:
                                                        "lastPx": params["price"],
                                                        "commissionNotionalCollected": {"value": "0.05", "currency": "USD"}}]}
 
-        self.markets, self.events, self.account, self.portfolio, self.orders = Markets(), Events(), Account(), Portfolio(), Orders()
+        class Sports:
+            def list(self):
+                return {"sports": [{"name": "Football", "slug": "football",
+                                    "leagues": [{"name": "NFL", "slug": "nfl"}, {"name": "NCAA Football", "slug": "ncaaf"}]}]}
+
+        self.markets, self.events, self.account, self.portfolio, self.orders, self.sports = Markets(), Events(), Account(), Portfolio(), Orders(), Sports()
 
 
 def two_team_markets():
@@ -100,6 +109,7 @@ def test_football_markets_groups_team_markets_into_games():
     m = ms[0]
     assert m.condition_id == "nfl-hou-ind" and m.outcomes == ["Texans", "Colts"]
     assert m.token_ids == ["us:nfl-hou-ind-hou", "us:nfl-hou-ind-ind"] and m.sports_type == "moneyline"
+    assert "hou" in m.outcome_aliases[0] and "ind" in m.outcome_aliases[1]
     assert m.game_start.isoformat().startswith("2026-09-27T17:00")
 
 

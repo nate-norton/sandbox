@@ -2,7 +2,7 @@ name: polybot
 
 on:
   schedule:
-    - cron: "*/30 * * * *"      # every 30 min: ~1,400 free minutes/month at ~1 min per run
+    - cron: "*/30 * * * *"      # every 30 min; during games each run keeps cycling every 2 min (public repo: free)
   push:
     paths: ["polybot/**", "requirements.txt", ".github/workflows/trade.yml"]   # a code change runs one cycle
   workflow_dispatch:
@@ -21,7 +21,7 @@ permissions:
 jobs:
   trade:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 32
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,7 +52,7 @@ jobs:
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || '~typesafe/jev-latest' }}
           HARVEST_ENABLED: ${{ vars.HARVEST_ENABLED || 'true' }}
           ENABLE_NEGRISK_ARB: ${{ vars.ENABLE_NEGRISK_ARB || 'false' }}
-        run: python -m polybot.run
+        run: python -m polybot.run --loop-minutes ${{ vars.LOOP_MINUTES || '27' }} --interval-seconds ${{ vars.LOOP_INTERVAL_SECONDS || '120' }}
 
       - name: Commit state
         run: |

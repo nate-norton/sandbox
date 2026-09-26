@@ -4,9 +4,11 @@
 """
 from __future__ import annotations
 
+import argparse
 import logging
 import os
 import sys
+import time
 from collections import Counter
 from datetime import datetime, timezone
 from typing import Optional
@@ -67,6 +69,9 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
                 g.home_wp = espn.live_wp(g)
         matched = match_markets(markets, games, now)
         matched_cids = {mm.market.condition_id for mm in matched}
+        led.game_window = any(
+            g.state == "in" or (g.state == "pre" and g.start and 0 <= (g.start - now).total_seconds() <= 45 * 60)
+            for g in games if g.id in {mm.game.id for mm in matched})
         held_cids_now = {p.condition_id for p in led.positions.values()}
         markets = [m for m in markets if m.condition_id in matched_cids or m.condition_id in held_cids_now]
         log.info("sports: %d games, %d moneyline markets matched", len(games), len(matched))
@@ -520,7 +525,13 @@ def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Opt
 
 
 def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description="polybot trading cycle")
+    ap.add_argument("--loop-minutes", type=float, default=0.0,
+                    help="keep cycling for this long while matched games are live or about to start")
+    ap.add_argument("--interval-seconds", type=float, default=120.0, help="pause between cycles when looping")
+    args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", stream=sys.stdout)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     cfg = Config()
     gamma = clob = live = data = decider = us = None
     if cfg.ai_active:
@@ -555,7 +566,27 @@ def main(argv: list[str] | None = None) -> int:
             log.info("PAPER mode on polymarket.com (set POLYMARKET_PRIVATE_KEY to go live)")
     if key_problem:
         os.environ["POLYBOT_KEY_PROBLEM"] = key_problem
-    run_once(cfg, gamma, clob, live, data, decider=decider, us=us)
+
+    deadline = time.monotonic() + args.loop_minutes * 60
+    espn = Espn() if cfg.sports_only else None
+    cycles = 0
+    while True:
+        cycles += 1
+        try:
+            led = run_once(cfg, gamma, clob, live, data, decider=decider, us=us, espn=espn)
+        except Exception:
+            log.exception("cycle %d failed", cycles)
+            if args.loop_minutes <= 0:
+                raise
+            led = None
+        remaining = deadline - time.monotonic()
+        if args.loop_minutes <= 0 or remaining <= args.interval_seconds:
+            break
+        if led is not None and not led.game_window:
+            log.info("no matched game live or starting within 45 minutes; ending loop after %d cycle(s)", cycles)
+            break
+        log.info("game window open: next cycle in %.0fs (%.0f min left)", args.interval_seconds, remaining / 60)
+        time.sleep(args.interval_seconds)
     return 0
 
 

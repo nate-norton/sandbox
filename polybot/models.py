@@ -53,6 +53,7 @@ class Market:
     event_slug: str = ""
     sports_type: str = ""            # Gamma's sportsMarketType: moneyline | spreads | totals | ...
     game_start: Optional[datetime] = None
+    outcome_aliases: list[list[str]] = field(default_factory=list)   # extra labels per outcome for team matching
 
     @classmethod
     def from_gamma(cls, m: dict) -> "Market":

@@ -43,6 +43,7 @@ class Ledger:
     ai_log: dict[str, dict] = field(default_factory=dict)           # condition_id -> Jev call vs outcome
     ai_info: dict = field(default_factory=dict)                     # last run's Jev usage summary
     wallet: str = ""                                                # live wallet address in use
+    game_window: bool = False                                       # a matched game is live or imminent
 
     # ---------- persistence ----------
     @classmethod

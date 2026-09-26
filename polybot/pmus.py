@@ -83,21 +83,91 @@ class PolymarketUS:
         self._event_cache: dict[str, Optional[datetime]] = {}
 
     # ------------------------------------------------------------------ discovery
-    def football_markets(self, leagues: tuple = ("nfl", "cfb"), page: int = 100, max_pages: int = 40,
+    DEFAULT_TAGS = {"nfl": "nfl", "cfb": "ncaaf"}
+
+    def league_tags(self) -> dict[str, str]:
+        """Map our league keys to the venue's tag slugs, using /v1/sports when available."""
+        tags = dict(self.DEFAULT_TAGS)
+        try:
+            res = self.c.sports.list() or {}
+        except Exception as e:
+            log.info("sports.list failed (%s); using default league tags", e)
+            return tags
+        found = []
+        for sp in res.get("sports") or []:
+            for lg in sp.get("leagues") or []:
+                slug, name = str(lg.get("slug") or "").lower(), str(lg.get("name") or "").lower()
+                found.append(f"{name}:{slug}")
+                if slug == "nfl" or name == "nfl":
+                    tags["nfl"] = slug or "nfl"
+                elif ("ncaa" in name or "college" in name) and "foot" in f"{name} {slug} {sp.get('name', '')}".lower():
+                    tags["cfb"] = slug
+        log.info("polymarket.us leagues: %s -> tags %s", ", ".join(found[:30]), tags)
+        return tags
+
+    def football_markets(self, leagues: tuple = ("nfl", "cfb"), page: int = 100, max_pages: int = 20,
                          days_ahead: int = 8) -> list[Market]:
-        """One binary Market per game: the two team markets of a moneyline event."""
+        """One binary Market per game: an event tagged with the league whose two markets are the teams."""
         now = datetime.now(timezone.utc)
+        tags = self.league_tags()
+        out: list[Market] = []
+        n_events = 0
+        for lg in leagues:
+            tag = tags.get(lg)
+            if not tag:
+                continue
+            events = self._events_for_tag(tag, now, page, max_pages, days_ahead)
+            n_events += len(events)
+            samples = 0
+            for ev in events:
+                all_ms = ev.get("markets") or []
+                ms = [m for m in all_ms if _is_moneyline(m)]
+                if samples < 3 and len(all_ms) >= 2:
+                    samples += 1
+                    log.info("polymarket.us %s event sample: %s", lg,
+                             {"slug": ev.get("slug"), "title": ev.get("title"), "startTime": ev.get("startTime"),
+                              "tags": [t.get("slug") for t in ev.get("tags") or []],
+                              "markets": [(m.get("slug"), m.get("title"), m.get("outcome")) for m in all_ms][:6]})
+                if len(ms) != 2 or not _looks_like_game(ev):
+                    continue
+                a, b = ms
+                for m in (a, b):
+                    self._market_meta[m["slug"]] = {**m, "eventSlug": ev.get("slug")}
+                start = parse_iso(ev.get("startTime")) or parse_iso(ev.get("endTime"))
+                out.append(Market(
+                    condition_id=str(ev.get("slug")),
+                    question=str(ev.get("title") or ev.get("slug")),
+                    token_ids=[token_id(a["slug"]), token_id(b["slug"])],
+                    outcomes=[_team_label(a), _team_label(b)],
+                    outcome_prices=[],
+                    end_date=parse_iso(ev.get("endTime")) or start,
+                    neg_risk=False,
+                    liquidity=float(ev.get("liquidity") or 0),
+                    volume24h=float(ev.get("volume") or 0),
+                    spread=0.0, min_order_size=1.0, tick_size=0.01,
+                    accepting_orders=bool(a.get("active", True)) and bool(b.get("active", True)),
+                    closed=bool(ev.get("closed") or a.get("closed") or b.get("closed")),
+                    event_id=str(ev.get("slug")), event_title=str(ev.get("title") or ""), slug=a["slug"],
+                    description=str(ev.get("description") or "")[:2000], event_slug=str(ev.get("slug")),
+                    sports_type="moneyline", game_start=start,
+                    outcome_aliases=[_aliases(a, ev), _aliases(b, ev)],
+                ))
+        log.info("polymarket.us: %d football games from %d league events", len(out), n_events)
+        return out
+
+    def _events_for_tag(self, tag: str, now: datetime, page: int, max_pages: int, days_ahead: int) -> list[dict]:
         events: list[dict] = []
         offset = 0
-        params_base = {"active": True, "closed": False, "limit": page,
-                       "startTimeMax": (now + timedelta(days=days_ahead)).strftime("%Y-%m-%dT%H:%M:%SZ")}
+        params_base: dict = {"active": True, "closed": False, "limit": page, "tagSlug": tag,
+                             "startTimeMin": (now - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                             "startTimeMax": (now + timedelta(days=days_ahead)).strftime("%Y-%m-%dT%H:%M:%SZ")}
         for _ in range(max_pages):
             try:
                 res = self.c.events.list({**params_base, "offset": offset})
             except Exception as e:
-                log.warning("polymarket.us events.list failed at offset %d: %s", offset, e)
-                if offset == 0 and "startTimeMax" in params_base:      # unsupported filter? retry without it
-                    params_base.pop("startTimeMax")
+                log.warning("polymarket.us events.list(%s) failed at offset %d: %s", tag, offset, e)
+                if offset == 0 and "startTimeMin" in params_base:
+                    params_base.pop("startTimeMin"); params_base.pop("startTimeMax", None)
                     continue
                 break
             batch = res.get("events") or []
@@ -105,46 +175,7 @@ class PolymarketUS:
             offset += len(batch)
             if len(batch) < page:
                 break
-        out: list[Market] = []
-        samples = 0
-        for ev in events:
-            lg = _event_league(ev)
-            if lg is None or lg not in leagues:
-                continue
-            ms = [m for m in ev.get("markets") or [] if _is_moneyline(m)]
-            if samples < 2:
-                samples += 1
-                log.info("polymarket.us football event sample: %s", {k: ev.get(k) for k in ("slug", "title", "startTime", "tags")}
-                         | {"markets": [(m.get("slug"), m.get("title"), m.get("outcome")) for m in (ev.get("markets") or [])][:6]})
-            if len(ms) != 2:
-                continue
-            a, b = ms
-            for m in (a, b):
-                self._market_meta[m["slug"]] = {**m, "eventSlug": ev.get("slug")}
-            start = parse_iso(ev.get("startTime")) or parse_iso(ev.get("endTime"))
-            out.append(Market(
-                condition_id=str(ev.get("slug")),
-                question=str(ev.get("title") or ev.get("slug")),
-                token_ids=[token_id(a["slug"]), token_id(b["slug"])],
-                outcomes=[_team_label(a), _team_label(b)],
-                outcome_prices=[],
-                end_date=parse_iso(ev.get("endTime")) or start,
-                neg_risk=False,
-                liquidity=float(ev.get("liquidity") or 0),
-                volume24h=float(ev.get("volume") or 0),
-                spread=0.0, min_order_size=1.0, tick_size=0.01,
-                accepting_orders=bool(a.get("active", True)) and bool(b.get("active", True)),
-                closed=bool(ev.get("closed") or a.get("closed") or b.get("closed")),
-                event_id=str(ev.get("slug")), event_title=str(ev.get("title") or ""), slug=a["slug"],
-                description=str(ev.get("description") or "")[:2000], event_slug=str(ev.get("slug")),
-                sports_type="moneyline", game_start=start,
-            ))
-        log.info("polymarket.us: %d football games from %d events", len(out), len(events))
-        if events and not out:
-            ev = events[0]
-            log.info("polymarket.us sample event: %s", {k: ev.get(k) for k in ("slug", "title", "startTime", "tags")}
-                     | {"markets": [(m.get("slug"), m.get("title")) for m in (ev.get("markets") or [])][:4]})
-        return out
+        return events
 
     def _event_start(self, ev_slug: str, m: dict) -> Optional[datetime]:
         if ev_slug in self._event_cache:
@@ -275,6 +306,31 @@ def _order_params(slug: str, intent: str, price: float, qty: int) -> dict:
     return {"marketSlug": slug, "intent": intent, "type": "ORDER_TYPE_LIMIT",
             "price": {"value": f"{price:.2f}", "currency": "USD"}, "quantity": int(qty),
             "tif": "TIME_IN_FORCE_GOOD_TILL_CANCEL"}
+
+
+def _looks_like_game(ev: dict) -> bool:
+    """A single game rather than a futures event: two team markets and a title/slug naming both teams."""
+    t = f"{ev.get('title', '')} {ev.get('slug', '')}".lower()
+    if any(x in t for x in ("winner", "champion", "division", "playoff", "mvp", "make", "super bowl", "spread", "total", "o/u")):
+        return False
+    return True
+
+
+def _aliases(m: dict, ev: dict) -> list[str]:
+    """Extra labels for team matching: the slug's trailing abbreviation, the title, the outcome."""
+    out = []
+    slug = str(m.get("slug") or "")
+    if slug:
+        out.append(slug.split("-")[-1])
+    for k in ("title", "outcome"):
+        v = m.get(k)
+        if v:
+            out.append(str(v))
+    t = m.get("team") or {}
+    for k in ("name", "abbreviation", "alias", "safeName"):
+        if t.get(k):
+            out.append(str(t[k]))
+    return out
 
 
 def _team_label(m: dict) -> str:

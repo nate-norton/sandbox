@@ -151,3 +151,26 @@ def test_full_sports_cycle_ignores_non_sports_markets(tmp_path):
     assert led.scan["sports.matched"] == 1 and led.scan["sports.candidate"] == 1
     report = open(tmp_path / "report.md").read()
     assert "sports_edge" in report and "Texans" in report
+
+
+def test_game_window_flag(tmp_path):
+    c = cfg(tmp_path)
+    g_live = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), state="in", hs=7, aws=3, wp=0.6), "nfl")
+    m = mk_market("c1", "hou", "ind", hours=2)
+    m.question, m.outcomes, m.sports_type = "Texans vs. Colts", ["Texans", "Colts"], "moneyline"
+    books = {"hou": mk_book("hou", [(0.60, 100)], [(0.58, 100)], fee=1000), "ind": mk_book("ind", [(0.41, 100)], [(0.39, 100)], fee=1000)}
+    led = run_once(c, FakeGamma([m]), FakeClob(books), now=NOW, espn=FakeEspn([g_live]))
+    assert led.game_window is True
+    g_far = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), ml_home=-150, ml_away=130,
+                                   start=NOW + timedelta(hours=5)), "nfl")
+    led = run_once(c, FakeGamma([m]), FakeClob(books), now=NOW, espn=FakeEspn([g_far]))
+    assert led.game_window is False
+
+
+def test_match_by_alias_when_title_is_truncated():
+    g = parse_event(espn_event("1", ("Buffalo", "Bills"), ("Los Angeles", "Chargers"), ml_home=-345, ml_away=275), "nfl")
+    m = mk_market("c1", "us:x-lac", "us:x-buf", hours=6)
+    m.outcomes, m.sports_type = ["Los Angeles C", "Buffalo"], "moneyline"      # truncated title
+    m.outcome_aliases = [["lac", "Los Angeles C"], ["buf", "Buffalo"]]
+    matched = match_markets([m], [g], NOW)
+    assert len(matched) == 1 and matched[0].sides == ["away", "home"]

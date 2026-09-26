@@ -50,7 +50,11 @@ def match_markets(markets: list[Market], games: list[Game], now: datetime, stats
         when = m.game_start or m.end_date
         best = None
         for g in games:
-            sides = [g.team_for(o) for o in m.outcomes]
+            sides = []
+            for i, o in enumerate(m.outcomes):
+                labels = [o] + (m.outcome_aliases[i] if i < len(m.outcome_aliases) else [])
+                side = next((s for s in (g.team_for(l) for l in labels) if s), None)
+                sides.append(side)
             if None in sides or sides[0] == sides[1]:
                 continue
             if when and g.start and abs((g.start - when).total_seconds()) > 36 * 3600:

@@ -1,0 +1,58 @@
+name: polybot
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"      # every 30 min: ~1,400 free minutes/month at ~1 min per run
+  workflow_dispatch:
+    inputs:
+      live:
+        description: "Set to 'false' to force paper mode for this run"
+        default: "true"
+
+concurrency:
+  group: polybot-trading
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run one trading cycle
+        env:
+          POLYMARKET_PRIVATE_KEY: ${{ secrets.POLYMARKET_PRIVATE_KEY }}
+          POLYMARKET_FUNDER: ${{ secrets.POLYMARKET_FUNDER }}
+          POLYMARKET_SIGNATURE_TYPE: ${{ vars.POLYMARKET_SIGNATURE_TYPE || '1' }}
+          LIVE: ${{ github.event.inputs.live || 'true' }}
+          BANKROLL_USD: ${{ vars.BANKROLL_USD || '25' }}
+          HARVEST_ENABLED: ${{ vars.HARVEST_ENABLED || 'true' }}
+          ENABLE_NEGRISK_ARB: ${{ vars.ENABLE_NEGRISK_ARB || 'false' }}
+        run: python -m polybot.run
+
+      - name: Commit state
+        run: |
+          git config user.name "polybot"
+          git config user.email "polybot@users.noreply.github.com"
+          git add state/
+          if git diff --cached --quiet; then echo "no state change"; exit 0; fi
+          git commit -m "polybot: run $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3 4; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin HEAD:"${{ github.ref_name }}" && exit 0
+            sleep $((2 ** i))
+          done
+          exit 1

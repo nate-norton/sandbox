@@ -386,6 +386,15 @@
 "risk_confidence": 0.99,
 "with_prices": false
 },
+"0xd69d448257ae7a1704b24b6ee0758c05bbb0177049e6e5d31322d450bd531299:n": {
+"at": "2026-09-26T07:55:09Z",
+"condition_id": "0xd69d448257ae7a1704b24b6ee0758c05bbb0177049e6e5d31322d450bd531299",
+"error": "",
+"p_yes": 0.19,
+"risk": 1.12,
+"risk_confidence": 0.78,
+"with_prices": false
+},
 "0xd77acd3c7667659ef75b6026d564c1ba91aaee799a5198d81e37810cc2bc9011:n": {
 "at": "2026-09-26T07:42:40Z",
 "condition_id": "0xd77acd3c7667659ef75b6026d564c1ba91aaee799a5198d81e37810cc2bc9011",

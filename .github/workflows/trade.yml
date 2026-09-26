@@ -56,7 +56,7 @@ jobs:
         run: |
           git config user.name "polybot"
           git config user.email "polybot@users.noreply.github.com"
-          python -m polybot.run --loop-minutes ${{ vars.LOOP_MINUTES || '330' }} \
+          python -m polybot.run --loop-minutes ${{ github.ref_name == 'main' && (vars.LOOP_MINUTES || '330') || '0' }} \
             --interval-seconds ${{ vars.LOOP_INTERVAL_SECONDS || '120' }} \
             --commit-every-minutes ${{ github.ref_name == 'main' && '10' || '0' }}
 

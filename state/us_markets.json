@@ -4388,6 +4388,25 @@
 },
 "tick": 0.005
 },
+"aec-nfl-ind-was-2026-10-04": {
+"description": "This market will settle to the winner of the Indianapolis Colts vs Washington Commanders NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T13:30:00Z",
+"long": {
+"abbr": "ind",
+"alias": "Colts",
+"name": "Indianapolis Colts",
+"safeName": "IND Colts",
+"teamId": 61
+},
+"short": {
+"abbr": "was",
+"alias": "Commanders",
+"name": "Washington Commanders",
+"safeName": "WAS Commanders",
+"teamId": 79
+},
+"tick": 0.0025
+},
 "aec-nfl-kc-mia-2026-09-27": {
 "description": "This market will settle to the winner of the Kansas City Chiefs vs Miami Dolphins NFL game scheduled for Sep 27, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
 "gameStartTime": "2026-09-27T17:00:00Z",

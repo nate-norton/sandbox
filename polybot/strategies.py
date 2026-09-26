@@ -6,6 +6,7 @@ from collections import Counter, defaultdict
 from datetime import datetime
 
 from .config import Config
+from .decider import Assessment
 from .models import Book, Leg, Market, Opportunity
 
 log = logging.getLogger(__name__)
@@ -114,7 +115,8 @@ def find_negrisk_arbs(markets: list[Market], books: dict[str, Book], cfg: Config
 
 # --------------------------------------------------------------------------- favorite harvesting
 def find_harvests(markets: list[Market], books: dict[str, Book], cfg: Config, now: datetime,
-                  per_position_budget: float, held: set[str], stats: Counter | None = None) -> list[Opportunity]:
+                  per_position_budget: float, held: set[str], stats: Counter | None = None,
+                  assessments: dict[str, Assessment] | None = None) -> list[Opportunity]:
     """Buy the heavy favorite of a liquid market that resolves within hours.
 
     This is not risk-free: it monetises the favourite-longshot bias (favourites at 94-98c
@@ -177,12 +179,95 @@ def find_harvests(markets: list[Market], books: dict[str, Book], cfg: Config, no
             if ev <= 0:
                 st["harvest.negative_ev"] += 1
                 continue
+            ai_note, ai_p = "", None
+            a = (assessments or {}).get(m.condition_id)
+            if a and a.p_yes is not None:
+                ai_p = a.p_yes if idx == 0 else 1.0 - a.p_yes
+                if ai_p < cfg.ai_gate_min_p:
+                    st["harvest.ai_vetoed_p"] += 1
+                    continue
+                if a.risk is not None and a.risk > cfg.ai_gate_max_risk:
+                    st["harvest.ai_vetoed_risk"] += 1
+                    continue
+                ai_note = f", jev p={ai_p:.2f} risk={a.risk if a.risk is not None else -1:.1f}"
             st["harvest.candidate"] += 1
             out.append(Opportunity(
                 "harvest", m, [Leg(m.token_ids[idx], "BUY", worst, size, m.outcomes[idx])],
                 cost, ev, 1.0 - worst,
-                note=f"{m.outcomes[idx]} @ {ask:.3f}, {hrs:.1f}h to end, {gross*100:.1f}% net if right, fee {b.fee_bps}bps, liq ${m.liquidity:,.0f}",
+                note=f"{m.outcomes[idx]} @ {ask:.3f}, {hrs:.1f}h to end, {gross*100:.1f}% net if right, fee {b.fee_bps}bps, liq ${m.liquidity:,.0f}{ai_note}",
             ))
-    # Prefer soonest resolution and highest liquidity (capital turns over faster, less can go wrong)
-    out.sort(key=lambda o: (o.market.hours_to_end(now) or 1e9, -o.market.liquidity))
+            out[-1].ai_p = ai_p
+    # Prefer the favourites Jev is surest about, then soonest resolution, then liquidity
+    out.sort(key=lambda o: (-(o.ai_p or 0.0), o.market.hours_to_end(now) or 1e9, -o.market.liquidity))
+    return out
+
+
+# --------------------------------------------------------------------------- AI edge finder
+def find_ai_edges(markets: list[Market], books: dict[str, Book], assessments: dict[str, Assessment],
+                  cfg: Config, now: datetime, per_position_budget: float, held: set[str],
+                  stats: Counter | None = None) -> list[Opportunity]:
+    """Buy a side priced well below what Jev, judging without seeing the price, thinks it is worth.
+
+    Jev only saw the question, rules and timing (no price), so agreement is independent evidence.
+    Only extreme answers are acted on (cfg.ai_edge_min_p), and the price must already be leaning
+    the same way (cfg.ai_edge_min_price): a market at 30c that Jev calls 97% usually means the
+    market knows something the rules do not say, so that is skipped rather than bought.
+    """
+    out: list[Opportunity] = []
+    st = stats if stats is not None else Counter()
+    for m in markets:
+        a = assessments.get(m.condition_id)
+        if not a or a.p_yes is None or a.with_prices or m.condition_id in held or not m.is_binary:
+            continue
+        hrs = m.hours_to_end(now)
+        if hrs is None or hrs <= 0.5 or hrs > cfg.ai_edge_max_hours:
+            continue
+        # which side does Jev favour?
+        if a.p_yes >= cfg.ai_edge_min_p:
+            idx, p = 0, a.p_yes
+        elif a.p_yes <= 1.0 - cfg.ai_edge_min_p:
+            idx, p = 1, 1.0 - a.p_yes
+        else:
+            st["ai_edge.not_extreme"] += 1
+            continue
+        if a.risk is not None and a.risk > cfg.ai_gate_max_risk:
+            st["ai_edge.risky_rules"] += 1
+            continue
+        b = books.get(m.token_ids[idx])
+        if not b or b.best_ask is None or b.best_bid is None:
+            st["ai_edge.no_book"] += 1
+            continue
+        ask = b.best_ask
+        if ask < cfg.ai_edge_min_price or ask > cfg.ai_edge_max_price:
+            st["ai_edge.price_out_of_band"] += 1
+            continue
+        if p - ask < cfg.ai_edge_min_gap:
+            st["ai_edge.gap_too_small"] += 1
+            continue
+        if ask - b.best_bid > 0.06:
+            st["ai_edge.wide_spread"] += 1
+            continue
+        size = _round_down(per_position_budget / ask, 1.0)
+        if size < m.min_order_size:
+            st["ai_edge.below_min_order"] += 1
+            continue
+        filled = b.cost_to_buy(size)
+        if not filled:
+            st["ai_edge.no_depth"] += 1
+            continue
+        cost, worst = filled
+        cost += est_fee(b.fee_bps, size, worst)
+        # discount Jev's number toward the market before computing EV: it is a score, not gospel
+        p_used = 0.5 * p + 0.5 * ask
+        ev = size * p_used - cost
+        if ev <= 0:
+            st["ai_edge.negative_ev"] += 1
+            continue
+        st["ai_edge.candidate"] += 1
+        o = Opportunity("ai_edge", m, [Leg(m.token_ids[idx], "BUY", worst, size, m.outcomes[idx])],
+                        cost, ev, p - worst,
+                        note=f"{m.outcomes[idx]} @ {ask:.3f} vs jev {p:.2f} (risk {a.risk if a.risk is not None else -1:.1f}), {hrs:.0f}h to end, liq ${m.liquidity:,.0f}")
+        o.ai_p = p
+        out.append(o)
+    out.sort(key=lambda o: -o.edge)
     return out

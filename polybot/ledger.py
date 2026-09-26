@@ -40,6 +40,8 @@ class Ledger:
     last_run: str = ""
     notes: list[str] = field(default_factory=list)
     scan: dict[str, int] = field(default_factory=dict)              # last scan's filter statistics
+    ai_log: dict[str, dict] = field(default_factory=dict)           # condition_id -> Jev call vs outcome
+    ai_info: dict = field(default_factory=dict)                     # last run's Jev usage summary
 
     # ---------- persistence ----------
     @classmethod
@@ -130,6 +132,34 @@ class Ledger:
                             "price": payout_per_share, "proceeds": round(proceeds, 4), "pnl": round(pnl, 4),
                             "kind": p.kind, "q": p.question[:80]})
         return pnl
+
+    # ---------- AI outcome tracking ----------
+    def log_ai(self, condition_id: str, question: str, p_yes: float, price_yes: Optional[float],
+               risk: Optional[float], with_prices: bool, when: str) -> None:
+        if condition_id in self.ai_log and self.ai_log[condition_id].get("outcome") is not None:
+            return
+        self.ai_log[condition_id] = {"q": question[:80], "p_yes": round(p_yes, 3),
+                                     "price_yes": round(price_yes, 3) if price_yes is not None else None,
+                                     "risk": round(risk, 2) if risk is not None else None,
+                                     "with_prices": with_prices, "at": when, "outcome": None}
+
+    def resolve_ai(self, condition_id: str, yes_won: bool) -> None:
+        e = self.ai_log.get(condition_id)
+        if e and e.get("outcome") is None:
+            e["outcome"] = 1 if yes_won else 0
+
+    def ai_calibration(self) -> dict[str, dict]:
+        """Accuracy of Jev's extreme answers vs resolved outcomes, bucketed by stated probability."""
+        buckets = {"<=0.05": [0, 0], "0.05-0.5": [0, 0], "0.5-0.95": [0, 0], ">=0.95": [0, 0]}
+        for e in self.ai_log.values():
+            if e.get("outcome") is None:
+                continue
+            p, y = e["p_yes"], e["outcome"]
+            key = "<=0.05" if p <= 0.05 else "0.05-0.5" if p < 0.5 else "0.5-0.95" if p < 0.95 else ">=0.95"
+            hit = (y == 1) if p >= 0.5 else (y == 0)
+            buckets[key][0] += 1
+            buckets[key][1] += int(hit)
+        return {k: {"n": n, "acc": (h / n if n else None)} for k, (n, h) in buckets.items()}
 
     def _book_pnl(self, pnl: float) -> None:
         self.realized_pnl += pnl

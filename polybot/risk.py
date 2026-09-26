@@ -50,6 +50,9 @@ class RiskManager:
     def per_position_budget(self, st: RiskState) -> float:
         return max(0.0, min(self.cfg.max_position_frac * st.equity, self.spendable(st)))
 
+    def ai_edge_budget(self, st: RiskState) -> float:
+        return max(0.0, min(self.cfg.ai_edge_position_frac * st.equity, self.spendable(st)))
+
     def approve(self, opp: Opportunity, st: RiskState) -> str | None:
         """None if approved, else the rejection reason."""
         c = self.cfg
@@ -58,10 +61,11 @@ class RiskManager:
         if opp.cost > self.spendable(st) + 1e-9:
             return f"cost {opp.cost:.2f} exceeds spendable {self.spendable(st):.2f}"
         # arbitrage is hedged, so it may use the whole spendable amount; directional trades may not
-        if opp.kind == "harvest":
+        if opp.kind in ("harvest", "ai_edge"):
             if st.open_positions >= c.max_open_positions:
                 return "max open positions"
-            if opp.cost > c.max_position_frac * st.equity + 1e-9:
+            cap = c.max_position_frac if opp.kind == "harvest" else c.ai_edge_position_frac
+            if opp.cost > cap * st.equity + 1e-9:
                 return f"cost {opp.cost:.2f} exceeds per-position cap"
         if opp.expected_profit <= 0:
             return "no expected profit"
@@ -72,7 +76,7 @@ class RiskManager:
         st.orders_this_run += len(opp.legs)
         st.cash -= spent
         st.deployed += spent
-        if opp.kind == "harvest" and spent > 0:
+        if opp.kind in ("harvest", "ai_edge") and spent > 0:
             st.open_positions += 1
 
 

@@ -13,6 +13,27 @@ are committed back to the repo after every run (`state/ledger.json`, `state/repo
 | `harvest` | Buy the heavy favourite (94c–98.5c) of a liquid market that resolves within 72 hours. Favourites at these prices historically win slightly more often than the price implies, and the capital turns over in days. Taker fees (about 0.4% on sports and crypto markets at these prices) are deducted before a trade qualifies. | Directional. Capped at 20% of equity per position, 8 positions, stop-loss if the price drops 25c, and only on books with tight spreads and real volume. |
 | `negrisk_arb` (off by default) | Buy every YES in a multi-outcome event when they add to less than $1.00. | Same as pair_arb, plus the risk that Polymarket adds an outcome to the event later. Turn on with repo variable `ENABLE_NEGRISK_ARB=true`. |
 
+## Jev, the AI decider
+
+[Jev](https://openrouter.ai/typesafe/jev-1.13) is TypeSafe's "System One" decision model (released 15 Sep 2026). It does not
+write text: it takes state plus typed questions and returns probabilities in ~450 ms for $0.042 per million input tokens.
+The bot calls it through OpenRouter's Decisions API (`POST /api/alpha/decisions`) and uses it in three ways:
+
+1. **Gate on favourites.** Every favourite the harvest strategy wants to buy is shown to Jev with its rules, timing and
+   current prices. Jev must put ≥90% on that outcome and judge the rules unambiguous, or the trade is skipped.
+   Favourites Jev is surest about are bought first.
+2. **Blind edge finder.** Liquid markets priced 50c–90c are shown to Jev *without* the price. When Jev answers ≥95%
+   (or ≤5%) for a side that the market prices at least 10c cheaper, the bot buys that side (`ai_edge`, capped at 35% of
+   equity in the aggressive profile). Jev's number is averaged with the market price before sizing, because independent
+   tests found its mid-range probabilities unreliable and only its extreme answers trustworthy
+   ([Jev-Calibration](https://github.com/AnthusAI/Jev-Calibration), [jev-test](https://github.com/souvikr/jev-test)).
+3. **Self-grading.** Every blind call is logged and graded against the real resolution. The report shows Jev's accuracy
+   by stated probability, and a circuit breaker pauses edge trades if its extreme answers fall under 88% right across 30+
+   resolved markets.
+
+Calls are cached for an hour, capped at 60 markets per run, and cost well under $1/month. Without the
+`OPENROUTER_API_KEY` secret the bot runs exactly as before, with Jev off.
+
 ## Risk profiles
 
 Set with the repo variable `RISK_PROFILE`. **`aggressive` is the default.**
@@ -44,6 +65,7 @@ Both profiles share these guards (all overridable by env vars / repo variables, 
 3. **Add them as GitHub Actions secrets** (repo → *Settings* → *Secrets and variables* → *Actions*):
    - `POLYMARKET_PRIVATE_KEY`
    - `POLYMARKET_FUNDER`
+   - `OPENROUTER_API_KEY` (turns on the Jev decider; optional but recommended)
    - If you signed up with a browser wallet instead of email, also add a repository **variable** `POLYMARKET_SIGNATURE_TYPE=2` (email/Magic login is `1`, the default).
 4. **Merge this branch into `main`.** GitHub only runs scheduled workflows from the default branch. Until then you can start a cycle by hand from the *Actions* tab (*polybot* → *Run workflow*).
 
@@ -51,7 +73,7 @@ That is everything. From then on:
 
 - every 30 minutes a run scans, trades, and commits `state/report.md` with equity, open positions and the last trades
 - the `tests` workflow keeps the code honest on every push
-- to pause: add `state/STOP`; to change limits: set repo variables (`BANKROLL_USD`, `HARVEST_ENABLED`, …)
+- to pause: add `state/STOP`; to change limits: set repo variables (`BANKROLL_USD`, `RISK_PROFILE`, `OPENROUTER_MODEL`, `AI_EDGE_MIN_P`, …)
 
 Without the secrets the bot paper-trades with a simulated $25 so you can watch it before funding. The first paper runs are already in `state/report.md`.
 
@@ -69,6 +91,6 @@ python -m pytest -q            # offline tests with fake exchange data
 python -m polybot.run          # one paper cycle against the real APIs (needs network)
 ```
 
-Layout: `gamma.py` (market discovery) → `clob.py` (order books, fees, orders) → `strategies.py`
-(pure opportunity finders) → `risk.py` (approval) → `executor.py` (fills, paper or live) →
+Layout: `gamma.py` (market discovery) → `clob.py` (order books, fees, orders) → `decider.py` (Jev) →
+`strategies.py` (pure opportunity finders) → `risk.py` (approval) → `executor.py` (fills, paper or live) →
 `ledger.py` (state) ; `run.py` wires one cycle together.

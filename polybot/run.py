@@ -11,19 +11,22 @@ from collections import Counter
 from datetime import datetime, timezone
 from typing import Optional
 
+from .ai_cache import AiCache
 from .clob import DataApi, LiveClob, PublicClob
 from .config import Config
+from .decider import Assessment, JevDecider
 from .executor import Executor
 from .gamma import Gamma
 from .ledger import Ledger, Position
 from .models import Book, Market, parse_iso
 from .risk import RiskManager, RiskState, state_from_ledger
-from .strategies import find_harvests, find_negrisk_arbs, find_pair_arbs
+from .strategies import find_ai_edges, find_harvests, find_negrisk_arbs, find_pair_arbs
 
 log = logging.getLogger("polybot")
 
 def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClob] = None,
-             data: Optional[DataApi] = None, now: Optional[datetime] = None) -> Ledger:
+             data: Optional[DataApi] = None, now: Optional[datetime] = None,
+             decider: Optional[JevDecider] = None) -> Ledger:
     now = now or datetime.now(timezone.utc)
     mode = "live" if live else "paper"
     path = os.path.join(cfg.state_dir, "ledger.json")
@@ -38,9 +41,10 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
     markets = gamma.active_markets(limit=cfg.scan_limit)
     by_cid = {m.condition_id: m for m in markets}
 
-    # 1) settle / mark held positions
+    # 1) settle / mark held positions, and grade past Jev calls against resolved markets
     if not live:
         _settle_paper(led, gamma, by_cid)
+    _grade_ai_log(led, gamma, by_cid, now)
     held_tokens = list(led.positions)
     # 2) candidate universe for books: binary markets inside either strategy window, plus holdings
     cands = []
@@ -69,11 +73,16 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
 
     held_cids = {p.condition_id for p in led.positions.values()}
     stats: Counter = Counter({"markets": len(markets), "candidates": len(cands), "books": len(books)})
+    gate, edge, ai_info = _assess_with_jev(cands, books, cfg, now, decider, led, stats, held_cids)
+    led.ai_info = ai_info
     opps = find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)
     if cfg.enable_negrisk_arb:
         opps += find_negrisk_arbs(cands, books, cfg, now, rm.spendable(st))
     if cfg.harvest_enabled:
-        opps += find_harvests(cands, books, cfg, now, rm.per_position_budget(st), held_cids, stats)
+        opps += find_harvests(cands, books, cfg, now, rm.per_position_budget(st), held_cids, stats, gate)
+    if edge and not ai_info.get("breaker"):
+        # AI edges first: they carry the largest edge per share, harvest fills the rest
+        opps = find_ai_edges(cands, books, edge, cfg, now, rm.ai_edge_budget(st), held_cids, stats) + opps
     log.info("opportunities: %d (spendable $%.2f)", len(opps), rm.spendable(st))
     log.info("scan stats: %s", ", ".join(f"{k}={v}" for k, v in sorted(stats.items())))
     led.scan = dict(sorted(stats.items()))
@@ -176,6 +185,122 @@ def _prefetch_fees(cands: list[Market], books: dict[str, Book], clob: PublicClob
                 b.fee_bps = clob.fee_bps(b.token_id)
 
 
+def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, now: datetime,
+                     decider: Optional[JevDecider], led: Ledger, stats: Counter, held: set[str]
+                     ) -> tuple[dict[str, Assessment], dict[str, Assessment], dict]:
+    """Two assessment sets: favourites WITH prices (gate) and mid-priced markets WITHOUT (edge)."""
+    info: dict = {"active": decider is not None}
+    if decider is None:
+        return {}, {}, info
+    cache = AiCache(os.path.join(cfg.state_dir, "ai_cache.json"), cfg.ai_cache_hours)
+
+    # (a) favourites the harvest strategy could buy: ask Jev with the prices visible
+    gate_ms: list[Market] = []
+    for m in cands:
+        h = m.hours_to_end(now)
+        if h is None or h <= 0.5 or h > cfg.harvest_max_hours or m.condition_id in held:
+            continue
+        if m.liquidity < cfg.harvest_min_liquidity or m.volume24h < cfg.harvest_min_volume24h:
+            continue
+        asks = [books[t].best_ask for t in m.token_ids if t in books and books[t].best_ask is not None]
+        if any(cfg.harvest_min_price <= a <= cfg.harvest_max_price for a in asks):
+            gate_ms.append(m)
+    gate_ms.sort(key=lambda m: m.hours_to_end(now) or 1e9)
+
+    # (b) liquid markets leaning one way but not settled: ask Jev blind, compare to the price
+    edge_ms: list[Market] = []
+    for m in cands:
+        h = m.hours_to_end(now)
+        if h is None or h <= 0.5 or h > cfg.ai_edge_max_hours or m.condition_id in held:
+            continue
+        if m.liquidity < cfg.ai_edge_min_liquidity or not m.description:
+            continue
+        asks = [books[t].best_ask for t in m.token_ids if t in books and books[t].best_ask is not None]
+        if len(asks) == 2 and cfg.ai_edge_min_price <= max(asks) <= cfg.ai_edge_max_price:
+            edge_ms.append(m)
+    edge_ms.sort(key=lambda m: -m.volume24h)
+
+    budget = cfg.ai_max_markets_per_run
+    gate_ms = gate_ms[: max(0, budget // 2)]
+    edge_ms = edge_ms[: max(0, budget - len(gate_ms))]
+
+    def prices_of(m: Market) -> dict[str, float]:
+        return {o: books[t].best_ask for o, t in zip(m.outcomes, m.token_ids) if t in books and books[t].best_ask is not None}
+
+    todo: list[tuple[Market, Optional[dict[str, float]]]] = []
+    gate: dict[str, Assessment] = {}
+    edge: dict[str, Assessment] = {}
+    for m in gate_ms:
+        a = cache.get(m.condition_id, True, now)
+        if a:
+            gate[m.condition_id] = a
+        else:
+            todo.append((m, prices_of(m)))
+    for m in edge_ms:
+        a = cache.get(m.condition_id, False, now)
+        if a:
+            edge[m.condition_id] = a
+        else:
+            todo.append((m, None))
+    fresh = decider.assess_many(todo, now) if todo else {}
+    for m, pr in todo:
+        a = fresh.get(m.condition_id)
+        if not a:
+            continue
+        if a.error:
+            stats["ai.errors"] += 1
+            continue
+        cache.put(a)
+        (gate if pr is not None else edge)[m.condition_id] = a
+    cache.save(now)
+
+    by_cid = {m.condition_id: m for m in cands}
+    for cid, a in edge.items():
+        m = by_cid[cid]
+        yes_price = books[m.token_ids[0]].best_ask if m.token_ids[0] in books else None
+        if a.p_yes is not None:
+            led.log_ai(cid, m.question, a.p_yes, yes_price, a.risk, False, a.at)
+
+    cal = led.ai_calibration()
+    extreme_n = cal[">=0.95"]["n"] + cal["<=0.05"]["n"]
+    extreme_hits = sum((cal[k]["acc"] or 0) * cal[k]["n"] for k in (">=0.95", "<=0.05"))
+    extreme_acc = extreme_hits / extreme_n if extreme_n else None
+    breaker = bool(extreme_n >= cfg.ai_min_samples_for_breaker and extreme_acc is not None
+                   and extreme_acc < cfg.ai_breaker_min_accuracy)
+    if breaker:
+        log.warning("AI circuit breaker ON: extreme-answer accuracy %.2f over %d resolved calls", extreme_acc, extreme_n)
+    info.update({"model": cfg.ai_model, "gate_assessed": len(gate), "edge_assessed": len(edge),
+                 "calls": decider.calls, "cache_hits": len(gate) + len(edge) - len(todo) + stats["ai.errors"],
+                 "errors": stats["ai.errors"], "breaker": breaker,
+                 "extreme_resolved": extreme_n, "extreme_accuracy": extreme_acc})
+    stats["ai.gate_assessed"] = len(gate)
+    stats["ai.edge_assessed"] = len(edge)
+    log.info("jev: %d favourites gated, %d markets judged blind, %d API calls, %d errors%s",
+             len(gate), len(edge), decider.calls, stats["ai.errors"], " [BREAKER ON]" if breaker else "")
+    return gate, edge, info
+
+
+def _grade_ai_log(led: Ledger, gamma: Gamma, by_cid: dict[str, Market], now: datetime, limit: int = 25) -> None:
+    """Record real outcomes for past blind Jev calls so calibration is measured, not assumed."""
+    pending = [cid for cid, e in led.ai_log.items() if e.get("outcome") is None]
+    if not pending:
+        return
+    missing = [c for c in pending if c not in by_cid][:limit]
+    found = gamma.markets_by_condition(missing) if missing else {}
+    for cid in pending:
+        m = by_cid.get(cid) or found.get(cid)
+        if not m:
+            continue
+        rp = m.resolved_prices
+        if rp is not None:
+            led.resolve_ai(cid, yes_won=(rp[0] == 1.0))
+    # forget very old unresolved entries so the log stays bounded
+    for cid in list(led.ai_log):
+        e = led.ai_log[cid]
+        if e.get("outcome") is None and (parse_iso(e.get("at")) or now) < now.replace(year=now.year - 1):
+            del led.ai_log[cid]
+
+
 def _log_near_misses(cands: list[Market], books: dict[str, Book], cfg: Config, now: datetime, n: int = 8) -> None:
     """Show the closest favourites that did not qualify, so thresholds can be tuned from the logs."""
     rows = []
@@ -216,6 +341,18 @@ def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Opt
         lines += ["## Recent trades", ""] + [
             f"- {t['t']} {t['side']} {t['size']:.1f} {t['outcome']} @ {t['price']:.3f} ({t['kind']}) {t.get('q','')}" +
             (f" pnl {t['pnl']:+.3f}" if 'pnl' in t else "") for t in led.trades[-15:]] + [""]
+    ai = led.ai_info or {}
+    if ai.get("active"):
+        cal = led.ai_calibration()
+        lines += ["## Jev (AI decider)", "",
+                  f"- model `{ai.get('model')}`: {ai.get('gate_assessed', 0)} favourites gated, {ai.get('edge_assessed', 0)} markets judged blind, "
+                  f"{ai.get('calls', 0)} API calls, {ai.get('cache_hits', 0)} cache hits, {ai.get('errors', 0)} errors"
+                  + ("  |  **CIRCUIT BREAKER ON** (edge trades paused)" if ai.get("breaker") else ""),
+                  "- blind-call accuracy by stated probability (resolved markets only): "
+                  + ", ".join(f"{k}: {v['n']} calls" + (f", {v['acc']*100:.0f}% right" if v['acc'] is not None else "") for k, v in cal.items()),
+                  ""]
+    elif cfg.ai_enabled:
+        lines += ["## Jev (AI decider)", "", "- inactive: add the `OPENROUTER_API_KEY` secret to enable it", ""]
     if led.scan:
         lines += ["## Last scan", "", ", ".join(f"{k}={v}" for k, v in led.scan.items()), ""]
     if led.notes:
@@ -230,14 +367,19 @@ def main(argv: list[str] | None = None) -> int:
     cfg = Config()
     gamma = Gamma(cfg.gamma_host)
     clob = PublicClob(cfg.clob_host)
-    live = data = None
+    live = data = decider = None
+    if cfg.ai_active:
+        decider = JevDecider(cfg.openrouter_api_key, cfg.ai_model)
+        log.info("AI decider: %s via OpenRouter", cfg.ai_model)
+    else:
+        log.info("AI decider off (set OPENROUTER_API_KEY to enable Jev)")
     if cfg.is_live:
         live = LiveClob(cfg.clob_host, cfg.chain_id, cfg.private_key, cfg.funder, cfg.signature_type)
         data = DataApi(cfg.data_host)
         log.info("LIVE mode: funder %s…%s", cfg.funder[:6], cfg.funder[-4:])
     else:
         log.info("PAPER mode (set POLYMARKET_PRIVATE_KEY and POLYMARKET_FUNDER to go live)")
-    run_once(cfg, gamma, clob, live, data)
+    run_once(cfg, gamma, clob, live, data, decider=decider)
     return 0
 
 

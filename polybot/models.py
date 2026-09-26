@@ -49,6 +49,7 @@ class Market:
     event_id: str = ""
     event_title: str = ""
     slug: str = ""
+    description: str = ""
 
     @classmethod
     def from_gamma(cls, m: dict) -> "Market":
@@ -71,6 +72,7 @@ class Market:
             event_id=str(ev.get("id", "")),
             event_title=str(ev.get("title", "")),
             slug=str(m.get("slug", "")),
+            description=str(m.get("description") or "")[:2000],
         )
 
     @property
@@ -153,6 +155,7 @@ class Opportunity:
     expected_profit: float          # USD, after estimated fees
     edge: float                     # per-share edge in price units
     note: str = ""
+    ai_p: Optional[float] = None    # Jev's probability for the bought side, when assessed
 
     @property
     def key(self) -> str:

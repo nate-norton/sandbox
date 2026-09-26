@@ -35,6 +35,7 @@ PROFILES: dict[str, dict] = {
         "stop_loss_drop": 0.0,             # disabled: a favourite that breaks usually goes to zero anyway
         "harvest_min_price": 0.80,
         "harvest_max_spread": 0.04,
+        "ai_edge_position_frac": 0.35,
     },
 }
 
@@ -43,7 +44,7 @@ ENV_NAMES = {
     "max_deployed_frac": "MAX_DEPLOYED_FRAC", "max_spend_per_run": "MAX_SPEND_PER_RUN",
     "daily_loss_limit_frac": "DAILY_LOSS_LIMIT_FRAC", "min_equity_frac": "MIN_EQUITY_FRAC",
     "stop_loss_drop": "STOP_LOSS_DROP", "harvest_min_price": "HARVEST_MIN_PRICE",
-    "harvest_max_spread": "HARVEST_MAX_SPREAD",
+    "harvest_max_spread": "HARVEST_MAX_SPREAD", "ai_edge_position_frac": "AI_EDGE_POSITION_FRAC",
 }
 
 
@@ -95,6 +96,27 @@ class Config:
     # assumed underpricing of heavy favourites (favourite-longshot bias), net of resolution risk
     harvest_assumed_edge: float = field(default_factory=lambda: _f("HARVEST_ASSUMED_EDGE", 0.015))
 
+    # --- AI decider (Jev via OpenRouter); absent key => AI features off ---
+    openrouter_api_key: str = field(default_factory=lambda: os.environ.get("OPENROUTER_API_KEY", ""))
+    ai_model: str = field(default_factory=lambda: os.environ.get("OPENROUTER_MODEL", "~typesafe/jev-latest"))
+    ai_enabled: bool = field(default_factory=lambda: _b("AI_ENABLED", True))
+    ai_max_markets_per_run: int = field(default_factory=lambda: _i("AI_MAX_MARKETS_PER_RUN", 60))
+    ai_cache_hours: float = field(default_factory=lambda: _f("AI_CACHE_HOURS", 1.0))
+    # gate: a harvested favourite must be judged this likely by Jev, and rules must not be ambiguous
+    ai_gate_min_p: float = field(default_factory=lambda: _f("AI_GATE_MIN_P", 0.90))
+    ai_gate_max_risk: float = field(default_factory=lambda: _f("AI_GATE_MAX_RISK", 1.4))
+    # edge finder: Jev is only trusted at the extremes (independent calibration tests: >95% is reliable)
+    ai_edge_min_p: float = field(default_factory=lambda: _f("AI_EDGE_MIN_P", 0.95))
+    ai_edge_min_gap: float = field(default_factory=lambda: _f("AI_EDGE_MIN_GAP", 0.10))
+    ai_edge_min_price: float = field(default_factory=lambda: _f("AI_EDGE_MIN_PRICE", 0.50))
+    ai_edge_max_price: float = field(default_factory=lambda: _f("AI_EDGE_MAX_PRICE", 0.90))
+    ai_edge_max_hours: float = field(default_factory=lambda: _f("AI_EDGE_MAX_HOURS", 168.0))
+    ai_edge_min_liquidity: float = field(default_factory=lambda: _f("AI_EDGE_MIN_LIQUIDITY", 5000.0))
+    ai_edge_position_frac: float = field(default_factory=lambda: _f("AI_EDGE_POSITION_FRAC", 0.15))
+    # self-protection: once enough Jev calls have resolved, stop edge trades if its hit-rate is poor
+    ai_min_samples_for_breaker: int = field(default_factory=lambda: _i("AI_MIN_SAMPLES", 30))
+    ai_breaker_min_accuracy: float = field(default_factory=lambda: _f("AI_BREAKER_MIN_ACCURACY", 0.88))
+
     # --- scanning ---
     scan_limit: int = field(default_factory=lambda: _i("SCAN_LIMIT", 600))
     book_batch: int = 40
@@ -110,6 +132,10 @@ class Config:
         for key, value in PROFILES[self.profile].items():
             if os.environ.get(ENV_NAMES[key]) in (None, ""):
                 setattr(self, key, value)
+
+    @property
+    def ai_active(self) -> bool:
+        return bool(self.ai_enabled and self.openrouter_api_key)
 
     @property
     def is_live(self) -> bool:

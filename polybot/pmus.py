@@ -8,6 +8,7 @@ so the ESPN sports strategy runs unchanged. Public data needs no key; trading do
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -84,6 +85,7 @@ class PolymarketUS:
 
     # ------------------------------------------------------------------ discovery
     DEFAULT_TAGS = {"nfl": "nfl", "cfb": "ncaaf"}
+    CFB_TAG_CANDIDATES = ("ncaaf", "cfb", "college-football", "ncaa-football", "ncaa", "college")
 
     def league_tags(self) -> dict[str, str]:
         """Map our league keys to the venue's tag slugs, using /v1/sports when available."""
@@ -113,21 +115,25 @@ class PolymarketUS:
         out: list[Market] = []
         n_events = 0
         for lg in leagues:
-            tag = tags.get(lg)
-            if not tag:
-                continue
-            events = self._events_for_tag(tag, now, page, max_pages, days_ahead)
+            candidates = [tags.get(lg)] if lg != "cfb" else [tags.get("cfb")] + [t for t in self.CFB_TAG_CANDIDATES if t != tags.get("cfb")]
+            events: list[dict] = []
+            for tag in [t for t in candidates if t]:
+                events = self._events_for_tag(tag, now, page, max_pages, days_ahead)
+                if events:
+                    log.info("polymarket.us %s: tag '%s' -> %d events", lg, tag, len(events))
+                    break
             n_events += len(events)
             samples = 0
             for ev in events:
                 all_ms = ev.get("markets") or []
-                ms = [m for m in all_ms if _is_moneyline(m)]
-                if samples < 3 and len(all_ms) >= 2:
+                ms = _moneyline_markets(ev)
+                if samples < 2:
                     samples += 1
                     log.info("polymarket.us %s event sample: %s", lg,
                              {"slug": ev.get("slug"), "title": ev.get("title"), "startTime": ev.get("startTime"),
-                              "tags": [t.get("slug") for t in ev.get("tags") or []],
-                              "markets": [(m.get("slug"), m.get("title"), m.get("outcome")) for m in all_ms][:6]})
+                              "tags": [t.get("slug") for t in ev.get("tags") or []], "n_markets": len(all_ms),
+                              "moneyline": [(m.get("slug"), m.get("title")) for m in ms],
+                              "others": [m.get("slug") for m in all_ms if m not in ms][:4]})
                 if len(ms) != 2 or not _looks_like_game(ev):
                     continue
                 a, b = ms
@@ -306,6 +312,21 @@ def _order_params(slug: str, intent: str, price: float, qty: int) -> dict:
     return {"marketSlug": slug, "intent": intent, "type": "ORDER_TYPE_LIMIT",
             "price": {"value": f"{price:.2f}", "currency": "USD"}, "quantity": int(qty),
             "tif": "TIME_IN_FORCE_GOOD_TILL_CANCEL"}
+
+
+def _moneyline_markets(ev: dict) -> list[dict]:
+    """The two team markets of a game: slug == 'tec-<event slug>-<team abbreviation>' (no extra segments)."""
+    ev_slug = str(ev.get("slug") or "")
+    if not ev_slug:
+        return []
+    pat = re.compile(rf"^tec-{re.escape(ev_slug)}-([a-z0-9]+)$")
+    found = [m for m in ev.get("markets") or [] if pat.match(str(m.get("slug") or ""))]
+    if len(found) == 2:
+        return found
+    # fallback for venues without the tec- convention: markets that are not spreads/totals/props
+    plain = [m for m in ev.get("markets") or [] if _is_moneyline(m) and "-pos-" not in str(m.get("slug") or "")
+             and "-1h-" not in str(m.get("slug") or "") and "-2h-" not in str(m.get("slug") or "")]
+    return plain if len(plain) == 2 else found
 
 
 def _looks_like_game(ev: dict) -> bool:

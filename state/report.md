@@ -1,9 +1,9 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 11  |  last run: 2026-09-26T08:13:38Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
+- mode: **live**  |  profile: **aggressive**  |  runs: 12  |  last run: 2026-09-26T08:17:12Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
 - equity: **$0.00** (started $25.00, realized +0.00)
 - cash: $0.00  |  deployed: $0.00  |  open positions: 0
-- P&L today: +0.00  |  **HALTED: equity 0.00 below floor 5.00 (20% of start); stopping to preserve capital**
+- P&L today: +0.00  |  **HALTED: no funds in the wallet yet**
 
 ## Recent trades
 
@@ -13,12 +13,12 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 30 favourites gated, 30 markets judged blind, 0 API calls, 60 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 24 favourites gated, 0 markets judged blind, 23 API calls, 1 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Last scan
 
-ai.edge_assessed=30, ai.gate_assessed=30, ai_edge.gap_too_small=1, ai_edge.not_extreme=29, arb.best_pair_x1000=1000, arb.no_book=44, arb.no_edge=331, books=751, candidates=375, harvest.below_min_order=30, harvest.illiquid=8, harvest.in_window=226, harvest.no_book=48, harvest.price_out_of_range=357, harvest.wide_spread=1, harvest.window=147, markets=600
+ai.edge_assessed=0, ai.gate_assessed=24, arb.best_pair_x1000=1000, arb.no_edge=24, books=48, candidates=24, markets=24, sports.games=145, sports.matched=24, sports.moneyline_markets=24, sports.no_model=48
 
 ## Notes
 
@@ -27,3 +27,4 @@ ai.edge_assessed=30, ai.gate_assessed=30, ai_edge.gap_too_small=1, ai_edge.not_e
 - 2026-09-26T08:13:38Z mode changed paper -> live; simulated positions cleared
 - 2026-09-26T08:13:38Z live wallet 0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2 shows $0 USDC. If you have deposited, compare this with the address on your Polymarket profile and set POLYMARKET_FUNDER to that one.
 - 2026-09-26T08:13:38Z halted: equity 0.00 below floor 5.00 (20% of start); stopping to preserve capital
+- 2026-09-26T08:17:12Z halted: no funds in the wallet yet

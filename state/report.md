@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **paper**  |  profile: **aggressive**  |  runs: 20  |  last run: 2026-09-26T08:38:23Z
+- mode: **paper**  |  profile: **aggressive**  |  runs: 21  |  last run: 2026-09-26T08:40:20Z
 - equity: **$25.00** (started $25.00, realized +0.00)
 - cash: $25.00  |  deployed: $0.00  |  open positions: 0
 - P&L today: +0.00

@@ -62,6 +62,15 @@
 "risk_confidence": 0.69,
 "with_prices": true
 },
+"0x2e08e1ebf21e4cd06d7ec57bc26ce50062084e075b121a9337526651b8c1d9c9:p": {
+"at": "2026-09-26T08:02:07Z",
+"condition_id": "0x2e08e1ebf21e4cd06d7ec57bc26ce50062084e075b121a9337526651b8c1d9c9",
+"error": "",
+"p_yes": 0.54,
+"risk": 0.97,
+"risk_confidence": 0.83,
+"with_prices": true
+},
 "0x335e19a92673a5777772919074342571127587525968f7a55e199c1ffb96e3f3:p": {
 "at": "2026-09-26T07:42:40Z",
 "condition_id": "0x335e19a92673a5777772919074342571127587525968f7a55e199c1ffb96e3f3",
@@ -287,6 +296,15 @@
 "risk_confidence": 0.83,
 "with_prices": true
 },
+"0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661:n": {
+"at": "2026-09-26T08:02:07Z",
+"condition_id": "0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661",
+"error": "",
+"p_yes": 0.51,
+"risk": 1.05,
+"risk_confidence": 0.9,
+"with_prices": false
+},
 "0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661:p": {
 "at": "2026-09-26T07:42:40Z",
 "condition_id": "0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661",
@@ -350,6 +368,15 @@
 "risk_confidence": 0.99,
 "with_prices": false
 },
+"0xbf7a12b30d3ae16031fe07d7d46593fe53f78a2841cab277238184c06c86e16b:n": {
+"at": "2026-09-26T08:02:07Z",
+"condition_id": "0xbf7a12b30d3ae16031fe07d7d46593fe53f78a2841cab277238184c06c86e16b",
+"error": "",
+"p_yes": 0.42,
+"risk": 1.0,
+"risk_confidence": 0.99,
+"with_prices": false
+},
 "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811:n": {
 "at": "2026-09-26T07:42:40Z",
 "condition_id": "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811",
@@ -385,6 +412,15 @@
 "risk": 1.0,
 "risk_confidence": 0.99,
 "with_prices": false
+},
+"0xd53dae09db31326d2e877b3f9a7486d5118bc174f9f17b9029bffe48704b1681:p": {
+"at": "2026-09-26T08:02:07Z",
+"condition_id": "0xd53dae09db31326d2e877b3f9a7486d5118bc174f9f17b9029bffe48704b1681",
+"error": "",
+"p_yes": 0.25,
+"risk": 0.99,
+"risk_confidence": 0.85,
+"with_prices": true
 },
 "0xd69d448257ae7a1704b24b6ee0758c05bbb0177049e6e5d31322d450bd531299:n": {
 "at": "2026-09-26T07:55:09Z",

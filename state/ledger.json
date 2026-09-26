@@ -2,8 +2,8 @@
  "ai_info": {
   "active": true,
   "breaker": false,
-  "cache_hits": 59,
-  "calls": 1,
+  "cache_hits": 56,
+  "calls": 4,
   "edge_assessed": 30,
   "errors": 0,
   "extreme_accuracy": null,
@@ -88,7 +88,7 @@
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
    "p_yes": 0.52,
-   "price_yes": 0.71,
+   "price_yes": 0.69,
    "q": "Bitcoin Up or Down on September 26?",
    "risk": 1.05,
    "with_prices": false
@@ -138,6 +138,15 @@
    "risk": 1.0,
    "with_prices": false
   },
+  "0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661": {
+   "at": "2026-09-26T08:02:07Z",
+   "outcome": null,
+   "p_yes": 0.51,
+   "price_yes": 0.9,
+   "q": "LoL: Skillcamp Esport vs Colossal Gaming (BO1) - EMEA Masters Swiss Stage",
+   "risk": 1.05,
+   "with_prices": false
+  },
   "0x9d232fb0b16979c4b3f281d3a53a0441ace232a0b79e1aa0f45fac51e7870be3": {
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
@@ -183,6 +192,15 @@
    "risk": 1.0,
    "with_prices": false
   },
+  "0xbf7a12b30d3ae16031fe07d7d46593fe53f78a2841cab277238184c06c86e16b": {
+   "at": "2026-09-26T08:02:07Z",
+   "outcome": null,
+   "p_yes": 0.42,
+   "price_yes": 0.48,
+   "q": "Panthers vs. Browns: O/U 42.5",
+   "risk": 1.0,
+   "with_prices": false
+  },
   "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811": {
    "at": "2026-09-26T07:42:40Z",
    "outcome": null,
@@ -214,7 +232,7 @@
    "at": "2026-09-26T07:55:09Z",
    "outcome": null,
    "p_yes": 0.19,
-   "price_yes": 0.39,
+   "price_yes": 0.36,
    "q": "Chengdu Open: Martin Damm vs Hubert Hurkacz",
    "risk": 1.12,
    "with_prices": false
@@ -303,9 +321,11 @@
  },
  "cash": 3.4727000000000015,
  "daily": {},
- "last_run": "2026-09-26T07:55:09Z",
+ "last_run": "2026-09-26T08:02:07Z",
  "mode": "paper",
- "notes": [],
+ "notes": [
+  "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters"
+ ],
  "positions": {
   "112827617879892007956970049062486816922462375312657627963114985887419321162634": {
    "avg_price": 0.962,
@@ -325,7 +345,7 @@
    "condition_id": "0x5007dff2c558399c066923964dd5251dae11aeb9f8d76dc2add36354b11faa25",
    "end_date": "2026-09-26T08:00:00+00:00",
    "kind": "harvest",
-   "mark": 0.979,
+   "mark": 0.352,
    "neg_risk": true,
    "opened_at": "2026-09-26T07:17:09Z",
    "outcome": "No",
@@ -338,7 +358,7 @@
    "condition_id": "0xcd8009f9adc8244d02b35f239bb8897aeeae7e01198a6610ae14157f60012781",
    "end_date": "2026-09-26T16:00:00+00:00",
    "kind": "harvest",
-   "mark": 0.974,
+   "mark": 0.976,
    "neg_risk": true,
    "opened_at": "2026-09-26T04:31:35Z",
    "outcome": "No",
@@ -348,24 +368,24 @@
   }
  },
  "realized_pnl": 0.0,
- "runs": 8,
+ "runs": 9,
  "scan": {
   "ai.edge_assessed": 30,
   "ai.gate_assessed": 30,
   "ai_edge.gap_too_small": 1,
   "ai_edge.not_extreme": 29,
   "arb.best_pair_x1000": 1000,
-  "arb.no_book": 42,
-  "arb.no_edge": 337,
-  "books": 759,
-  "candidates": 379,
-  "harvest.below_min_order": 31,
-  "harvest.illiquid": 7,
-  "harvest.in_window": 223,
-  "harvest.no_book": 46,
-  "harvest.price_out_of_range": 353,
-  "harvest.wide_spread": 2,
-  "harvest.window": 154,
+  "arb.no_book": 44,
+  "arb.no_edge": 331,
+  "books": 751,
+  "candidates": 375,
+  "harvest.below_min_order": 30,
+  "harvest.illiquid": 8,
+  "harvest.in_window": 226,
+  "harvest.no_book": 48,
+  "harvest.price_out_of_range": 357,
+  "harvest.wide_spread": 1,
+  "harvest.window": 147,
   "markets": 600
  },
  "starting_bankroll": 25.0,
@@ -406,5 +426,6 @@
    "t": "2026-09-26T07:17:09Z",
    "token_id": "68143274871491614411603581830764286165556290561886791090717431421870101183922"
   }
- ]
+ ],
+ "wallet": ""
 }

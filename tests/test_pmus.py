@@ -105,6 +105,9 @@ def test_discovery_builds_one_binary_market_per_game(tmp_path):
     assert m.token_ids == ["us:aec-nfl-hou-ind-2026-09-27:L", "us:aec-nfl-hou-ind-2026-09-27:S"]
     assert m.outcomes == ["Houston Texans", "Indianapolis Colts"] and m.tick_size == 0.005
     assert "hou" in m.outcome_aliases[0] and "Texans" in m.outcome_aliases[0] and "ind" in m.outcome_aliases[1]
+    # no endTime from the venue: the market must stay a candidate through the whole game, not drop at kickoff
+    assert m.end_date == m.game_start + timedelta(hours=6)
+    assert m.hours_to_end(m.game_start + timedelta(hours=2)) > 0
     # second construction uses the on-disk side cache instead of refetching
     us2 = PolymarketUS(sdk, cache_path=str(tmp_path / "us_markets.json"))
     calls = sdk.detail_calls

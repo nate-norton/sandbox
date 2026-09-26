@@ -141,7 +141,8 @@ class PolymarketUS:
             token_ids=[token_id(slug, "L"), token_id(slug, "S")],
             outcomes=[str(long_t.get("name") or long_t.get("abbr")), str(short_t.get("name") or short_t.get("abbr"))],
             outcome_prices=[],
-            end_date=parse_iso(ev.get("endTime")) or start,
+            # no endTime on game events: keep the market in play for the whole game (kickoff + 6h)
+            end_date=parse_iso(ev.get("endTime")) or (start + timedelta(hours=6) if start else None),
             neg_risk=False,
             liquidity=0.0,                          # the venue's event liquidity is not comparable; depth decides
             volume24h=float(ev.get("volume") or 0),

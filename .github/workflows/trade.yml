@@ -13,7 +13,7 @@ on:
 
 concurrency:
   group: polybot-${{ github.ref_name }}
-  cancel-in-progress: ${{ github.ref_name != 'main' }}
+  cancel-in-progress: true   # only code pushes trigger runs (state commits are path-filtered), so a new run should replace the old loop
 
 permissions:
   contents: write

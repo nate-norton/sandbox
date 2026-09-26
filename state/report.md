@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 42  |  last run: 2026-09-26T15:57:45Z  |  wallet `polymarket.us key 865b51eb…`
+- mode: **live**  |  profile: **aggressive**  |  runs: 44  |  last run: 2026-09-26T16:08:00Z  |  wallet `polymarket.us key 865b51eb…`
 - equity: **$59.18** (started $59.49, realized +0.00)
 - cash: $50.00  |  deployed: $10.00  |  open positions: 2
 - P&L today: +0.00
@@ -25,11 +25,11 @@
 
 ## Observation log
 
-- 1440 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 1692 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=30, books=158, candidates=79, markets=136, obs.rows=144, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=8, sports.no_edge=129, sports.no_model=20, sports.price_out_of_band=11, sports.too_far_ahead=50
+ai.edge_assessed=0, ai.gate_assessed=30, books=136, candidates=68, markets=136, obs.rows=126, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=30, sports.no_edge=112, sports.no_model=30, sports.price_out_of_band=10, sports.too_far_ahead=42, sports.unstable=2
 
 ## Notes
 

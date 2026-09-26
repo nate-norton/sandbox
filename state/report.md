@@ -1,9 +1,9 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 15  |  last run: 2026-09-26T08:23:47Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
-- equity: **$0.00** (started $0.00, realized +0.00)
-- cash: $0.00  |  deployed: $0.00  |  open positions: 0
-- P&L today: +0.00  |  **HALTED: no funds in the wallet yet**
+- mode: **paper**  |  profile: **aggressive**  |  runs: 16  |  last run: 2026-09-26T08:30:44Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
+- equity: **$25.00** (started $25.00, realized +0.00)
+- cash: $25.00  |  deployed: $0.00  |  open positions: 0
+- P&L today: +0.00
 
 ## Recent trades
 
@@ -13,12 +13,12 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 24 favourites gated, 0 markets judged blind, 0 API calls, 24 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 26 favourites gated, 0 markets judged blind, 2 API calls, 24 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=24, arb.best_pair_x1000=1000, arb.no_edge=24, books=48, candidates=24, markets=24, sports.games=145, sports.matched=24, sports.moneyline_markets=24, sports.no_edge=46, sports.no_model=2
+ai.edge_assessed=0, ai.gate_assessed=26, arb.best_pair_x1000=1000, arb.no_edge=26, books=52, candidates=26, markets=26, sports.games=145, sports.matched=26, sports.moneyline_markets=26, sports.no_edge=50, sports.no_model=2
 
 ## Notes
 
@@ -28,3 +28,4 @@ ai.edge_assessed=0, ai.gate_assessed=24, arb.best_pair_x1000=1000, arb.no_edge=2
 - 2026-09-26T08:13:38Z live wallet 0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2 shows $0 USDC. If you have deposited, compare this with the address on your Polymarket profile and set POLYMARKET_FUNDER to that one.
 - 2026-09-26T08:13:38Z halted: equity 0.00 below floor 5.00 (20% of start); stopping to preserve capital
 - 2026-09-26T08:17:12Z halted: no funds in the wallet yet
+- 2026-09-26T08:30:44Z mode changed live -> paper; simulated positions cleared

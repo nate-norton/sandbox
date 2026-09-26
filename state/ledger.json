@@ -3,12 +3,12 @@
   "active": true,
   "breaker": false,
   "cache_hits": 24,
-  "calls": 0,
+  "calls": 2,
   "edge_assessed": 0,
   "errors": 0,
   "extreme_accuracy": null,
   "extreme_resolved": 0,
-  "gate_assessed": 24,
+  "gate_assessed": 26,
   "model": "~typesafe/jev-latest"
  },
  "ai_log": {
@@ -319,36 +319,37 @@
    "with_prices": false
   }
  },
- "cash": 0.0,
+ "cash": 25.0,
  "daily": {},
- "last_run": "2026-09-26T08:23:47Z",
- "mode": "live",
+ "last_run": "2026-09-26T08:30:44Z",
+ "mode": "paper",
  "notes": [
   "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters",
   "2026-09-26T08:03:24Z POLYMARKET_PRIVATE_KEY rejected: got 88 characters: this looks like an API secret from Settings \u2192 Developer (base64), not the wallet private key. The wallet key is 64 hex characters; export it at https://reveal.magic.link/polymarket",
   "2026-09-26T08:13:38Z mode changed paper -> live; simulated positions cleared",
   "2026-09-26T08:13:38Z live wallet 0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2 shows $0 USDC. If you have deposited, compare this with the address on your Polymarket profile and set POLYMARKET_FUNDER to that one.",
   "2026-09-26T08:13:38Z halted: equity 0.00 below floor 5.00 (20% of start); stopping to preserve capital",
-  "2026-09-26T08:17:12Z halted: no funds in the wallet yet"
+  "2026-09-26T08:17:12Z halted: no funds in the wallet yet",
+  "2026-09-26T08:30:44Z mode changed live -> paper; simulated positions cleared"
  ],
  "positions": {},
  "realized_pnl": 0.0,
- "runs": 15,
+ "runs": 16,
  "scan": {
   "ai.edge_assessed": 0,
-  "ai.gate_assessed": 24,
+  "ai.gate_assessed": 26,
   "arb.best_pair_x1000": 1000,
-  "arb.no_edge": 24,
-  "books": 48,
-  "candidates": 24,
-  "markets": 24,
+  "arb.no_edge": 26,
+  "books": 52,
+  "candidates": 26,
+  "markets": 26,
   "sports.games": 145,
-  "sports.matched": 24,
-  "sports.moneyline_markets": 24,
-  "sports.no_edge": 46,
+  "sports.matched": 26,
+  "sports.moneyline_markets": 26,
+  "sports.no_edge": 50,
   "sports.no_model": 2
  },
- "starting_bankroll": 0.0,
+ "starting_bankroll": 25.0,
  "trades": [
   {
    "cost": 4.81,

@@ -80,6 +80,15 @@
 "risk_confidence": 0.86,
 "with_prices": false
 },
+"0x1e78304879dfa9a442a2889bd7b9dbe5b082aee6c97cf081f1ebffdd5f0d4179:p": {
+"at": "2026-09-26T08:30:44Z",
+"condition_id": "0x1e78304879dfa9a442a2889bd7b9dbe5b082aee6c97cf081f1ebffdd5f0d4179",
+"error": "",
+"p_yes": 0.26,
+"risk": 0.99,
+"risk_confidence": 0.96,
+"with_prices": true
+},
 "0x235c65affd661409790ff9e2e1f77cf7ee1f01c0291a09a2f5f597c759819da8:p": {
 "at": "2026-09-26T07:42:40Z",
 "condition_id": "0x235c65affd661409790ff9e2e1f77cf7ee1f01c0291a09a2f5f597c759819da8",
@@ -322,6 +331,15 @@
 "risk": 1.0,
 "risk_confidence": 0.99,
 "with_prices": false
+},
+"0x85d03fe7cc41ca9adb1d145359b6f5359494142343a0c2c9b305f8190949ee3c:p": {
+"at": "2026-09-26T08:30:44Z",
+"condition_id": "0x85d03fe7cc41ca9adb1d145359b6f5359494142343a0c2c9b305f8190949ee3c",
+"error": "",
+"p_yes": 0.41,
+"risk": 1.0,
+"risk_confidence": 0.99,
+"with_prices": true
 },
 "0x87292ddc440148e1e6525db50003d57cf462aab50f88fedf709e2451cf595540:p": {
 "at": "2026-09-26T07:42:40Z",

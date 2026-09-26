@@ -90,12 +90,12 @@
 "with_prices": true
 },
 "cfb-hou-gas-2026-09-26:p": {
-"at": "2026-09-26T16:33:26Z",
+"at": "2026-09-26T18:02:32Z",
 "condition_id": "cfb-hou-gas-2026-09-26",
 "error": "",
-"p_yes": 0.75,
-"risk": 0.76,
-"risk_confidence": 0.6,
+"p_yes": 0.77,
+"risk": 0.81,
+"risk_confidence": 0.65,
 "with_prices": true
 },
 "cfb-ill-ohiost-2026-09-26:p": {
@@ -180,12 +180,12 @@
 "with_prices": true
 },
 "cfb-ncc-ecar-2026-09-26:p": {
-"at": "2026-09-26T16:28:33Z",
+"at": "2026-09-26T18:02:32Z",
 "condition_id": "cfb-ncc-ecar-2026-09-26",
 "error": "",
 "p_yes": 0.07,
-"risk": 0.5,
-"risk_confidence": 0.26,
+"risk": 0.56,
+"risk_confidence": 0.29,
 "with_prices": true
 },
 "cfb-nd-pur-2026-09-26:p": {

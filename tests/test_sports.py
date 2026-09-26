@@ -103,7 +103,7 @@ def test_sports_edges_pregame_and_live(tmp_path):
     assert len(opps) == 1 and opps[0].legs[0].outcome == "Texans" and opps[0].kind == "sports_edge"
     p = g.model_p("home")[0]
     f_star = (p - 0.55) / 0.45
-    assert opps[0].legs[0].size == int(0.5 * f_star * 60 / 0.55)
+    assert opps[0].legs[0].size == int(c.sports_kelly_frac * f_star * 60 / 0.55) and c.sports_kelly_frac == 1.0
     # no edge when the market agrees
     books["hou"] = mk_book("hou", [(0.66, 100)], [(0.64, 100)], fee=1000)
     assert find_sports_edges(matched, books, c, NOW, 60.0, 30.0, set()) == []

@@ -224,12 +224,16 @@ class PolymarketUS:
         for tok in token_ids:
             slug, _ = split_token(tok)
             by_slug.setdefault(slug, []).append(tok)
+        errors: dict[str, int] = {}
+        states: dict[str, int] = {}
         for slug, toks in by_slug.items():
             try:
                 md = (self.c.markets.book(slug) or {}).get("marketData") or {}
             except Exception as e:
-                log.warning("book failed for %s: %s", slug, e)
+                key = f"{type(e).__name__}: {str(e)[:80]}"
+                errors[key] = errors.get(key, 0) + 1
                 continue
+            states[str(md.get("state"))] = states.get(str(md.get("state")), 0) + 1
             open_ = md.get("state") in (None, "MARKET_STATE_OPEN")
             bids = [(p, float(l.get("qty") or 0)) for l in md.get("bids") or [] if (p := _amount(l.get("px"))) is not None]
             asks = [(p, float(l.get("qty") or 0)) for l in md.get("offers") or [] if (p := _amount(l.get("px"))) is not None]
@@ -246,6 +250,8 @@ class PolymarketUS:
                 if not open_:
                     b.asks, b.bids = [], []
                 out[tok] = b
+        if errors or states:
+            log.info("polymarket.us books: states=%s errors=%s", states, errors)
         return out
 
     def fee_bps(self, slug: str) -> int:

@@ -85,7 +85,7 @@ class FakeSDK:
 
 
 def fixture(start=None):
-    start = (start or NOW + timedelta(hours=6)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    start = (start or NOW + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ")   # inside the 2h book window
     e1, d1 = game_event("nfl-hou-ind-2026-09-27", "HOU Texans vs IND Colts", TEXANS, COLTS, start,
                         extra_markets=[("asc-nfl-hou-ind-2026-09-27-pos-3pt5", "Houston Texans wins by over 3.5"),
                                        ("atc-nfl-hou-ind-2026-09-27-winner-1h-hou", "Houston Texans wins 1st half")])

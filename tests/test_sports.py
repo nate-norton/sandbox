@@ -188,8 +188,8 @@ def test_match_by_alias_when_title_is_truncated():
 
 def test_books_only_for_games_near_kickoff(tmp_path):
     c = cfg(tmp_path)
-    soon = mk_market("s", "sy", "sn", hours=6)
-    soon.question, soon.outcomes, soon.sports_type, soon.game_start = "Texans vs. Colts", ["Texans", "Colts"], "moneyline", NOW + timedelta(hours=6)
+    soon = mk_market("s", "sy", "sn", hours=1)
+    soon.question, soon.outcomes, soon.sports_type, soon.game_start = "Texans vs. Colts", ["Texans", "Colts"], "moneyline", NOW + timedelta(hours=1)
     far = mk_market("f", "fy", "fn", hours=100)
     far.question, far.outcomes, far.sports_type, far.game_start = "Bills vs. Jets", ["Bills", "Jets"], "moneyline", NOW + timedelta(hours=100)
     g1 = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), ml_home=-150, ml_away=130), "nfl")

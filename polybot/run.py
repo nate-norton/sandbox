@@ -69,8 +69,6 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
             if g.state == "in" and g.home_wp is None:
                 g.home_wp = espn.live_wp(g)
         matched = match_markets(markets, games, now)
-        if any(mm.game.state == "in" for mm in matched) and cfg.sports_stability_wait > 0:
-            espn.stability_check([mm.game for mm in matched], cfg.sports_stability_wait)
         matched_cids = {mm.market.condition_id for mm in matched}
         led.game_window = any(
             g.state == "in" or (g.state == "pre" and g.start and 0 <= (g.start - now).total_seconds() <= 45 * 60)
@@ -99,8 +97,15 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
         cands = [m for m in cands if m.game_start is None
                  or (m.game_start - now).total_seconds() <= cfg.sports_book_hours_ahead * 3600]
     tokens = list(dict.fromkeys([t for m in cands for t in m.token_ids] + held_tokens))
+    t_books = time.monotonic()
     books = (us or clob).books(tokens, batch=cfg.book_batch)
-    log.info("books: %d of %d tokens", len(books), len(tokens))
+    book_secs = time.monotonic() - t_books
+    log.info("books: %d of %d tokens in %.0fs", len(books), len(tokens), book_secs)
+    if cfg.sports_only and espn is not None and cfg.sports_stability_wait > 0 \
+            and any(mm.game.state == "in" for mm in matched):
+        # re-read ESPN *after* the (slow, rate-limited) book fetch so decisions use fresh scores and win
+        # probabilities, and any game where a play landed while books were loading is skipped this cycle
+        espn.stability_check([mm.game for mm in matched], max(0.0, cfg.sports_stability_wait - book_secs))
 
     ex = Executor(led, books, live)
     _mark_and_stop(led, books, ex, now, cfg.stop_loss_drop)

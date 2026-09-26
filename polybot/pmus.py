@@ -161,7 +161,52 @@ class PolymarketUS:
                     outcome_aliases=[_aliases(a, ev), _aliases(b, ev)],
                 ))
         log.info("polymarket.us: %d football games from %d league events", len(out), n_events)
+        if n_events and not out:
+            self._probe_main_markets()
         return out
+
+    _probed = False
+
+    def _probe_main_markets(self) -> None:
+        """One-off diagnostics: where does the venue keep a game's full-game moneyline?"""
+        if PolymarketUS._probed:
+            return
+        PolymarketUS._probed = True
+        slug = "nfl-kc-mia-2026-09-27"
+        try:
+            ev = (self.c.events.retrieve_by_slug(slug) or {}).get("event") or {}
+            ms = ev.get("markets") or []
+            log.info("probe events.retrieve_by_slug: n_markets=%d prefixes=%s keys=%s", len(ms), _prefix_histogram(ms), sorted(ev.keys())[:40])
+            odd = [(m.get("slug"), m.get("title")) for m in ms if str(m.get("slug", "")).split("-")[0] in ("aec", "tsc")][:6]
+            log.info("probe aec/tsc examples: %s", odd)
+        except Exception as e:
+            log.info("probe retrieve_by_slug failed: %s", e)
+        try:
+            res = self.c.markets.list({"eventSlug": [slug], "limit": 500}) or {}
+            ms = res.get("markets") or []
+            log.info("probe markets.list(eventSlug): n=%d prefixes=%s sample=%s", len(ms), _prefix_histogram(ms),
+                     [(m.get("slug"), m.get("title"), m.get("outcome")) for m in ms if _single_token(str(m.get("slug") or ""), slug)][:8])
+        except Exception as e:
+            log.info("probe markets.list(eventSlug) failed: %s", e)
+        try:
+            res = self.c.search.query({"query": "Chiefs Dolphins"}) or {}
+            log.info("probe search keys=%s", sorted(res.keys()))
+            evs = res.get("events") or []
+            for e in evs[:3]:
+                ms = e.get("markets") or []
+                log.info("probe search event %s: n_markets=%d prefixes=%s first=%s", e.get("slug"), len(ms), _prefix_histogram(ms),
+                         [(m.get("slug"), m.get("title")) for m in ms][:4])
+            mk = res.get("markets") or []
+            log.info("probe search markets: %s", [(m.get("slug"), m.get("title")) for m in mk][:8])
+        except Exception as e:
+            log.info("probe search failed: %s", e)
+        try:
+            res = self.c.markets.list({"active": True, "closed": False, "limit": 100, "offset": 0}) or {}
+            ms = res.get("markets") or []
+            log.info("probe markets.list top: prefixes=%s nfl=%s", _prefix_histogram(ms),
+                     [(m.get("slug"), m.get("title")) for m in ms if "nfl" in str(m.get("slug") or "")][:8])
+        except Exception as e:
+            log.info("probe markets.list failed: %s", e)
 
     def _events_for_tag(self, tag: str, now: datetime, page: int, max_pages: int, days_ahead: int) -> list[dict]:
         events: list[dict] = []

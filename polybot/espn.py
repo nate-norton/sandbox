@@ -184,7 +184,7 @@ _SAMPLED: set[str] = set()
 def _debug_sample(ev: dict, g: Game) -> None:
     """Log the raw odds/situation objects once per game state so parser gaps are visible in CI logs."""
     key = g.state
-    if key in _SAMPLED:
+    if key in _SAMPLED or key != "in":
         return
     _SAMPLED.add(key)
     comp = (ev.get("competitions") or [{}])[0]

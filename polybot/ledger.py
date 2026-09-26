@@ -45,6 +45,7 @@ class Ledger:
     wallet: str = ""                                                # live wallet address in use
     game_window: bool = False                                       # a matched game is live or imminent
     resolved_events: list = field(default_factory=list)             # events whose outcome is already logged
+    decisions: list[str] = field(default_factory=list)              # why each recent trade attempt did or did not happen
 
     # ---------- persistence ----------
     @classmethod
@@ -75,6 +76,7 @@ class Ledger:
         d = asdict(self)
         d["trades"] = d["trades"][-5000:]     # keep the file bounded (years of trades at this pace)
         d["notes"] = d["notes"][-100:]
+        d["decisions"] = d["decisions"][-60:]
         tmp = path + ".tmp"
         with open(tmp, "w") as f:
             json.dump(d, f, indent=1, sort_keys=True)

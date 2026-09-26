@@ -16,17 +16,20 @@ class Executor:
         self.led = ledger
         self.books = books
         self.live = live
+        self.last_error = ""
 
     # ------------------------------------------------------------------ buys
     def buy(self, opp: Opportunity) -> float:
         """Execute every leg. Returns USD actually spent. Unwinds a half-filled arbitrage."""
         m = opp.market
         spent = 0.0
+        self.last_error = ""
         filled_legs: list[tuple[Leg, float, float]] = []      # (leg, size, avg price)
         for leg in opp.legs:
             size, price, raw = self._fill_buy(leg, m.tick_size, m.neg_risk)
             if size <= 0:
                 log.info("  leg not filled: %s %s @ %.3f", leg.side, leg.outcome, leg.price)
+                self.last_error = str((raw or {}).get("errorMsg") or (raw or {}).get("status") or "")
                 break
             self.led.record_buy(leg.token_id, m.condition_id, m.question, leg.outcome, size, price,
                                 m.end_date.isoformat() if m.end_date else None, opp.kind, m.neg_risk, raw,

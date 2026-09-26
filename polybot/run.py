@@ -167,21 +167,32 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
 
     done = []
     seen_cids: set[str] = set()
+    if halt and opps:
+        _decide(led, f"{len(opps)} opportunit{'y' if len(opps) == 1 else 'ies'} not taken: {halt}")
     for o in opps if not halt else []:
         if o.market.condition_id in seen_cids:
             continue
+        leg = o.legs[0]
+        what = f"{leg.outcome} @ {leg.price:.3f} x{leg.size:.0f} (model {o.ai_p if o.ai_p is not None else 0:.2f}, {o.model_src or o.kind})"
         why = rm.approve(o, st)
         if why:
             log.info("skip %s %s: %s", o.kind, o.market.question[:60], why)
+            _decide(led, f"skip {what}: {why}")
             continue
         log.info("TRADE %s: %s | %s | cost $%.2f, +$%.3f exp", o.kind, o.market.question[:70], o.note, o.cost, o.expected_profit)
-        if us is not None and live is not None and not _us_fee_ok(us, o, cfg):
-            continue
+        if us is not None and live is not None:
+            fee_why = _us_fee_ok(us, o, cfg)
+            if fee_why:
+                _decide(led, f"skip {what}: {fee_why}")
+                continue
         spent = ex.buy(o)
         rm.commit(o, st, spent)
         seen_cids.add(o.market.condition_id)
         if spent > 0:
             done.append(o)
+            _decide(led, f"BOUGHT {what} for ${spent:.2f}")
+        else:
+            _decide(led, f"NOT FILLED {what}: {ex.last_error or 'fill-or-kill order returned no fill'}")
     _finish(led, path, cfg, st, done, halt)
     return led
 
@@ -218,18 +229,25 @@ def resolve_wallet(cfg: Config, make_client=None, data: Optional[DataApi] = None
     return first
 
 
-def _us_fee_ok(us: PolymarketUS, o, cfg: Config) -> bool:
-    """Re-check the edge with the exchange's exact commission before spending real money."""
+def _us_fee_ok(us: PolymarketUS, o, cfg: Config) -> str:
+    """Re-check the edge with the exchange's exact commission before spending real money.
+    Returns an empty string when the trade still clears, else the reason to skip it."""
     leg = o.legs[0]
     fee = us.preview_fee(leg.token_id, "BUY", leg.price, int(leg.size))
     if fee is None:
-        return True
+        return ""
     p = o.ai_p or 0.0
     edge = p - leg.price - fee / max(leg.size, 1)
     if edge < cfg.sports_margin_final:
         log.info("  skipped after fee preview: fee $%.3f leaves edge %.3f", fee, edge)
-        return False
-    return True
+        return f"exchange fee preview ${fee:.3f} leaves edge {edge:.3f}"
+    return ""
+
+
+def _decide(led: Ledger, msg: str) -> None:
+    """Persist a one-line trade decision so the report shows why money did or did not move."""
+    led.decisions.append(f"{led.last_run} {msg}")
+    led.decisions = led.decisions[-60:]
 
 
 def _settle_paper_us(led: Ledger, us: PolymarketUS, by_cid: dict[str, Market]) -> None:
@@ -450,7 +468,9 @@ def _apply_gate(opps: list, gate: dict[str, Assessment], cfg: Config, stats: Cou
         if a and a.p_yes is not None:
             idx = o.market.token_ids.index(o.legs[0].token_id)
             ai_p = a.p_yes if idx == 0 else 1.0 - a.p_yes
-            if ai_p < cfg.ai_gate_min_p:
+            # favourites: Jev must not lean against them (< 0.5); underdogs: Jev must at least see
+            # value at the price, since a 30% dog Jev also puts at 30% is not a veto
+            if ai_p < min(cfg.ai_gate_min_p, o.legs[0].price):
                 stats["sports.ai_vetoed"] += 1
                 log.info("  jev veto: %s (%s @ %.2f, jev %.2f)", o.market.question[:50], o.legs[0].outcome, o.legs[0].price, ai_p)
                 continue
@@ -540,6 +560,8 @@ def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Opt
         lines += ["## Last scan", "", ", ".join(f"{k}={v}" for k, v in led.scan.items()), ""]
     if led.notes:
         lines += ["## Notes", ""] + [f"- {n}" for n in led.notes[-10:]]
+    if led.decisions:
+        lines += ["", "## Recent decisions", ""] + [f"- {n}" for n in led.decisions[-12:]]
     os.makedirs(cfg.state_dir, exist_ok=True)
     with open(os.path.join(cfg.state_dir, "report.md"), "w") as f:
         f.write("\n".join(lines) + "\n")

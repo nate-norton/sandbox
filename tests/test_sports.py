@@ -266,3 +266,22 @@ def test_observation_log_written_each_cycle(tmp_path):
     outs = [json.loads(l) for l in open(tmp_path / "obs" / "outcomes.jsonl")]
     assert len(outs) == 1 and outs[0]["winner_home"] is True and led.resolved_events == ["c1"]
     assert "Observation log" in open(tmp_path / "report.md").read()
+
+
+def test_jev_gate_vetoes_by_price_for_underdogs_and_by_half_for_favourites():
+    from polybot.decider import Assessment
+    from polybot.models import Leg, Opportunity
+    from polybot.run import _apply_gate
+    cfg = Config()
+    m = mk_market("g", "gy", "gn", hours=1)
+    m.outcomes = ["Dog", "Fav"]
+
+    def opp(idx, price):
+        return Opportunity("sports_edge", m, [Leg(m.token_ids[idx], "BUY", price, 10, m.outcomes[idx])], price * 10, 1.0, 0.1)
+
+    # a 30c underdog Jev also puts at 30% is fair value, not a veto; at 13% Jev says it is overpriced
+    assert len(_apply_gate([opp(0, 0.30)], {"g": Assessment("g", 0.30, 0.5, 0.9, True, "t")}, cfg, Counter())) == 1
+    assert len(_apply_gate([opp(0, 0.30)], {"g": Assessment("g", 0.13, 0.5, 0.9, True, "t")}, cfg, Counter())) == 0
+    # a 70c favourite still needs Jev on its side of 50%
+    assert len(_apply_gate([opp(1, 0.70)], {"g": Assessment("g", 0.40, 0.5, 0.9, True, "t")}, cfg, Counter())) == 1
+    assert len(_apply_gate([opp(1, 0.70)], {"g": Assessment("g", 0.60, 0.5, 0.9, True, "t")}, cfg, Counter())) == 0

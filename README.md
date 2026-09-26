@@ -20,13 +20,15 @@ write text: it takes state plus typed questions and returns probabilities in ~45
 The bot calls it through OpenRouter's Decisions API (`POST /api/alpha/decisions`) and uses it in three ways:
 
 1. **Gate on favourites.** Every favourite the harvest strategy wants to buy is shown to Jev with its rules, timing and
-   current prices. Jev must put ≥90% on that outcome and judge the rules unambiguous, or the trade is skipped.
-   Favourites Jev is surest about are bought first.
-2. **Blind edge finder.** Liquid markets priced 50c–90c are shown to Jev *without* the price. When Jev answers ≥95%
-   (or ≤5%) for a side that the market prices at least 10c cheaper, the bot buys that side (`ai_edge`, capped at 35% of
+   current prices. If Jev leans toward the *other* side, or judges the rules ambiguous, the trade is skipped.
+   Favourites Jev is surest about are bought first. (In practice Jev hedges: it answers 70–90% on favourites the market
+   prices at 96%, so its number is used as a ranking and a disagreement check, not as a probability.)
+2. **Blind edge finder.** Liquid markets priced 50c–90c are shown to Jev *without* the price. When Jev answers ≥85%
+   (or ≤15%) for a side that the market prices at least 10c cheaper, the bot buys that side (`ai_edge`, capped at 35% of
    equity in the aggressive profile). Jev's number is averaged with the market price before sizing, because independent
-   tests found its mid-range probabilities unreliable and only its extreme answers trustworthy
+   tests found its mid-range probabilities unreliable and only its strong answers informative
    ([Jev-Calibration](https://github.com/AnthusAI/Jev-Calibration), [jev-test](https://github.com/souvikr/jev-test)).
+   Judged blind, Jev answers close to 50% on most markets, so these trades are rare by design.
 3. **Self-grading.** Every blind call is logged and graded against the real resolution. The report shows Jev's accuracy
    by stated probability, and a circuit breaker pauses edge trades if its extreme answers fall under 88% right across 30+
    resolved markets.

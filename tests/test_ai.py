@@ -74,7 +74,7 @@ def test_harvest_gate_vetoes_and_ranks(tmp_path):
     gate = {"a": Assessment("a", 0.93, 0.3, 0.9, True, "t"), "b": Assessment("b", 0.99, 0.2, 0.9, True, "t")}
     opps = find_harvests([a, b], books, c, NOW, 5.0, set(), assessments=gate)
     assert [o.market.condition_id for o in opps] == ["b", "a"]            # surest first
-    gate["a"] = Assessment("a", 0.5, 0.3, 0.9, True, "t")                  # Jev doubts the favourite
+    gate["a"] = Assessment("a", 0.4, 0.3, 0.9, True, "t")                  # Jev leans the other way
     assert [o.market.condition_id for o in find_harvests([a, b], books, c, NOW, 5.0, set(), assessments=gate)] == ["b"]
     gate["b"] = Assessment("b", 0.99, 1.9, 0.9, True, "t")                 # ambiguous rules
     assert find_harvests([a, b], books, c, NOW, 5.0, set(), assessments=gate) == []
@@ -93,7 +93,7 @@ def test_ai_edge_finder_rules(tmp_path):
     # Jev favours NO strongly but NO is priced at 31c: below the min price band, skip
     assert find_ai_edges([m], books, {"m": Assessment("m", 0.02, 0.5, 0.9, False, "t")}, c, NOW, 8.0, set()) == []
     # mid-range answers are ignored; assessments that saw the price are ignored
-    assert find_ai_edges([m], books, {"m": Assessment("m", 0.85, 0.5, 0.9, False, "t")}, c, NOW, 8.0, set()) == []
+    assert find_ai_edges([m], books, {"m": Assessment("m", 0.75, 0.5, 0.9, False, "t")}, c, NOW, 8.0, set()) == []
     assert find_ai_edges([m], books, {"m": Assessment("m", 0.97, 0.5, 0.9, True, "t")}, c, NOW, 8.0, set()) == []
     # ambiguous rules
     assert find_ai_edges([m], books, {"m": Assessment("m", 0.97, 1.8, 0.9, False, "t")}, c, NOW, 8.0, set()) == []

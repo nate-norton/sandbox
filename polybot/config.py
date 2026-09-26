@@ -102,11 +102,12 @@ class Config:
     ai_enabled: bool = field(default_factory=lambda: _b("AI_ENABLED", True))
     ai_max_markets_per_run: int = field(default_factory=lambda: _i("AI_MAX_MARKETS_PER_RUN", 60))
     ai_cache_hours: float = field(default_factory=lambda: _f("AI_CACHE_HOURS", 1.0))
-    # gate: a harvested favourite must be judged this likely by Jev, and rules must not be ambiguous
-    ai_gate_min_p: float = field(default_factory=lambda: _f("AI_GATE_MIN_P", 0.90))
+    # gate: veto a favourite only when Jev leans the other way (its probabilities hedge toward 0.5,
+    # so 0.5 means "Jev disagrees with the market", not "coin flip"); rules must not be ambiguous
+    ai_gate_min_p: float = field(default_factory=lambda: _f("AI_GATE_MIN_P", 0.50))
     ai_gate_max_risk: float = field(default_factory=lambda: _f("AI_GATE_MAX_RISK", 1.4))
-    # edge finder: Jev is only trusted at the extremes (independent calibration tests: >95% is reliable)
-    ai_edge_min_p: float = field(default_factory=lambda: _f("AI_EDGE_MIN_P", 0.95))
+    # edge finder: only Jev's rare strong answers count; blind answers cluster near 0.5 in practice
+    ai_edge_min_p: float = field(default_factory=lambda: _f("AI_EDGE_MIN_P", 0.85))
     ai_edge_min_gap: float = field(default_factory=lambda: _f("AI_EDGE_MIN_GAP", 0.10))
     ai_edge_min_price: float = field(default_factory=lambda: _f("AI_EDGE_MIN_PRICE", 0.50))
     ai_edge_max_price: float = field(default_factory=lambda: _f("AI_EDGE_MAX_PRICE", 0.90))

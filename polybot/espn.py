@@ -206,24 +206,32 @@ class Espn:
         return r.json()
 
     def games(self, league: str, now: datetime, days_ahead: int = 7) -> list[Game]:
+        """One request per calendar day (ESPN's scoreboard rejects date ranges for football)."""
         path = f"/{LEAGUE_PATH[league]}/scoreboard"
-        d0 = (now - timedelta(days=1)).strftime("%Y%m%d")
-        d1 = (now + timedelta(days=days_ahead)).strftime("%Y%m%d")
-        params = {"dates": f"{d0}-{d1}", "limit": 400}
-        if league == "cfb":
-            params["groups"] = 80                       # FBS
-        try:
-            data = self._get(path, **params)
-        except (requests.RequestException, ValueError) as e:
-            log.warning("espn %s scoreboard failed: %s", league, e)
-            return []
-        out = []
-        for ev in data.get("events") or []:
-            g = parse_event(ev, league)
-            if g:
-                out.append(g)
-        log.info("espn %s: %d games (%d live, %d pre, %d final)", league, len(out),
-                 sum(g.state == "in" for g in out), sum(g.state == "pre" for g in out), sum(g.completed for g in out))
+        out: list[Game] = []
+        seen: set[str] = set()
+        failures = 0
+        for d in range(-1, days_ahead + 1):
+            params: dict = {"dates": (now + timedelta(days=d)).strftime("%Y%m%d")}
+            if league == "cfb":
+                params["groups"] = 80                   # FBS
+                params["limit"] = 300
+            try:
+                data = self._get(path, **params)
+            except (requests.RequestException, ValueError) as e:
+                failures += 1
+                log.warning("espn %s scoreboard %s failed: %s", league, params["dates"], e)
+                if failures >= 3:
+                    break
+                continue
+            for ev in data.get("events") or []:
+                g = parse_event(ev, league)
+                if g and g.id not in seen:
+                    seen.add(g.id)
+                    out.append(g)
+        log.info("espn %s: %d games (%d live, %d pre, %d final)%s", league, len(out),
+                 sum(g.state == "in" for g in out), sum(g.state == "pre" for g in out), sum(g.completed for g in out),
+                 f"; e.g. {out[0].summary}" if out else "")
         return out
 
     def live_wp(self, game: Game) -> Optional[float]:

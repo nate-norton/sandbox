@@ -58,9 +58,10 @@ class Ledger:
                 led.notes.append(f"{_now()} mode changed {led.mode} -> {mode}; simulated positions cleared")
                 led.mode = mode
                 led.positions = {}
-                led.cash = starting_bankroll
-                led.starting_bankroll = starting_bankroll
+                led.cash = starting_bankroll if mode == "paper" else 0.0
+                led.starting_bankroll = starting_bankroll if mode == "paper" else 0.0   # live: set from real equity
                 led.realized_pnl = 0.0
+                led.daily = {}
             return led
         return cls(mode=mode, cash=starting_bankroll, starting_bankroll=starting_bankroll)
 

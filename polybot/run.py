@@ -95,9 +95,8 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
     halt = rm.halted(st)
     if halt:
         log.warning("trading halted: %s", halt)
-        led.notes.append(f"{led.last_run} halted: {halt}")
-        _finish(led, path, cfg, st, [], halt)
-        return led
+        if not any(halt in n for n in led.notes[-3:]):
+            led.notes.append(f"{led.last_run} halted: {halt}")
 
     held_cids = {p.condition_id for p in led.positions.values()}
     stats: Counter = Counter({"markets": len(markets), "candidates": len(cands), "books": len(books)})
@@ -131,7 +130,7 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
 
     done = []
     seen_cids: set[str] = set()
-    for o in opps:
+    for o in opps if not halt else []:
         if o.market.condition_id in seen_cids:
             continue
         why = rm.approve(o, st)
@@ -144,7 +143,7 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
         seen_cids.add(o.market.condition_id)
         if spent > 0:
             done.append(o)
-    _finish(led, path, cfg, st, done, None)
+    _finish(led, path, cfg, st, done, halt)
     return led
 
 
@@ -213,8 +212,8 @@ def _sync_live(led: Ledger, live: LiveClob, data: Optional[DataApi], cfg: Config
             if r.get("redeemable"):
                 led.notes.append(f"{led.last_run} redeemable: {pos[tid].question[:60]} ({size:.1f} {pos[tid].outcome})")
         led.positions = pos
-    if led.runs == 1 or led.starting_bankroll <= 0:
-        led.starting_bankroll = led.equity
+    if led.starting_bankroll <= 0 and led.equity > 0:
+        led.starting_bankroll = led.equity           # first live run with money in the wallet
     try:
         if live.open_orders():
             live.cancel_all()          # we only ever use fill-or-kill; anything resting is stale

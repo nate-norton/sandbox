@@ -64,7 +64,7 @@ def test_ledger_roundtrip_and_accounting(tmp_path):
     assert st.equity == led2.cash
     # switching to live drops simulated state but keeps history
     led3 = Ledger.load(p, 25.0, "live")
-    assert led3.mode == "live" and led3.cash == 25.0 and len(led3.trades) == 3 and led3.notes
+    assert led3.mode == "live" and led3.cash == 0.0 and led3.starting_bankroll == 0.0 and len(led3.trades) == 3 and led3.notes
 
 
 def test_partial_sell_books_pnl(tmp_path):

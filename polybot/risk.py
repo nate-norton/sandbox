@@ -19,6 +19,7 @@ class RiskState:
     equity: float
     open_positions: int
     pnl_today: float
+    start: float = 0.0              # bankroll the drawdown limits are measured against
     spent_this_run: float = 0.0
     orders_this_run: int = 0
 
@@ -31,10 +32,13 @@ class RiskManager:
         """Return a reason string if trading must stop for this run."""
         if os.path.exists(self.cfg.kill_switch_file):
             return f"kill switch present: {self.cfg.kill_switch_file}"
-        limit = -self.cfg.daily_loss_limit_frac * max(st.equity, self.cfg.starting_bankroll)
+        start = st.start or self.cfg.starting_bankroll
+        limit = -self.cfg.daily_loss_limit_frac * max(st.equity, start)
         if st.pnl_today < limit:
             return f"daily loss limit hit ({st.pnl_today:.2f} < {limit:.2f})"
-        floor = self.cfg.starting_bankroll * self.cfg.min_equity_frac
+        if st.equity <= 0:
+            return "no funds in the wallet yet"
+        floor = start * self.cfg.min_equity_frac
         if st.equity < floor:
             return f"equity {st.equity:.2f} below floor {floor:.2f} ({self.cfg.min_equity_frac:.0%} of start); stopping to preserve capital"
         return None
@@ -82,4 +86,4 @@ class RiskManager:
 
 def state_from_ledger(led: Ledger) -> RiskState:
     return RiskState(cash=led.cash, deployed=led.deployed, equity=led.equity,
-                     open_positions=len(led.positions), pnl_today=led.pnl_today())
+                     open_positions=len(led.positions), pnl_today=led.pnl_today(), start=led.starting_bankroll)

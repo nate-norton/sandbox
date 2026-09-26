@@ -10,7 +10,7 @@ are committed back to the repo after every run (`state/ledger.json`, `state/repo
 | strategy | idea | risk |
 |---|---|---|
 | `pair_arb` | Buy YES **and** NO of the same market when the two asks add up to less than $1.00. The pair always pays exactly $1.00 at resolution. | Risk-free once both legs fill. A half-filled pair is sold back immediately. Capital is locked until the market resolves, so only markets ending within 21 days qualify. |
-| `harvest` | Buy the heavy favourite (94c–98.5c) of a liquid, fee-free market that resolves within 72 hours. Favourites at these prices historically win slightly more often than the price implies, and the capital turns over in days. | Directional. Capped at 20% of equity per position, 8 positions, stop-loss if the price drops 25c, and only on books with tight spreads and real volume. |
+| `harvest` | Buy the heavy favourite (94c–98.5c) of a liquid market that resolves within 72 hours. Favourites at these prices historically win slightly more often than the price implies, and the capital turns over in days. Taker fees (about 0.4% on sports and crypto markets at these prices) are deducted before a trade qualifies. | Directional. Capped at 20% of equity per position, 8 positions, stop-loss if the price drops 25c, and only on books with tight spreads and real volume. |
 | `negrisk_arb` (off by default) | Buy every YES in a multi-outcome event when they add to less than $1.00. | Same as pair_arb, plus the risk that Polymarket adds an outcome to the event later. Turn on with repo variable `ENABLE_NEGRISK_ARB=true`. |
 
 ## Bankroll protection (the "balance spend" part)
@@ -41,7 +41,7 @@ That is everything. From then on:
 - the `tests` workflow keeps the code honest on every push
 - to pause: add `state/STOP`; to change limits: set repo variables (`BANKROLL_USD`, `HARVEST_ENABLED`, …)
 
-Without the secrets the bot paper-trades with a simulated $25 so you can watch it before funding.
+Without the secrets the bot paper-trades with a simulated $25 so you can watch it before funding. The first paper runs are already in `state/report.md`.
 
 ## Things to know
 

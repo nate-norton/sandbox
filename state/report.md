@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 36  |  last run: 2026-09-26T15:26:15Z  |  wallet `polymarket.us key 865b51eb…`
+- mode: **live**  |  profile: **aggressive**  |  runs: 38  |  last run: 2026-09-26T15:36:59Z  |  wallet `polymarket.us key 865b51eb…`
 - equity: **$59.18** (started $59.49, realized +0.00)
 - cash: $50.00  |  deployed: $10.00  |  open positions: 2
 - P&L today: +0.00
@@ -20,12 +20,12 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 30 API calls, 0 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 41 API calls, 30 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 576 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 864 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 

@@ -212,7 +212,9 @@ def _sync_live(led: Ledger, live: LiveClob, data: Optional[DataApi], cfg: Config
             if r.get("redeemable"):
                 led.notes.append(f"{led.last_run} redeemable: {pos[tid].question[:60]} ({size:.1f} {pos[tid].outcome})")
         led.positions = pos
-    if led.starting_bankroll <= 0 and led.equity > 0:
+    if led.equity <= 0 and not led.positions:
+        led.starting_bankroll = 0.0                  # nothing has arrived yet; measure from the first funded run
+    elif led.starting_bankroll <= 0:
         led.starting_bankroll = led.equity           # first live run with money in the wallet
     try:
         if live.open_orders():

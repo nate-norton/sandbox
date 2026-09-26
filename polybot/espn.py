@@ -7,6 +7,7 @@ against; Polymarket's price is compared to it.
 """
 from __future__ import annotations
 
+import json
 import logging
 import re
 from dataclasses import dataclass, field
@@ -171,6 +172,20 @@ def parse_event(ev: dict, league: str) -> Optional[Game]:
     return g
 
 
+_SAMPLED: set[str] = set()
+
+
+def _debug_sample(ev: dict, g: Game) -> None:
+    """Log the raw odds/situation objects once per game state so parser gaps are visible in CI logs."""
+    key = g.state
+    if key in _SAMPLED:
+        return
+    _SAMPLED.add(key)
+    comp = (ev.get("competitions") or [{}])[0]
+    raw = {"odds": comp.get("odds"), "situation": comp.get("situation"), "status": ev.get("status")}
+    log.info("espn raw sample (%s, %s): %s", g.state, g.raw_name, json.dumps(raw, default=str)[:1500])
+
+
 def _int_or_none(v):
     try:
         return int(float(v)) if v not in (None, "") else None
@@ -229,6 +244,7 @@ class Espn:
                 if g and g.id not in seen:
                     seen.add(g.id)
                     out.append(g)
+                    _debug_sample(ev, g)
         log.info("espn %s: %d games (%d live, %d pre, %d final)%s", league, len(out),
                  sum(g.state == "in" for g in out), sum(g.state == "pre" for g in out), sum(g.completed for g in out),
                  f"; e.g. {out[0].summary}" if out else "")

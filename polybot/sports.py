@@ -94,6 +94,24 @@ def _live_blocked(cfg: Config, g: Game, p: float, src: str, stats: Counter) -> b
     return False
 
 
+def blended_p(cfg: Config, g: Game, p: float, src: str, ask: float, bid: float) -> float:
+    """Shrink ESPN's live win probability toward the market early in a game. ESPN's number reacts to
+    a single drive at 0-0 in the first quarter (Maryland: 44% pregame, 57% after one drive, lost)
+    while the market barely moves; the market is the sharper number until the score does the
+    talking. The weight on the market starts at sports_market_blend at kickoff and falls linearly to
+    zero at the end of regulation; a decided game (p past sports_decided_p) in its second half is
+    taken at face value, since that is where the market lags the scoreboard."""
+    if src != "live_wp" or cfg.sports_market_blend <= 0:
+        return p
+    elapsed = g.elapsed_fraction()
+    decided = p >= cfg.sports_decided_p or p <= 1.0 - cfg.sports_decided_p
+    if decided and elapsed >= 0.5:
+        return p
+    w_market = cfg.sports_market_blend * max(0.0, 1.0 - elapsed)
+    mid = (ask + bid) / 2.0
+    return (1.0 - w_market) * p + w_market * mid
+
+
 def find_sports_edges(matched: list[Matched], books: dict[str, Book], cfg: Config, now: datetime,
                       equity: float, per_position_cap: float, held: set[str],
                       stats: Counter | None = None) -> list[Opportunity]:
@@ -127,6 +145,8 @@ def find_sports_edges(matched: list[Matched], books: dict[str, Book], cfg: Confi
             if ask - bid > cfg.sports_max_spread:
                 st["sports.wide_spread"] += 1
                 continue
+            p_raw = p
+            p = blended_p(cfg, g, p, src, ask, bid)
             fee_ps = est_fee(b.fee_bps, 1, ask)
             edge = p - ask - fee_ps
             margin = _margin(cfg, g, p, src)
@@ -160,7 +180,8 @@ def find_sports_edges(matched: list[Matched], books: dict[str, Book], cfg: Confi
             st["sports.candidate"] += 1
             o = Opportunity("sports_edge", m, [Leg(m.token_ids[idx], "BUY", worst, size, m.outcomes[idx])],
                             cost + fee, ev, p - worst - fee_ps,
-                            note=f"{m.outcomes[idx]} @ {ask:.3f} vs model {p:.3f} ({src}, margin {margin:.3f}); {g.summary}; kelly f*={f_star:.2f}")
+                            note=f"{m.outcomes[idx]} @ {ask:.3f} vs model {p:.3f} ({src}{'' if p == p_raw else f' {p_raw:.3f} blended with market'}, "
+                                 f"margin {margin:.3f}); {g.summary}; kelly f*={f_star:.2f}")
             o.ai_p = p
             o.model_src = src
             out.append(o)

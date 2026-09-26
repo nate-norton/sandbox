@@ -61,10 +61,10 @@ class RiskManager:
         if opp.cost > self.spendable(st) + 1e-9:
             return f"cost {opp.cost:.2f} exceeds spendable {self.spendable(st):.2f}"
         # arbitrage is hedged, so it may use the whole spendable amount; directional trades may not
-        if opp.kind in ("harvest", "ai_edge"):
+        if opp.kind in ("harvest", "ai_edge", "sports_edge"):
             if st.open_positions >= c.max_open_positions:
                 return "max open positions"
-            cap = c.max_position_frac if opp.kind == "harvest" else c.ai_edge_position_frac
+            cap = c.ai_edge_position_frac if opp.kind == "ai_edge" else c.max_position_frac
             if opp.cost > cap * st.equity + 1e-9:
                 return f"cost {opp.cost:.2f} exceeds per-position cap"
         if opp.expected_profit <= 0:
@@ -76,7 +76,7 @@ class RiskManager:
         st.orders_this_run += len(opp.legs)
         st.cash -= spent
         st.deployed += spent
-        if opp.kind in ("harvest", "ai_edge") and spent > 0:
+        if opp.kind in ("harvest", "ai_edge", "sports_edge") and spent > 0:
             st.open_positions += 1
 
 

@@ -5,7 +5,26 @@ places small fill-or-kill orders when it finds an edge. It starts in **paper mod
 itself to **live mode** the moment the two secrets below exist. State and a human-readable report
 are committed back to the repo after every run (`state/ledger.json`, `state/report.md`).
 
-## What it trades
+## Sports mode (default): NFL and college football moneylines
+
+The bot only trades games ESPN knows about, priced against ESPN's numbers:
+
+| game state | model probability | source | margin required after fees |
+|---|---|---|---|
+| before kickoff | no-vig ESPN BET moneyline | ESPN scoreboard `odds` | 4c |
+| in progress | ESPN live win probability | ESPN scoreboard `situation` / game summary | 5c, or 3c when the model is ≥90% |
+| final, market not yet resolved | 1 or 0 from the final score | ESPN scoreboard | 1c |
+
+For every Polymarket moneyline market matched to a game (both outcome names must be the game's teams, timing must agree),
+edge = model − ask − taker fee. Trades need edge above the margin and are sized with half-Kelly on the net odds at the ask,
+capped by the risk profile (50% of equity per position on `aggressive`). Jev sees the game state and prices and can veto a
+trade when it leans the other way. Held positions are sold when the market bids more than the model says they are worth
+(by 5c after fees), so a lead that evaporates is cut rather than ridden to zero. Pair arbitrage still runs on the same markets.
+
+Data comes from ESPN's public scoreboard API, which is free and needs no key. Spreads and totals are not traded yet
+(ESPN publishes no probability for them). Set the repo variable `SPORTS_ONLY=false` to fall back to the general strategies below.
+
+## What it trades in general mode
 
 | strategy | idea | risk |
 |---|---|---|
@@ -92,6 +111,6 @@ python -m pytest -q            # offline tests with fake exchange data
 python -m polybot.run          # one paper cycle against the real APIs (needs network)
 ```
 
-Layout: `gamma.py` (market discovery) → `clob.py` (order books, fees, orders) → `decider.py` (Jev) →
-`strategies.py` (pure opportunity finders) → `risk.py` (approval) → `executor.py` (fills, paper or live) →
+Layout: `gamma.py` (market discovery) → `clob.py` (order books, fees, orders) → `espn.py` (live football data) →
+`sports.py` / `strategies.py` (pure opportunity finders) → `decider.py` (Jev) → `risk.py` (approval) → `executor.py` (fills, paper or live) →
 `ledger.py` (state) ; `run.py` wires one cycle together.

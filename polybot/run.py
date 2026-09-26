@@ -15,11 +15,13 @@ from .ai_cache import AiCache
 from .clob import DataApi, LiveClob, PublicClob
 from .config import Config
 from .decider import Assessment, JevDecider
+from .espn import Espn, Game
 from .executor import Executor
 from .gamma import Gamma
 from .ledger import Ledger, Position
 from .models import Book, Market, parse_iso
 from .risk import RiskManager, RiskState, state_from_ledger
+from .sports import Matched, find_sports_edges, match_markets, near_misses, sports_exits
 from .strategies import find_ai_edges, find_harvests, find_negrisk_arbs, find_pair_arbs
 from .wallet import candidate_funders, normalize_private_key
 
@@ -27,7 +29,7 @@ log = logging.getLogger("polybot")
 
 def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClob] = None,
              data: Optional[DataApi] = None, now: Optional[datetime] = None,
-             decider: Optional[JevDecider] = None) -> Ledger:
+             decider: Optional[JevDecider] = None, espn: Optional[Espn] = None) -> Ledger:
     now = now or datetime.now(timezone.utc)
     mode = "live" if live else "paper"
     path = os.path.join(cfg.state_dir, "ledger.json")
@@ -44,6 +46,23 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
 
     markets = gamma.active_markets(limit=cfg.scan_limit)
     by_cid = {m.condition_id: m for m in markets}
+
+    # sports mode: only NFL / CFB games that ESPN knows about
+    games: list[Game] = []
+    matched: list[Matched] = []
+    if cfg.sports_only:
+        if espn is None:
+            espn = Espn()
+        for lg in cfg.sports_leagues:
+            games += espn.games(lg, now)
+        for g in games:
+            if g.state == "in" and g.home_wp is None:
+                g.home_wp = espn.live_wp(g)
+        matched = match_markets(markets, games, now)
+        matched_cids = {mm.market.condition_id for mm in matched}
+        held_cids_now = {p.condition_id for p in led.positions.values()}
+        markets = [m for m in markets if m.condition_id in matched_cids or m.condition_id in held_cids_now]
+        log.info("sports: %d games, %d moneyline markets matched", len(games), len(matched))
 
     # 1) settle / mark held positions, and grade past Jev calls against resolved markets
     if not live:
@@ -62,6 +81,11 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
 
     ex = Executor(led, books, live)
     _mark_and_stop(led, books, ex, now, cfg.stop_loss_drop)
+    if cfg.sports_only:
+        for tid, size, bid, note in sports_exits(matched, books, led, cfg):
+            log.info("EXIT %s", note)
+            got = ex.sell(tid, size, bid, "sports_exit")
+            log.info("  sold for $%.2f", got)
 
     # 3) fee lookups only for candidates that pass a cheap price prefilter (keeps request count small)
     _prefetch_fees(cands, books, clob, cfg)
@@ -77,20 +101,33 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
 
     held_cids = {p.condition_id for p in led.positions.values()}
     stats: Counter = Counter({"markets": len(markets), "candidates": len(cands), "books": len(books)})
-    gate, edge, ai_info = _assess_with_jev(cands, books, cfg, now, decider, led, stats, held_cids)
-    led.ai_info = ai_info
-    opps = find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)
-    if cfg.enable_negrisk_arb:
-        opps += find_negrisk_arbs(cands, books, cfg, now, rm.spendable(st))
-    if cfg.harvest_enabled:
-        opps += find_harvests(cands, books, cfg, now, rm.per_position_budget(st), held_cids, stats, gate)
-    if edge and not ai_info.get("breaker"):
-        # AI edges first: they carry the largest edge per share, harvest fills the rest
-        opps = find_ai_edges(cands, books, edge, cfg, now, rm.ai_edge_budget(st), held_cids, stats) + opps
+    if cfg.sports_only:
+        stats["sports.games"] = len(games)
+        match_markets([mm.market for mm in matched], games, now, stats)   # recount for the report
+        gate, edge, ai_info = _assess_with_jev(cands, books, cfg, now, decider, led, stats, held_cids,
+                                               game_notes={mm.market.condition_id: mm.game.summary for mm in matched},
+                                               blind=False)
+        led.ai_info = ai_info
+        opps = find_sports_edges(matched, books, cfg, now, st.equity, rm.per_position_budget(st), held_cids, stats)
+        opps = _apply_gate(opps, gate, cfg, stats)
+        opps += find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)
+        for line in near_misses(matched, books, now):
+            log.info("  sports near: %s", line)
+    else:
+        gate, edge, ai_info = _assess_with_jev(cands, books, cfg, now, decider, led, stats, held_cids)
+        led.ai_info = ai_info
+        opps = find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)
+        if cfg.enable_negrisk_arb:
+            opps += find_negrisk_arbs(cands, books, cfg, now, rm.spendable(st))
+        if cfg.harvest_enabled:
+            opps += find_harvests(cands, books, cfg, now, rm.per_position_budget(st), held_cids, stats, gate)
+        if edge and not ai_info.get("breaker"):
+            # AI edges first: they carry the largest edge per share, harvest fills the rest
+            opps = find_ai_edges(cands, books, edge, cfg, now, rm.ai_edge_budget(st), held_cids, stats) + opps
+        _log_near_misses(cands, books, cfg, now)
     log.info("opportunities: %d (spendable $%.2f)", len(opps), rm.spendable(st))
     log.info("scan stats: %s", ", ".join(f"{k}={v}" for k, v in sorted(stats.items())))
     led.scan = dict(sorted(stats.items()))
-    _log_near_misses(cands, books, cfg, now)
 
     done = []
     seen_cids: set[str] = set()
@@ -228,7 +265,8 @@ def _prefetch_fees(cands: list[Market], books: dict[str, Book], clob: PublicClob
 
 
 def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, now: datetime,
-                     decider: Optional[JevDecider], led: Ledger, stats: Counter, held: set[str]
+                     decider: Optional[JevDecider], led: Ledger, stats: Counter, held: set[str],
+                     game_notes: Optional[dict[str, str]] = None, blind: bool = True,
                      ) -> tuple[dict[str, Assessment], dict[str, Assessment], dict]:
     """Two assessment sets: favourites WITH prices (gate) and mid-priced markets WITHOUT (edge)."""
     info: dict = {"active": decider is not None}
@@ -236,11 +274,17 @@ def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, n
         return {}, {}, info
     cache = AiCache(os.path.join(cfg.state_dir, "ai_cache.json"), cfg.ai_cache_hours)
 
-    # (a) favourites the harvest strategy could buy: ask Jev with the prices visible
+    # (a) markets we might buy: ask Jev with the prices (and, in sports mode, the game state) visible
     gate_ms: list[Market] = []
     for m in cands:
         h = m.hours_to_end(now)
-        if h is None or h <= 0.5 or h > cfg.harvest_max_hours or m.condition_id in held:
+        if h is None or h <= 0.5 or m.condition_id in held:
+            continue
+        if game_notes is not None:
+            if m.condition_id in game_notes:
+                gate_ms.append(m)
+            continue
+        if h > cfg.harvest_max_hours:
             continue
         if m.liquidity < cfg.harvest_min_liquidity or m.volume24h < cfg.harvest_min_volume24h:
             continue
@@ -251,23 +295,27 @@ def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, n
 
     # (b) liquid markets leaning one way but not settled: ask Jev blind, compare to the price
     edge_ms: list[Market] = []
-    for m in cands:
-        h = m.hours_to_end(now)
-        if h is None or h <= 0.5 or h > cfg.ai_edge_max_hours or m.condition_id in held:
-            continue
-        if m.liquidity < cfg.ai_edge_min_liquidity or not m.description:
-            continue
-        asks = [books[t].best_ask for t in m.token_ids if t in books and books[t].best_ask is not None]
-        if len(asks) == 2 and cfg.ai_edge_min_price <= max(asks) <= cfg.ai_edge_max_price:
-            edge_ms.append(m)
-    edge_ms.sort(key=lambda m: -m.volume24h)
+    if blind:
+        for m in cands:
+            h = m.hours_to_end(now)
+            if h is None or h <= 0.5 or h > cfg.ai_edge_max_hours or m.condition_id in held:
+                continue
+            if m.liquidity < cfg.ai_edge_min_liquidity or not m.description:
+                continue
+            asks = [books[t].best_ask for t in m.token_ids if t in books and books[t].best_ask is not None]
+            if len(asks) == 2 and cfg.ai_edge_min_price <= max(asks) <= cfg.ai_edge_max_price:
+                edge_ms.append(m)
+        edge_ms.sort(key=lambda m: -m.volume24h)
 
     budget = cfg.ai_max_markets_per_run
     gate_ms = gate_ms[: max(0, budget // 2)]
     edge_ms = edge_ms[: max(0, budget - len(gate_ms))]
 
     def prices_of(m: Market) -> dict[str, float]:
-        return {o: books[t].best_ask for o, t in zip(m.outcomes, m.token_ids) if t in books and books[t].best_ask is not None}
+        d = {o: books[t].best_ask for o, t in zip(m.outcomes, m.token_ids) if t in books and books[t].best_ask is not None}
+        if game_notes and m.condition_id in game_notes:
+            d["_game_state"] = game_notes[m.condition_id]        # carried into Jev's state by market_state()
+        return d
 
     todo: list[tuple[Market, Optional[dict[str, float]]]] = []
     gate: dict[str, Assessment] = {}
@@ -320,6 +368,23 @@ def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, n
     log.info("jev: %d favourites gated, %d markets judged blind, %d API calls, %d errors%s",
              len(gate), len(edge), decider.calls, stats["ai.errors"], " [BREAKER ON]" if breaker else "")
     return gate, edge, info
+
+
+def _apply_gate(opps: list, gate: dict[str, Assessment], cfg: Config, stats: Counter) -> list:
+    """Drop sports trades where Jev, shown the game state and prices, leans the other way."""
+    out = []
+    for o in opps:
+        a = gate.get(o.market.condition_id)
+        if a and a.p_yes is not None:
+            idx = o.market.token_ids.index(o.legs[0].token_id)
+            ai_p = a.p_yes if idx == 0 else 1.0 - a.p_yes
+            if ai_p < cfg.ai_gate_min_p:
+                stats["sports.ai_vetoed"] += 1
+                log.info("  jev veto: %s (%s @ %.2f, jev %.2f)", o.market.question[:50], o.legs[0].outcome, o.legs[0].price, ai_p)
+                continue
+            o.note += f", jev {ai_p:.2f}"
+        out.append(o)
+    return out
 
 
 def _grade_ai_log(led: Ledger, gamma: Gamma, by_cid: dict[str, Market], now: datetime, limit: int = 25) -> None:
@@ -423,6 +488,8 @@ def main(argv: list[str] | None = None) -> int:
         except ValueError as e:
             key_problem = f"POLYMARKET_PRIVATE_KEY rejected: {e}"
             log.error("%s; running in PAPER mode", key_problem)
+    if cfg.sports_only:
+        log.info("sports mode: %s moneylines only", ", ".join(cfg.sports_leagues).upper())
     if cfg.is_live and not key_problem:
         data = DataApi(cfg.data_host)
         live = resolve_wallet(cfg, data=data)

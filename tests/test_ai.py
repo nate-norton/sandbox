@@ -33,6 +33,7 @@ def cfg(tmp_path, **kw):
     c.kill_switch_file = str(tmp_path / "STOP")
     c.private_key = c.funder = ""
     c.openrouter_api_key = "sk-or-test"
+    c.sports_only = False
     for k, v in kw.items():
         setattr(c, k, v)
     return c

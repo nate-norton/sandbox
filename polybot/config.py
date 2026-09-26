@@ -118,6 +118,19 @@ class Config:
     ai_min_samples_for_breaker: int = field(default_factory=lambda: _i("AI_MIN_SAMPLES", 30))
     ai_breaker_min_accuracy: float = field(default_factory=lambda: _f("AI_BREAKER_MIN_ACCURACY", 0.88))
 
+    # --- sports mode: NFL / college football moneylines priced against ESPN data ---
+    sports_only: bool = field(default_factory=lambda: _b("SPORTS_ONLY", True))
+    sports_leagues: tuple = field(default_factory=lambda: tuple(x.strip() for x in os.environ.get("SPORTS_LEAGUES", "nfl,cfb").split(",") if x.strip()))
+    sports_kelly_frac: float = field(default_factory=lambda: _f("SPORTS_KELLY_FRAC", 0.5))
+    sports_margin_pre: float = field(default_factory=lambda: _f("SPORTS_MARGIN_PRE", 0.04))
+    sports_margin_live: float = field(default_factory=lambda: _f("SPORTS_MARGIN_LIVE", 0.05))
+    sports_margin_live_sure: float = field(default_factory=lambda: _f("SPORTS_MARGIN_LIVE_SURE", 0.03))
+    sports_margin_final: float = field(default_factory=lambda: _f("SPORTS_MARGIN_FINAL", 0.01))
+    sports_exit_margin: float = field(default_factory=lambda: _f("SPORTS_EXIT_MARGIN", 0.05))
+    sports_max_hours_ahead: float = field(default_factory=lambda: _f("SPORTS_MAX_HOURS_AHEAD", 7 * 24.0))
+    sports_min_liquidity: float = field(default_factory=lambda: _f("SPORTS_MIN_LIQUIDITY", 2000.0))
+    sports_max_spread: float = field(default_factory=lambda: _f("SPORTS_MAX_SPREAD", 0.05))
+
     # --- scanning ---
     scan_limit: int = field(default_factory=lambda: _i("SCAN_LIMIT", 600))
     book_batch: int = 40

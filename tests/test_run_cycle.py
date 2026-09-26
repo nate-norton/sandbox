@@ -13,6 +13,7 @@ def make_cfg(tmp_path):
     c.state_dir = str(tmp_path)
     c.kill_switch_file = str(tmp_path / "STOP")
     c.private_key = c.funder = ""
+    c.sports_only = False
     return c
 
 

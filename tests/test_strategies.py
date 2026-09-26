@@ -67,7 +67,7 @@ def test_harvest_filters_and_expected_value():
     # fee-bearing market: allowed up to the cap, fee comes out of the expected value
     books["gy"].fee_bps = 1000
     o_fee = find_harvests([good], books, c, NOW, 5.0, set())[0]
-    assert abs(o_fee.cost - (4.8 + 0.1 * 5 * 0.04)) < 1e-9 and o_fee.expected_profit < o.expected_profit
+    assert abs(o_fee.cost - (4.8 + 0.1 * 5 * 0.96 * 0.04)) < 1e-9 and o_fee.expected_profit < o.expected_profit
     books["gy"].fee_bps = 2000
     assert find_harvests([good], books, c, NOW, 5.0, set()) == []
     books["gy"].fee_bps = 0
@@ -91,7 +91,7 @@ def test_harvest_prefers_soonest_resolution():
 
 def test_fee_estimate_uses_cheaper_side():
     from polybot.strategies import est_fee
-    assert abs(est_fee(1000, 100, 0.96) - 0.4) < 1e-9       # ~0.4% of $96 notional
-    assert abs(est_fee(1000, 100, 0.04) - 0.4) < 1e-9
-    assert abs(est_fee(1000, 100, 0.50) - 5.0) < 1e-9
+    assert abs(est_fee(1000, 100, 0.96) - 0.384) < 1e-9     # ~0.4% of $96 notional
+    assert abs(est_fee(1000, 100, 0.04) - 0.384) < 1e-9
+    assert abs(est_fee(1000, 100, 0.50) - 2.5) < 1e-9
     assert est_fee(0, 100, 0.5) == 0

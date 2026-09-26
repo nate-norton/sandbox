@@ -50,6 +50,9 @@ class Market:
     event_title: str = ""
     slug: str = ""
     description: str = ""
+    event_slug: str = ""
+    sports_type: str = ""            # Gamma's sportsMarketType: moneyline | spreads | totals | ...
+    game_start: Optional[datetime] = None
 
     @classmethod
     def from_gamma(cls, m: dict) -> "Market":
@@ -73,6 +76,9 @@ class Market:
             event_title=str(ev.get("title", "")),
             slug=str(m.get("slug", "")),
             description=str(m.get("description") or "")[:2000],
+            event_slug=str(ev.get("slug", "")),
+            sports_type=str(m.get("sportsMarketType") or ""),
+            game_start=parse_iso(m.get("gameStartTime")),
         )
 
     @property

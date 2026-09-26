@@ -66,8 +66,11 @@ def market_state(m: Market, now: datetime, prices: Optional[dict[str, float]]) -
         "hours_until_end": round(hrs, 1) if hrs is not None else None,
     }
     if prices:
-        st["current_market_prices"] = {k: round(v, 3) for k, v in prices.items()}
+        game = prices.get("_game_state")
+        st["current_market_prices"] = {k: round(v, 3) for k, v in prices.items() if not k.startswith("_")}
         st["note"] = "Prices are what traders currently pay per share that pays $1 if that outcome occurs."
+        if game:
+            st["live_game_state_from_espn"] = game
     return st
 
 

@@ -13,13 +13,10 @@ log = logging.getLogger(__name__)
 
 
 def est_fee(bps: int, size: float, price: float) -> float:
-    """Taker-fee estimate in USD.
-
-    Polymarket charges taker fees proportional to `rate * price * (1 - price)` per share, so
-    a 1000 bps market costs about 0.4% of notional at 96c and 2.5% at 50c. Using min(p, 1-p)
-    instead of p*(1-p) keeps this a strict upper bound.
+    """Taker-fee estimate in USD: Polymarket charges `rate * price * (1 - price)` per share
+    (docs.polymarket.com/trading/fees). At 1000 bps that is 2.5c per share at 50c and 0.4c at 96c.
     """
-    return bps / 10_000.0 * size * min(price, 1.0 - price)
+    return bps / 10_000.0 * size * price * (1.0 - price)
 
 
 def _round_down(x: float, step: float) -> float:

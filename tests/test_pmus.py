@@ -43,6 +43,18 @@ class FakeSDK:
         class Events:
             def retrieve_by_slug(self, slug):
                 return {"event": {"slug": slug, "startTime": outer._start, "title": "Texans vs Colts"}}
+            def list(self, params=None):
+                off = params.get("offset", 0) if params else 0
+                groups = {}
+                for m in outer._markets:
+                    groups.setdefault(m["eventSlug"], []).append(m)
+                evs = [{"slug": ev, "title": ms[0]["title"], "startTime": outer._start, "active": True, "closed": False,
+                        "liquidity": sum(m["liquidity"] for m in ms), "volume": 1000,
+                        "tags": [{"slug": ms[0]["team"]["league"].lower(), "label": ms[0]["team"]["league"]}],
+                        "markets": [{"slug": m["slug"], "title": m["title"] if "Spread" in m["title"] else m["team"]["name"],
+                                     "outcome": m["outcome"], "active": True, "closed": False} for m in ms]}
+                       for ev, ms in groups.items()]
+                return {"events": evs[off:off + 100]}
 
         class Account:
             def balances(self):
@@ -84,7 +96,7 @@ def two_team_markets():
 def test_football_markets_groups_team_markets_into_games():
     us = PolymarketUS(FakeSDK(two_team_markets(), {}))
     ms = us.football_markets(("nfl", "cfb"))
-    assert len(ms) == 1                                     # the CFB game has only one team market -> skipped
+    assert len(ms) == 1                                     # the CFB event has only one team market -> skipped
     m = ms[0]
     assert m.condition_id == "nfl-hou-ind" and m.outcomes == ["Texans", "Colts"]
     assert m.token_ids == ["us:nfl-hou-ind-hou", "us:nfl-hou-ind-ind"] and m.sports_type == "moneyline"

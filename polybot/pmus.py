@@ -8,7 +8,7 @@ so the ESPN sports strategy runs unchanged. Public data needs no key; trading do
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from .models import Book, Leg, Market, parse_iso
@@ -47,6 +47,25 @@ def _league_key(team: dict) -> Optional[str]:
     return None
 
 
+def _event_league(ev: dict) -> Optional[str]:
+    """League from the event slug tokens or its tags: 'nfl', or 'cfb' for college football."""
+    texts = [str(ev.get("slug") or "").lower()]
+    for t in ev.get("tags") or []:
+        texts.append(str(t.get("slug") or "").lower())
+        texts.append(str(t.get("label") or "").lower())
+    series = ev.get("series") or {}
+    texts.append(str(series.get("slug") or "").lower())
+    tokens = set()
+    for t in texts:
+        tokens.update(x for x in t.replace("_", "-").split("-") if x)
+        tokens.add(t)
+    if "nfl" in tokens:
+        return "nfl"
+    if tokens & {"cfb", "ncaaf", "ncaa-football", "college-football", "college football", "ncaa football"}:
+        return "cfb"
+    return None
+
+
 def _is_moneyline(m: dict) -> bool:
     t = f"{m.get('title', '')} {m.get('outcome', '')}".lower()
     return not any(x in t for x in NON_MONEYLINE)
@@ -64,61 +83,67 @@ class PolymarketUS:
         self._event_cache: dict[str, Optional[datetime]] = {}
 
     # ------------------------------------------------------------------ discovery
-    def football_markets(self, leagues: tuple = ("nfl", "cfb"), page: int = 100, max_pages: int = 30) -> list[Market]:
-        """One binary Market per game: the two team moneyline markets of an event."""
-        raw: list[dict] = []
+    def football_markets(self, leagues: tuple = ("nfl", "cfb"), page: int = 100, max_pages: int = 40,
+                         days_ahead: int = 8) -> list[Market]:
+        """One binary Market per game: the two team markets of a moneyline event."""
+        now = datetime.now(timezone.utc)
+        events: list[dict] = []
         offset = 0
+        params_base = {"active": True, "closed": False, "limit": page,
+                       "startTimeMax": (now + timedelta(days=days_ahead)).strftime("%Y-%m-%dT%H:%M:%SZ")}
         for _ in range(max_pages):
             try:
-                res = self.c.markets.list({"active": True, "closed": False, "limit": page, "offset": offset})
+                res = self.c.events.list({**params_base, "offset": offset})
             except Exception as e:
-                log.warning("polymarket.us markets.list failed at offset %d: %s", offset, e)
+                log.warning("polymarket.us events.list failed at offset %d: %s", offset, e)
+                if offset == 0 and "startTimeMax" in params_base:      # unsupported filter? retry without it
+                    params_base.pop("startTimeMax")
+                    continue
                 break
-            batch = res.get("markets") or []
-            raw += batch
+            batch = res.get("events") or []
+            events += batch
             offset += len(batch)
             if len(batch) < page:
                 break
-        by_event: dict[str, list[dict]] = {}
-        for m in raw:
-            lg = _league_key(m.get("team") or {})
-            if lg is None or lg not in leagues or not m.get("eventSlug") or not _is_moneyline(m):
-                continue
-            by_event.setdefault(m["eventSlug"], []).append(m)
         out: list[Market] = []
-        for ev_slug, ms in by_event.items():
-            teams = {}
-            for m in ms:
-                tid = (m.get("team") or {}).get("id")
-                if tid is not None:
-                    teams.setdefault(tid, m)            # one market per team
-            ms2 = list(teams.values())
-            if len(ms2) != 2:
+        samples = 0
+        for ev in events:
+            lg = _event_league(ev)
+            if lg is None or lg not in leagues:
                 continue
-            a, b = ms2
+            ms = [m for m in ev.get("markets") or [] if _is_moneyline(m)]
+            if samples < 2:
+                samples += 1
+                log.info("polymarket.us football event sample: %s", {k: ev.get(k) for k in ("slug", "title", "startTime", "tags")}
+                         | {"markets": [(m.get("slug"), m.get("title"), m.get("outcome")) for m in (ev.get("markets") or [])][:6]})
+            if len(ms) != 2:
+                continue
+            a, b = ms
             for m in (a, b):
-                self._market_meta[m["slug"]] = m
-            start = self._event_start(ev_slug, a)
+                self._market_meta[m["slug"]] = {**m, "eventSlug": ev.get("slug")}
+            start = parse_iso(ev.get("startTime")) or parse_iso(ev.get("endTime"))
             out.append(Market(
-                condition_id=ev_slug,
-                question=str(a.get("title") or ev_slug),
+                condition_id=str(ev.get("slug")),
+                question=str(ev.get("title") or ev.get("slug")),
                 token_ids=[token_id(a["slug"]), token_id(b["slug"])],
                 outcomes=[_team_label(a), _team_label(b)],
                 outcome_prices=[],
-                end_date=start,
+                end_date=parse_iso(ev.get("endTime")) or start,
                 neg_risk=False,
-                liquidity=float(a.get("liquidity") or 0) + float(b.get("liquidity") or 0),
-                volume24h=float(a.get("volume") or 0) + float(b.get("volume") or 0),
+                liquidity=float(ev.get("liquidity") or 0),
+                volume24h=float(ev.get("volume") or 0),
                 spread=0.0, min_order_size=1.0, tick_size=0.01,
                 accepting_orders=bool(a.get("active", True)) and bool(b.get("active", True)),
-                closed=bool(a.get("closed") or b.get("closed")),
-                event_id=ev_slug, event_title=str(a.get("title") or ""), slug=a["slug"],
-                description=str(a.get("description") or "")[:2000], event_slug=ev_slug,
+                closed=bool(ev.get("closed") or a.get("closed") or b.get("closed")),
+                event_id=str(ev.get("slug")), event_title=str(ev.get("title") or ""), slug=a["slug"],
+                description=str(ev.get("description") or "")[:2000], event_slug=str(ev.get("slug")),
                 sports_type="moneyline", game_start=start,
             ))
-        log.info("polymarket.us: %d football games from %d markets", len(out), len(raw))
-        if raw and not out:
-            log.info("polymarket.us sample market: %s", {k: raw[0].get(k) for k in ("slug", "title", "outcome", "eventSlug", "team")})
+        log.info("polymarket.us: %d football games from %d events", len(out), len(events))
+        if events and not out:
+            ev = events[0]
+            log.info("polymarket.us sample event: %s", {k: ev.get(k) for k in ("slug", "title", "startTime", "tags")}
+                     | {"markets": [(m.get("slug"), m.get("title")) for m in (ev.get("markets") or [])][:4]})
         return out
 
     def _event_start(self, ev_slug: str, m: dict) -> Optional[datetime]:
@@ -254,7 +279,7 @@ def _order_params(slug: str, intent: str, price: float, qty: int) -> dict:
 
 def _team_label(m: dict) -> str:
     t = m.get("team") or {}
-    return str(t.get("name") or m.get("outcome") or m.get("title") or "?")
+    return str(t.get("name") or m.get("title") or m.get("outcome") or "?")
 
 
 def make_client(key_id: str = "", secret: str = ""):

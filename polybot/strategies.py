@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime
 
 from .config import Config
@@ -22,31 +22,39 @@ def _round_down(x: float, step: float) -> float:
 
 # --------------------------------------------------------------------------- pair arbitrage
 def find_pair_arbs(markets: list[Market], books: dict[str, Book], cfg: Config, now: datetime,
-                   budget: float) -> list[Opportunity]:
+                   budget: float, stats: Counter | None = None) -> list[Opportunity]:
     """Binary market where YES ask + NO ask < 1: buying both legs locks in $1 per pair at resolution."""
     out: list[Opportunity] = []
+    st = stats if stats is not None else Counter()
+    best_pair = 9.0
     for m in markets:
         if not m.is_binary or m.closed:
             continue
         hrs = m.hours_to_end(now)
         if hrs is None or hrs <= 0 or hrs > cfg.arb_max_days_to_resolution * 24:
+            st["arb.window"] += 1
             continue
         by, bn = books.get(m.token_ids[0]), books.get(m.token_ids[1])
         if not by or not bn or by.best_ask is None or bn.best_ask is None:
+            st["arb.no_book"] += 1
             continue
         # Best-level edge; then size to what the book can actually fill at those levels.
-        edge = 1.0 - (by.best_ask + bn.best_ask)
+        pair_cost = by.best_ask + bn.best_ask
+        best_pair = min(best_pair, pair_cost)
+        edge = 1.0 - pair_cost
         fee_per_share = est_fee(by.fee_bps, 1, by.best_ask) + est_fee(bn.fee_bps, 1, bn.best_ask)
         edge -= fee_per_share
         if edge < cfg.arb_min_edge:
+            st["arb.no_edge"] += 1
             continue
         depth = min(by.ask_depth_at_or_below(by.best_ask), bn.ask_depth_at_or_below(bn.best_ask))
-        pair_cost = by.best_ask + bn.best_ask
         size = _round_down(min(depth, budget / pair_cost), 1.0)
         if size < m.min_order_size:
+            st["arb.too_small"] += 1
             continue
         profit = size * edge
         if profit < cfg.arb_min_profit_usd:
+            st["arb.profit_below_min"] += 1
             continue
         legs = [
             Leg(m.token_ids[0], "BUY", by.best_ask, size, m.outcomes[0]),
@@ -54,6 +62,8 @@ def find_pair_arbs(markets: list[Market], books: dict[str, Book], cfg: Config, n
         ]
         out.append(Opportunity("pair_arb", m, legs, size * pair_cost, profit, edge,
                                note=f"YES {by.best_ask:.3f} + NO {bn.best_ask:.3f} = {pair_cost:.3f}, {hrs/24:.1f}d to end"))
+    if best_pair < 9.0:
+        st["arb.best_pair_x1000"] = int(best_pair * 1000)
     out.sort(key=lambda o: -o.expected_profit)
     return out
 
@@ -99,7 +109,7 @@ def find_negrisk_arbs(markets: list[Market], books: dict[str, Book], cfg: Config
 
 # --------------------------------------------------------------------------- favorite harvesting
 def find_harvests(markets: list[Market], books: dict[str, Book], cfg: Config, now: datetime,
-                  per_position_budget: float, held: set[str]) -> list[Opportunity]:
+                  per_position_budget: float, held: set[str], stats: Counter | None = None) -> list[Opportunity]:
     """Buy the heavy favorite of a liquid market that resolves within hours.
 
     This is not risk-free: it monetises the favourite-longshot bias (favourites at 94-98c
@@ -108,44 +118,58 @@ def find_harvests(markets: list[Market], books: dict[str, Book], cfg: Config, no
     thin books, wide spreads, fee-bearing markets, and long holding periods.
     """
     out: list[Opportunity] = []
+    st = stats if stats is not None else Counter()
     for m in markets:
         if not m.is_binary or m.closed or m.condition_id in held:
             continue
         hrs = m.hours_to_end(now)
         if hrs is None or hrs <= 0.5 or hrs > cfg.harvest_max_hours:
+            st["harvest.window"] += 1
             continue
+        st["harvest.in_window"] += 1
         if m.liquidity < cfg.harvest_min_liquidity or m.volume24h < cfg.harvest_min_volume24h:
+            st["harvest.illiquid"] += 1
             continue
         for idx in (0, 1):
             b = books.get(m.token_ids[idx])
             if not b or b.best_ask is None or b.best_bid is None:
+                st["harvest.no_book"] += 1
                 continue
-            if b.fee_bps > 0:
-                continue                                  # fees eat the whole edge at 95c+
             ask, bid = b.best_ask, b.best_bid
             if ask < cfg.harvest_min_price or ask > cfg.harvest_max_price:
+                st["harvest.price_out_of_range"] += 1
                 continue
+            if b.fee_bps > 0:
+                st["harvest.fee_market"] += 1
+                continue                                  # fees eat the whole edge at 95c+
             if ask - bid > cfg.harvest_max_spread:
+                st["harvest.wide_spread"] += 1
                 continue
             gross = (1.0 - ask) / ask                     # return if it resolves YES
             annualized = gross * (365 * 24 / max(hrs, 1.0))
             if annualized < cfg.harvest_min_annualized:
+                st["harvest.low_annualized"] += 1
                 continue
             size = _round_down(per_position_budget / ask, 1.0)
             if size < m.min_order_size:
+                st["harvest.below_min_order"] += 1
                 continue
             filled = b.cost_to_buy(size)
             if not filled:
+                st["harvest.no_depth"] += 1
                 continue
             cost, worst = filled
             if worst > cfg.harvest_max_price:
+                st["harvest.slippage"] += 1
                 continue
             # Expected value assumes the favourite is underpriced by `harvest_assumed_edge`
             # (net of bad-resolution risk). Paying up through the book erodes that edge.
             p_win = min(0.999, ask + cfg.harvest_assumed_edge)
             ev = size * p_win - cost
             if ev <= 0:
+                st["harvest.negative_ev"] += 1
                 continue
+            st["harvest.candidate"] += 1
             out.append(Opportunity(
                 "harvest", m, [Leg(m.token_ids[idx], "BUY", worst, size, m.outcomes[idx])],
                 cost, ev, 1.0 - worst,

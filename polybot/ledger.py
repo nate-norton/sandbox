@@ -39,6 +39,7 @@ class Ledger:
     runs: int = 0
     last_run: str = ""
     notes: list[str] = field(default_factory=list)
+    scan: dict[str, int] = field(default_factory=dict)              # last scan's filter statistics
 
     # ---------- persistence ----------
     @classmethod

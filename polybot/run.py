@@ -7,6 +7,7 @@ from __future__ import annotations
 import logging
 import os
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -70,12 +71,16 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
         return led
 
     held_cids = {p.condition_id for p in led.positions.values()}
-    opps = find_pair_arbs(cands, books, cfg, now, rm.spendable(st))
+    stats: Counter = Counter({"markets": len(markets), "candidates": len(cands), "books": len(books)})
+    opps = find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)
     if cfg.enable_negrisk_arb:
         opps += find_negrisk_arbs(cands, books, cfg, now, rm.spendable(st))
     if cfg.harvest_enabled:
-        opps += find_harvests(cands, books, cfg, now, rm.per_position_budget(st), held_cids)
+        opps += find_harvests(cands, books, cfg, now, rm.per_position_budget(st), held_cids, stats)
     log.info("opportunities: %d (spendable $%.2f)", len(opps), rm.spendable(st))
+    log.info("scan stats: %s", ", ".join(f"{k}={v}" for k, v in sorted(stats.items())))
+    led.scan = dict(sorted(stats.items()))
+    _log_near_misses(cands, books, cfg, now)
 
     done = []
     seen_cids: set[str] = set()
@@ -174,6 +179,22 @@ def _prefetch_fees(cands: list[Market], books: dict[str, Book], clob: PublicClob
                 b.fee_bps = clob.fee_bps(b.token_id)
 
 
+def _log_near_misses(cands: list[Market], books: dict[str, Book], cfg: Config, now: datetime, n: int = 8) -> None:
+    """Show the closest favourites that did not qualify, so thresholds can be tuned from the logs."""
+    rows = []
+    for m in cands:
+        h = m.hours_to_end(now)
+        if h is None or h > cfg.harvest_max_hours:
+            continue
+        for idx in (0, 1):
+            b = books.get(m.token_ids[idx])
+            if b and b.best_ask is not None and b.best_bid is not None and 0.85 <= b.best_ask <= 0.995:
+                rows.append((h, m.question[:55], m.outcomes[idx], b.best_ask, b.best_bid, b.fee_bps, m.liquidity, m.volume24h, m.min_order_size))
+    rows.sort()
+    for h, q, o, a, bd, fee, liq, vol, mos in rows[:n]:
+        log.info("  near: %.1fh | %s | %s ask %.3f bid %.3f fee %d liq %.0f vol24 %.0f min %.0f", h, q, o, a, bd, fee, liq, vol, mos)
+
+
 def _finish(led: Ledger, path: str, cfg: Config, st: RiskState, done: list, halt: Optional[str]) -> None:
     led.save(path)
     _write_report(led, cfg, st, done, halt)
@@ -198,6 +219,8 @@ def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Opt
         lines += ["## Recent trades", ""] + [
             f"- {t['t']} {t['side']} {t['size']:.1f} {t['outcome']} @ {t['price']:.3f} ({t['kind']}) {t.get('q','')}" +
             (f" pnl {t['pnl']:+.3f}" if 'pnl' in t else "") for t in led.trades[-15:]] + [""]
+    if led.scan:
+        lines += ["## Last scan", "", ", ".join(f"{k}={v}" for k, v in led.scan.items()), ""]
     if led.notes:
         lines += ["## Notes", ""] + [f"- {n}" for n in led.notes[-10:]]
     os.makedirs(cfg.state_dir, exist_ok=True)

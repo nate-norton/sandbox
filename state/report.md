@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 12  |  last run: 2026-09-26T08:17:12Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
-- equity: **$0.00** (started $25.00, realized +0.00)
+- mode: **live**  |  profile: **aggressive**  |  runs: 13  |  last run: 2026-09-26T08:18:32Z  |  wallet `0xAB4C0a70a928d1cB2f35c6709C8Dd689BA698de2`
+- equity: **$0.00** (started $0.00, realized +0.00)
 - cash: $0.00  |  deployed: $0.00  |  open positions: 0
 - P&L today: +0.00  |  **HALTED: no funds in the wallet yet**
 
@@ -13,7 +13,7 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 24 favourites gated, 0 markets judged blind, 23 API calls, 1 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 24 favourites gated, 0 markets judged blind, 0 API calls, 24 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Last scan

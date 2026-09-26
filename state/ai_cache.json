@@ -1,11 +1,11 @@
 {
 "cfb-ballst-kentst-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-ballst-kentst-2026-09-26",
 "error": "",
-"p_yes": 0.06,
-"risk": 0.2,
-"risk_confidence": 0.7,
+"p_yes": 0.04,
+"risk": 0.03,
+"risk_confidence": 0.96,
 "with_prices": true
 },
 "cfb-boise-wmich-2026-09-26:p": {
@@ -18,12 +18,12 @@
 "with_prices": true
 },
 "cfb-buck-pitt-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-buck-pitt-2026-09-26",
 "error": "",
 "p_yes": 0.02,
-"risk": 0.03,
-"risk_confidence": 0.96,
+"risk": 0.01,
+"risk_confidence": 0.99,
 "with_prices": true
 },
 "cfb-cark-flst-2026-09-26:p": {
@@ -45,21 +45,21 @@
 "with_prices": true
 },
 "cfb-col-bayl-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-col-bayl-2026-09-26",
 "error": "",
 "p_yes": 0.08,
-"risk": 0.49,
-"risk_confidence": 0.27,
+"risk": 0.43,
+"risk_confidence": 0.36,
 "with_prices": true
 },
 "cfb-colst-utsa-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-colst-utsa-2026-09-26",
 "error": "",
-"p_yes": 0.06,
-"risk": 0.15,
-"risk_confidence": 0.77,
+"p_yes": 0.11,
+"risk": 0.27,
+"risk_confidence": 0.59,
 "with_prices": true
 },
 "cfb-del-vir-2026-09-26:p": {
@@ -99,12 +99,12 @@
 "with_prices": true
 },
 "cfb-ill-ohiost-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-ill-ohiost-2026-09-26",
 "error": "",
 "p_yes": 0.05,
-"risk": 0.15,
-"risk_confidence": 0.77,
+"risk": 0.08,
+"risk_confidence": 0.88,
 "with_prices": true
 },
 "cfb-incar-txst-2026-09-26:p": {
@@ -243,21 +243,21 @@
 "with_prices": true
 },
 "cfb-sala-uk-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-sala-uk-2026-09-26",
 "error": "",
-"p_yes": 0.08,
-"risk": 0.7,
-"risk_confidence": 0.52,
+"p_yes": 0.09,
+"risk": 0.58,
+"risk_confidence": 0.33,
 "with_prices": true
 },
 "cfb-sdst-toledo-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-sdst-toledo-2026-09-26",
 "error": "",
-"p_yes": 0.07,
-"risk": 0.31,
-"risk_confidence": 0.54,
+"p_yes": 0.05,
+"risk": 0.05,
+"risk_confidence": 0.93,
 "with_prices": true
 },
 "cfb-sfl-bowlgr-2026-09-26:p": {
@@ -270,12 +270,12 @@
 "with_prices": true
 },
 "cfb-smho-txtech-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-smho-txtech-2026-09-26",
 "error": "",
-"p_yes": 0.07,
-"risk": 0.24,
-"risk_confidence": 0.63,
+"p_yes": 0.03,
+"risk": 0.02,
+"risk_confidence": 0.97,
 "with_prices": true
 },
 "cfb-stnh-ohio-2026-09-26:p": {
@@ -324,12 +324,12 @@
 "with_prices": true
 },
 "cfb-unlv-akron-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-unlv-akron-2026-09-26",
 "error": "",
-"p_yes": 0.72,
-"risk": 0.87,
-"risk_confidence": 0.75,
+"p_yes": 0.95,
+"risk": 0.03,
+"risk_confidence": 0.95,
 "with_prices": true
 },
 "cfb-utah-iowast-2026-09-26:p": {
@@ -351,21 +351,21 @@
 "with_prices": true
 },
 "cfb-vtech-boscol-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-vtech-boscol-2026-09-26",
 "error": "",
-"p_yes": 0.71,
-"risk": 0.77,
-"risk_confidence": 0.59,
+"p_yes": 0.14,
+"risk": 0.69,
+"risk_confidence": 0.5,
 "with_prices": true
 },
 "cfb-wake-lou-2026-09-26:p": {
-"at": "2026-09-26T17:42:32Z",
+"at": "2026-09-26T18:43:22Z",
 "condition_id": "cfb-wake-lou-2026-09-26",
 "error": "",
 "p_yes": 0.32,
-"risk": 0.98,
-"risk_confidence": 0.96,
+"risk": 1.0,
+"risk_confidence": 0.95,
 "with_prices": true
 },
 "cfb-wisc-pennst-2026-09-26:p": {

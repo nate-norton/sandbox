@@ -96,3 +96,17 @@ def test_resolve_wallet_picks_funded_candidate(tmp_path):
     c.funder = "0x" + "ab" * 20
     live = resolve_wallet(c, make_client=lambda f, s: FakeLive(f, s, 0.0))
     assert live.funder == c.funder                                       # explicit setting wins
+
+
+def test_kill_switch_file_pauses_the_whole_bot(tmp_path, monkeypatch):
+    """With state/STOP present the process exits before any cycle: no scans, no orders, no exits."""
+    import os
+    from polybot import run as run_mod
+    monkeypatch.setenv("STATE_DIR", str(tmp_path))
+    monkeypatch.setenv("KILL_SWITCH_FILE", str(tmp_path / "STOP"))
+    monkeypatch.setenv("EXCHANGE", "us")
+    (tmp_path / "STOP").write_text("paused")
+    called = []
+    monkeypatch.setattr(run_mod, "run_once", lambda *a, **k: called.append(1))
+    assert run_mod.main(["--loop-minutes", "5"]) == 0
+    assert called == []

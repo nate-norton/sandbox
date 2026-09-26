@@ -692,6 +692,10 @@ def main(argv: list[str] | None = None) -> int:
     if key_problem:
         os.environ["POLYBOT_KEY_PROBLEM"] = key_problem
 
+    if os.path.exists(cfg.kill_switch_file):
+        # paused by hand: no cycles, no orders of any kind. Open positions settle on the exchange.
+        log.warning("PAUSED: %s exists; remove it (or run again without it) to resume trading", cfg.kill_switch_file)
+        return 0
     deadline = time.monotonic() + args.loop_minutes * 60
     espn = Espn() if cfg.sports_only else None
     cycles = 0

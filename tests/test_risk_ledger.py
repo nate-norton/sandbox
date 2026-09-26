@@ -99,8 +99,9 @@ def test_profiles(monkeypatch):
         Config(profile="yolo")
 
 
-def test_aggressive_sizing_and_halts():
+def test_aggressive_sizing_and_halts(tmp_path):
     a = Config(profile="aggressive")
+    a.kill_switch_file = str(tmp_path / "STOP")        # the repo's real state/STOP must not leak into this test
     rm = RiskManager(a)
     st = RiskState(cash=25, deployed=0, equity=25, open_positions=0, pnl_today=0)
     assert rm.spendable(st) == 25 and rm.per_position_budget(st) == 25

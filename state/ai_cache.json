@@ -9,12 +9,12 @@
 "with_prices": true
 },
 "cfb-boise-wmich-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-boise-wmich-2026-09-26",
 "error": "",
-"p_yes": 0.65,
+"p_yes": 0.66,
 "risk": 0.99,
-"risk_confidence": 0.94,
+"risk_confidence": 0.96,
 "with_prices": true
 },
 "cfb-buck-pitt-2026-09-26:p": {
@@ -27,12 +27,12 @@
 "with_prices": true
 },
 "cfb-cark-flst-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-cark-flst-2026-09-26",
 "error": "",
-"p_yes": 0.06,
-"risk": 0.83,
-"risk_confidence": 0.67,
+"p_yes": 0.07,
+"risk": 0.87,
+"risk_confidence": 0.75,
 "with_prices": true
 },
 "cfb-cmich-mia-2026-09-26:p": {
@@ -72,21 +72,21 @@
 "with_prices": true
 },
 "cfb-gardwb-marsh-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-gardwb-marsh-2026-09-26",
 "error": "",
 "p_yes": 0.1,
-"risk": 0.82,
-"risk_confidence": 0.69,
+"risk": 0.8,
+"risk_confidence": 0.65,
 "with_prices": true
 },
 "cfb-hawaii-wyom-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-hawaii-wyom-2026-09-26",
 "error": "",
-"p_yes": 0.49,
+"p_yes": 0.5,
 "risk": 1.01,
-"risk_confidence": 0.97,
+"risk_confidence": 0.98,
 "with_prices": true
 },
 "cfb-hou-gas-2026-09-26:p": {
@@ -117,21 +117,21 @@
 "with_prices": true
 },
 "cfb-iowa-mich-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-iowa-mich-2026-09-26",
 "error": "",
-"p_yes": 0.23,
+"p_yes": 0.22,
 "risk": 1.0,
 "risk_confidence": 0.97,
 "with_prices": true
 },
 "cfb-jac-emich-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-jac-emich-2026-09-26",
 "error": "",
-"p_yes": 0.05,
-"risk": 0.33,
-"risk_confidence": 0.5,
+"p_yes": 0.04,
+"risk": 0.16,
+"risk_confidence": 0.76,
 "with_prices": true
 },
 "cfb-jmad-old-2026-09-26:p": {
@@ -189,12 +189,12 @@
 "with_prices": true
 },
 "cfb-nd-pur-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-nd-pur-2026-09-26",
 "error": "",
-"p_yes": 0.73,
-"risk": 0.66,
-"risk_confidence": 0.43,
+"p_yes": 0.8,
+"risk": 0.48,
+"risk_confidence": 0.28,
 "with_prices": true
 },
 "cfb-nebr-mst-2026-09-26:p": {
@@ -216,16 +216,16 @@
 "with_prices": true
 },
 "cfb-nmx-nmxst-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-nmx-nmxst-2026-09-26",
 "error": "",
-"p_yes": 0.66,
+"p_yes": 0.65,
 "risk": 0.95,
-"risk_confidence": 0.85,
+"risk_confidence": 0.87,
 "with_prices": true
 },
 "cfb-okl-ga-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-okl-ga-2026-09-26",
 "error": "",
 "p_yes": 0.16,
@@ -234,12 +234,12 @@
 "with_prices": true
 },
 "cfb-robms-buf-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-robms-buf-2026-09-26",
 "error": "",
 "p_yes": 0.07,
-"risk": 0.58,
-"risk_confidence": 0.33,
+"risk": 0.61,
+"risk_confidence": 0.37,
 "with_prices": true
 },
 "cfb-sala-uk-2026-09-26:p": {
@@ -279,16 +279,16 @@
 "with_prices": true
 },
 "cfb-stnh-ohio-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-stnh-ohio-2026-09-26",
 "error": "",
 "p_yes": 0.06,
-"risk": 0.47,
-"risk_confidence": 0.3,
+"risk": 0.46,
+"risk_confidence": 0.31,
 "with_prices": true
 },
 "cfb-tcu-ucf-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-tcu-ucf-2026-09-26",
 "error": "",
 "p_yes": 0.6,
@@ -315,10 +315,10 @@
 "with_prices": true
 },
 "cfb-uconn-miaoh-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-uconn-miaoh-2026-09-26",
 "error": "",
-"p_yes": 0.32,
+"p_yes": 0.36,
 "risk": 1.0,
 "risk_confidence": 0.98,
 "with_prices": true
@@ -333,12 +333,12 @@
 "with_prices": true
 },
 "cfb-utah-iowast-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-utah-iowast-2026-09-26",
 "error": "",
-"p_yes": 0.59,
+"p_yes": 0.62,
 "risk": 0.99,
-"risk_confidence": 0.94,
+"risk_confidence": 0.95,
 "with_prices": true
 },
 "cfb-vand-aubrn-2026-09-26:p": {
@@ -378,12 +378,12 @@
 "with_prices": true
 },
 "cfb-wm-duke-2026-09-26:p": {
-"at": "2026-09-26T17:30:15Z",
+"at": "2026-09-26T18:30:43Z",
 "condition_id": "cfb-wm-duke-2026-09-26",
 "error": "",
 "p_yes": 0.09,
-"risk": 0.95,
-"risk_confidence": 0.88,
+"risk": 0.98,
+"risk_confidence": 0.92,
 "with_prices": true
 }
 }

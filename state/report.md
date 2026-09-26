@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 78  |  last run: 2026-09-26T18:21:47Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$49.15** (started $59.49, realized +0.00)
+- mode: **live**  |  profile: **aggressive**  |  runs: 82  |  last run: 2026-09-26T18:38:18Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$41.23** (started $59.49, realized +0.00)
 - cash: $3.37  |  deployed: $56.63  |  open positions: 5
 - P&L today: +0.00
 
@@ -10,10 +10,10 @@
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
 | Ole Miss vs. Florida | Rebels | 12.0 | 0.417 | 0.385 |  | external |
-| Northern Illinois vs. Georgia State | Panthers | 33.0 | 0.782 | 0.745 |  | sports_edge |
-| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.315 |  | external |
+| Northern Illinois vs. Georgia State | Panthers | 33.0 | 0.782 | 0.675 |  | sports_edge |
+| Texas vs. Tennessee | Volunteers | 14.0 | 0.357 | 0.335 |  | external |
 | Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.240 |  | external |
-| UCLA vs. Maryland | Terrapins | 38.0 | 0.416 | 0.200 |  | sports_edge |
+| UCLA vs. Maryland | Terrapins | 38.0 | 0.416 | 0.045 |  | sports_edge |
 
 ## Recent trades
 
@@ -25,16 +25,16 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 29 favourites gated, 0 markets judged blind, 3 API calls, 29 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 29 favourites gated, 0 markets judged blind, 15 API calls, 29 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 3683 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 3929 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=29, books=67, candidates=33, markets=136, obs.rows=63, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=102, sports.no_edge=27, sports.no_model=36, sports.price_out_of_band=11, sports.too_far_ahead=39, sports.unstable=8
+ai.edge_assessed=0, ai.gate_assessed=29, books=63, candidates=33, markets=136, obs.rows=59, sports.below_min_order=1, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=104, sports.no_edge=30, sports.no_model=36, sports.price_out_of_band=11, sports.stale_book=4, sports.too_far_ahead=39, sports.unstable=2
 
 ## Notes
 

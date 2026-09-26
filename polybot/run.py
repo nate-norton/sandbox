@@ -110,6 +110,10 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
     ex = Executor(led, books, live)
     _mark_and_stop(led, books, ex, now, cfg.stop_loss_drop)
     if cfg.sports_only:
+        stale = _stale_books(books, matched, now)
+        for tid in stale:
+            books.pop(tid, None)            # a frozen quote is not a price: no entries or exits on it
+    if cfg.sports_only:
         for tid, size, bid, note in sports_exits(matched, books, led, cfg):
             log.info("EXIT %s", note)
             got = ex.sell(tid, size, bid, "sports_exit")
@@ -136,6 +140,7 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
                                                game_notes={mm.market.condition_id: mm.game.summary for mm in matched},
                                                blind=False)
         led.ai_info = ai_info
+        stats["sports.stale_book"] = sum(1 for t in _BOOK_SEEN.values() if t[1] >= STALE_AFTER)
         opps = find_sports_edges(matched, books, cfg, now, st.equity, rm.per_position_budget(st), held_cids, stats)
         opps = _apply_gate(opps, gate, cfg, stats)
         # observation log: every quote next to the model, and each game's final outcome (once)
@@ -246,6 +251,35 @@ def _us_fee_ok(us: PolymarketUS, o, cfg: Config) -> str:
         log.info("  skipped after fee preview: fee $%.3f leaves edge %.3f", fee, edge)
         return f"exchange fee preview ${fee:.3f} leaves edge {edge:.3f}"
     return ""
+
+
+_BOOK_SEEN: dict[str, tuple[tuple, int, datetime]] = {}
+STALE_AFTER = 3          # identical top-of-book on this many consecutive reads of a live game
+STALE_MIN_GAP = 60.0     # seconds between reads for a repeat to count (a re-read seconds later proves nothing)
+
+
+def _stale_books(books: dict, matched: list, now: datetime) -> set[str]:
+    """Tokens whose top of book has not moved at all across STALE_AFTER consecutive reads while the
+    game is live. The public gateway kept serving one frozen Boston College quote for 20 minutes
+    while the score changed; orders against it just expire, so treat it as no quote."""
+    stale: set[str] = set()
+    live_tokens = {t for mm in matched if mm.game.state == "in" for t in mm.market.token_ids}
+    for tid, b in books.items():
+        if tid not in live_tokens:
+            _BOOK_SEEN.pop(tid, None)
+            continue
+        sig = (b.best_ask, b.best_bid, b.asks[0].size if b.asks else 0.0, b.bids[0].size if b.bids else 0.0)
+        prev, n, at = _BOOK_SEEN.get(tid, (None, 0, now))
+        if sig != prev:
+            n, at = 1, now
+        elif (now - at).total_seconds() >= STALE_MIN_GAP:
+            n, at = n + 1, now
+        _BOOK_SEEN[tid] = (sig, n, at)
+        if n >= STALE_AFTER:
+            stale.add(tid)
+    if stale:
+        log.info("stale books (frozen %d+ reads while live): %s", STALE_AFTER, ", ".join(sorted(stale)))
+    return stale
 
 
 def _refresh_live_price(us: PolymarketUS, o, cfg: Config) -> str:

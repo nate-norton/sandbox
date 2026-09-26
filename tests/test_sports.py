@@ -285,3 +285,26 @@ def test_jev_gate_vetoes_by_price_for_underdogs_and_by_half_for_favourites():
     # a 70c favourite still needs Jev on its side of 50%
     assert len(_apply_gate([opp(1, 0.70)], {"g": Assessment("g", 0.40, 0.5, 0.9, True, "t")}, cfg, Counter())) == 1
     assert len(_apply_gate([opp(1, 0.70)], {"g": Assessment("g", 0.60, 0.5, 0.9, True, "t")}, cfg, Counter())) == 0
+
+
+def test_frozen_live_book_is_dropped_after_three_identical_reads():
+    from polybot.run import _stale_books, _BOOK_SEEN
+    from polybot.sports import Matched
+    _BOOK_SEEN.clear()
+    m = mk_market("c1", "ty", "tn", hours=1)
+    g = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), ml_home=-200, ml_away=170,
+                               start=NOW - timedelta(minutes=30)), "nfl")
+    g.state = "in"
+    mm = Matched(m, g, ["home", "away"])
+    books = {"ty": mk_book("ty", [(0.55, 100)], [(0.53, 100)]), "tn": mk_book("tn", [(0.47, 100)], [(0.45, 100)])}
+    t0 = NOW
+    assert _stale_books(books, [mm], t0) == set()
+    assert _stale_books(books, [mm], t0 + timedelta(seconds=20)) == set()       # a re-read seconds later does not count
+    assert _stale_books(books, [mm], t0 + timedelta(minutes=2)) == set()
+    assert _stale_books(books, [mm], t0 + timedelta(minutes=4)) == {"ty", "tn"}
+    # any movement resets the count
+    books["ty"] = mk_book("ty", [(0.56, 100)], [(0.53, 100)])
+    assert _stale_books(books, [mm], t0 + timedelta(minutes=6)) == {"tn"}
+    # pre-game quotes are allowed to sit still
+    g.state = "pre"
+    assert _stale_books(books, [mm], t0 + timedelta(minutes=8)) == set()

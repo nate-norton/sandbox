@@ -352,23 +352,31 @@ class PolymarketUS:
         if qty <= 0:
             return 0.0, {"errorMsg": "zero quantity"}
         params = _order_params(slug, intent_for(leg.token_id, leg.side), leg.price, qty, self._tick(slug))
-        params["tif"] = "TIME_IN_FORCE_FILL_OR_KILL"
+        # immediate-or-cancel: take whatever rests at or under our limit right now, never leave an
+        # order on the book; fill-or-kill died whenever the top of book thinned during the ~30s
+        # between the book read and the order
+        params["tif"] = "TIME_IN_FORCE_IMMEDIATE_OR_CANCEL"
         params["synchronousExecution"] = True
         params["manualOrderIndicator"] = "MANUAL_ORDER_INDICATOR_AUTOMATIC"
         res = self.c.orders.create(params) or {}
         filled = 0.0
         fee = 0.0
+        notional = 0.0
         why: list[str] = []
         for ex in res.get("executions") or []:
             t = str(ex.get("type") or "")
             if t in ("EXECUTION_TYPE_FILL", "EXECUTION_TYPE_PARTIAL_FILL"):
-                filled += float(ex.get("lastShares") or 0)
+                shares = float(ex.get("lastShares") or 0)
+                filled += shares
+                notional += shares * (_amount(ex.get("lastPx")) or leg.price)
                 fee += _amount(ex.get("commissionNotionalCollected")) or 0.0
             else:
                 detail = " ".join(str(ex.get(k)) for k in ("orderRejectReason", "text") if ex.get(k))
                 why.append(f"{t.replace('EXECUTION_TYPE_', '').lower()}{': ' + detail if detail else ''}")
         raw = {"orderID": res.get("id"), "status": "matched" if filled > 0 else "unmatched",
                "success": True, "fee": round(fee, 4)}
+        if filled > 0:
+            raw["avgPx"] = round(notional / filled, 4)
         if filled <= 0:
             # keep the exchange's own words: a fill-or-kill that dies says why (no liquidity at the
             # price, buying power, price band, ...) and the decision log needs that, not "unmatched"

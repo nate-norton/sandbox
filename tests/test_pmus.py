@@ -78,7 +78,14 @@ class FakeSDK:
             def create(self, params):
                 outer.created.append(params)
                 qty = params["quantity"]
-                return {"id": "ord-1", "executions": [{"type": "EXECUTION_TYPE_FILL", "lastShares": str(qty), "lastPx": params["price"],
+                # a real matching engine fills at the resting price, not at our (higher) limit
+                book = outer._books.get(params["marketSlug"]) or {}
+                side = "offers" if params["intent"].endswith("BUY_LONG") else "bids"
+                rest = book.get(side)
+                px = params["price"]
+                if rest and params["intent"] in ("ORDER_INTENT_BUY_LONG", "ORDER_INTENT_SELL_LONG"):
+                    px = {"value": f"{rest[0][0]:.3f}", "currency": "USD"}
+                return {"id": "ord-1", "executions": [{"type": "EXECUTION_TYPE_FILL", "lastShares": str(qty), "lastPx": px,
                                                        "commissionNotionalCollected": {"value": "0.05", "currency": "USD"}}]}
 
         self.events, self.markets, self.account, self.portfolio, self.orders = Events(), Markets(), Account(), Portfolio(), Orders()
@@ -131,7 +138,7 @@ def test_books_mirror_short_side_and_orders_use_the_right_intent(tmp_path):
     filled, raw = us.fill_or_kill(Leg(token_id(slug, "S"), "BUY", 0.47, 20, "Colts"))
     assert filled == 20 and raw["status"] == "matched"
     req = sdk.created[-1]
-    assert req["intent"] == "ORDER_INTENT_BUY_SHORT" and req["tif"] == "TIME_IN_FORCE_FILL_OR_KILL"
+    assert req["intent"] == "ORDER_INTENT_BUY_SHORT" and req["tif"] == "TIME_IN_FORCE_IMMEDIATE_OR_CANCEL"
     assert req["price"] == {"value": "0.470", "currency": "USD"} and req["quantity"] == 20
     assert _order_params("x", "ORDER_INTENT_BUY_LONG", 0.5525, 5, 0.005)["price"]["value"] == "0.555"
     assert _order_params("x", "ORDER_INTENT_SELL_LONG", 0.5525, 5, 0.005)["price"]["value"] == "0.550"
@@ -183,5 +190,5 @@ def test_us_live_cycle_uses_exchange_balance_and_fee_preview(tmp_path):
                                start=NOW + timedelta(hours=6)), "nfl")
     led = run_once(c, None, None, live=us, now=NOW, espn=FakeEspn([g]), us=us)
     assert led.mode == "live" and led.starting_bankroll == 60.0
-    assert sdk.previews and sdk.created[-1]["intent"] == "ORDER_INTENT_BUY_LONG" and sdk.created[-1]["tif"] == "TIME_IN_FORCE_FILL_OR_KILL"
+    assert sdk.previews and sdk.created[-1]["intent"] == "ORDER_INTENT_BUY_LONG" and sdk.created[-1]["tif"] == "TIME_IN_FORCE_IMMEDIATE_OR_CANCEL"
     assert len(led.positions) == 1 and abs(led.positions[token_id(slug, "L")].avg_price - 0.55) < 1e-9

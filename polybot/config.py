@@ -137,6 +137,7 @@ class Config:
     sports_max_hours_ahead: float = field(default_factory=lambda: _f("SPORTS_MAX_HOURS_AHEAD", 7 * 24.0))
     sports_min_liquidity: float = field(default_factory=lambda: _f("SPORTS_MIN_LIQUIDITY", 2000.0))
     sports_max_spread: float = field(default_factory=lambda: _f("SPORTS_MAX_SPREAD", 0.05))
+    sports_max_slippage: float = field(default_factory=lambda: _f("SPORTS_MAX_SLIPPAGE", 0.02))     # skip if the fresh ask moved more than this above the ask we priced on
     sports_book_hours_ahead: float = field(default_factory=lambda: _f("SPORTS_BOOK_HOURS_AHEAD", 2.0))    # fetch books this close to kickoff (each book call is slow; live games first)
     # live-game guards (see docs/RESEARCH.md): more edge late in close games, none in the final minutes,
     # and only on a stable ESPN snapshot

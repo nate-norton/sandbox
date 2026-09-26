@@ -181,6 +181,10 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
             continue
         log.info("TRADE %s: %s | %s | cost $%.2f, +$%.3f exp", o.kind, o.market.question[:70], o.note, o.cost, o.expected_profit)
         if us is not None and live is not None:
+            moved = _refresh_live_price(us, o, cfg)
+            if moved:
+                _decide(led, f"skip {what}: {moved}")
+                continue
             fee_why = _us_fee_ok(us, o, cfg)
             if fee_why:
                 _decide(led, f"skip {what}: {fee_why}")
@@ -241,6 +245,30 @@ def _us_fee_ok(us: PolymarketUS, o, cfg: Config) -> str:
     if edge < cfg.sports_margin_final:
         log.info("  skipped after fee preview: fee $%.3f leaves edge %.3f", fee, edge)
         return f"exchange fee preview ${fee:.3f} leaves edge {edge:.3f}"
+    return ""
+
+
+def _refresh_live_price(us: PolymarketUS, o, cfg: Config) -> str:
+    """Re-read this one market's book seconds before ordering. The scan's book is ~30s old by now
+    (ESPN re-read, Jev calls) and in a live game that is a lifetime. Lift the limit one tick above
+    the fresh ask so an immediate-or-cancel order takes the top of book; give up if the ask ran
+    more than the slippage allowance above the price the edge was computed on."""
+    leg = o.legs[0]
+    try:
+        b = us.books([leg.token_id]).get(leg.token_id)
+    except Exception as e:
+        log.info("  fresh book failed for %s: %s", leg.outcome, e)
+        return ""
+    if not b or b.best_ask is None:
+        return "no ask on the fresh book"
+    tick = o.market.tick_size or 0.005
+    if b.best_ask > leg.price + cfg.sports_max_slippage + 1e-9:
+        return f"ask moved {leg.price:.3f} -> {b.best_ask:.3f} before the order"
+    new_price = round(max(leg.price, b.best_ask) + tick, 4)
+    if new_price != leg.price:
+        log.info("  limit %.3f -> %.3f (fresh ask %.3f + 1 tick)", leg.price, new_price, b.best_ask)
+        leg.price = new_price
+        o.cost = round(leg.size * new_price, 4)
     return ""
 
 

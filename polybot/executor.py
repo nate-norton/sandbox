@@ -68,7 +68,7 @@ class Executor:
         except Exception as e:  # network / signing / rejection
             log.error("  order failed for %s: %s", leg.outcome, e)
             return 0.0, 0.0, {"errorMsg": str(e)[:200]}
-        return filled, leg.price, raw
+        return filled, float((raw or {}).get("avgPx") or leg.price), raw
 
     # ------------------------------------------------------------------ sells
     def sell(self, token_id: str, size: float, price: float, kind: str) -> float:

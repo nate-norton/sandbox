@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 38  |  last run: 2026-09-26T15:36:59Z  |  wallet `polymarket.us key 865b51eb…`
+- mode: **live**  |  profile: **aggressive**  |  runs: 40  |  last run: 2026-09-26T15:47:26Z  |  wallet `polymarket.us key 865b51eb…`
 - equity: **$59.18** (started $59.49, realized +0.00)
 - cash: $50.00  |  deployed: $10.00  |  open positions: 2
 - P&L today: +0.00
@@ -25,7 +25,7 @@
 
 ## Observation log
 
-- 864 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
+- 1152 quote/model snapshots and 0 game outcomes across 1 files in `state/obs/`
 
 ## Last scan
 

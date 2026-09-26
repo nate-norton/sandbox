@@ -1,12 +1,26 @@
 {
  "cash": 25.0,
  "daily": {},
- "last_run": "2026-09-26T04:26:50Z",
+ "last_run": "2026-09-26T04:29:39Z",
  "mode": "paper",
  "notes": [],
  "positions": {},
  "realized_pnl": 0.0,
- "runs": 1,
+ "runs": 2,
+ "scan": {
+  "arb.best_pair_x1000": 1000,
+  "arb.no_book": 35,
+  "arb.no_edge": 300,
+  "books": 668,
+  "candidates": 335,
+  "harvest.fee_market": 10,
+  "harvest.illiquid": 4,
+  "harvest.in_window": 189,
+  "harvest.no_book": 28,
+  "harvest.price_out_of_range": 332,
+  "harvest.window": 146,
+  "markets": 600
+ },
  "starting_bankroll": 25.0,
  "trades": []
 }

@@ -92,7 +92,8 @@ class Ledger:
         return self.daily.get(_today(), 0.0)
 
     def record_buy(self, token_id: str, condition_id: str, question: str, outcome: str, size: float,
-                   price: float, end_date: Optional[str], kind: str, neg_risk: bool, raw: Optional[dict] = None) -> None:
+                   price: float, end_date: Optional[str], kind: str, neg_risk: bool, raw: Optional[dict] = None,
+                   model_p: Optional[float] = None, model_src: str = "") -> None:
         cost = size * price
         self.cash -= cost
         p = self.positions.get(token_id)
@@ -106,7 +107,8 @@ class Ledger:
                 size=size, avg_price=price, end_date=end_date, kind=kind, opened_at=_now(), neg_risk=neg_risk, mark=price,
             )
         self.trades.append({"t": _now(), "side": "BUY", "token_id": token_id, "outcome": outcome, "size": size,
-                            "price": price, "cost": round(cost, 4), "kind": kind, "q": question[:80], "raw": _short(raw)})
+                            "price": price, "cost": round(cost, 4), "kind": kind, "q": question[:80], "raw": _short(raw),
+                            "model_p": round(model_p, 4) if model_p is not None else None, "model_src": model_src})
 
     def record_sell(self, token_id: str, size: float, price: float, kind: str, raw: Optional[dict] = None) -> float:
         p = self.positions.get(token_id)

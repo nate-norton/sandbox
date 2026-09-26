@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -58,6 +59,24 @@ class Game:
     over_under: Optional[float] = None
     winner_home: Optional[bool] = None
     raw_name: str = ""
+    stable: bool = True                     # False when a re-read ~20 s later showed a change (play in progress)
+
+    def elapsed_fraction(self, quarters: int = 4, minutes: float = 15.0) -> float:
+        """0 at kickoff, 1 at the end of regulation (or overtime)."""
+        if self.state == "pre":
+            return 0.0
+        if self.state == "post" or self.period > quarters:
+            return 1.0
+        try:
+            mm, ss = (self.clock or "0:00").split(":")
+            left = float(mm) + float(ss) / 60.0
+        except (ValueError, AttributeError):
+            left = 0.0
+        done = max(0, self.period - 1) * minutes + max(0.0, minutes - left)
+        return max(0.0, min(1.0, done / (quarters * minutes)))
+
+    def minutes_left(self, quarters: int = 4, minutes: float = 15.0) -> float:
+        return (1.0 - self.elapsed_fraction(quarters, minutes)) * quarters * minutes
 
     def team_for(self, label: str) -> Optional[str]:
         """'home' / 'away' if the label names one of the teams."""
@@ -268,6 +287,31 @@ class Espn:
                  sum(g.state == "in" for g in out), sum(g.state == "pre" for g in out), sum(g.completed for g in out),
                  f"; e.g. {out[0].summary}" if out else "")
         return out
+
+    def stability_check(self, games: list[Game], wait_seconds: float = 20.0) -> None:
+        """Re-read the scoreboard for leagues with live games and mark games whose score or win
+        probability moved in between as unstable. Trading on the first read after a play is how a
+        slow bot buys the wrong side: the market has already repriced and ESPN has not."""
+        live = [g for g in games if g.state == "in"]
+        if not live:
+            return
+        time.sleep(wait_seconds)
+        now = datetime.now(timezone.utc)
+        by_id = {g.id: g for g in live}
+        for league in sorted({g.league for g in live}):
+            for g2 in self.games(league, now, days_ahead=0):
+                g = by_id.get(g2.id)
+                if not g:
+                    continue
+                changed = (g2.home.score != g.home.score or g2.away.score != g.away.score
+                           or (g2.home_wp is not None and g.home_wp is not None and abs(g2.home_wp - g.home_wp) > 0.02))
+                g.stable = not changed
+                if g2.home_wp is not None:
+                    g.home_wp = g2.home_wp           # keep the freshest number
+                g.period, g.clock = g2.period, g2.clock
+                g.home.score, g.away.score = g2.home.score, g2.away.score
+                if changed:
+                    log.info("unstable (play in progress): %s", g.summary)
 
     def live_wp(self, game: Game) -> Optional[float]:
         """Fallback when the scoreboard carries no live probability: read the game summary."""

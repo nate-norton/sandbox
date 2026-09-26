@@ -268,8 +268,9 @@ class PolymarketUS:
         return out
 
     def fee_bps(self, slug: str) -> int:
-        """Screening estimate; the exact commission comes from the order preview at execution time."""
-        return 500
+        """Polymarket US taker fee is 0.06 * C * p * (1-p) (docs.polymarket.us/fees); the exact
+        commission still comes from the order preview at execution time."""
+        return 600
 
     def resolved(self, condition_ids: set[str]) -> dict[str, list[float]]:
         """event slug -> [payout long, payout short] once the game's market has settled."""

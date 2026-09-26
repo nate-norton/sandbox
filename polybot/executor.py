@@ -29,7 +29,8 @@ class Executor:
                 log.info("  leg not filled: %s %s @ %.3f", leg.side, leg.outcome, leg.price)
                 break
             self.led.record_buy(leg.token_id, m.condition_id, m.question, leg.outcome, size, price,
-                                m.end_date.isoformat() if m.end_date else None, opp.kind, m.neg_risk, raw)
+                                m.end_date.isoformat() if m.end_date else None, opp.kind, m.neg_risk, raw,
+                                model_p=opp.ai_p, model_src=opp.model_src)
             spent += size * price
             filled_legs.append((leg, size, price))
             log.info("  filled BUY %.1f %s @ %.3f (%s)", size, leg.outcome, price, opp.kind)

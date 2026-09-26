@@ -121,7 +121,7 @@ def test_books_mirror_short_side_and_orders_use_the_right_intent(tmp_path):
     us.football_markets()
     books = us.books([token_id(slug, "L"), token_id(slug, "S")])
     L, S = books[token_id(slug, "L")], books[token_id(slug, "S")]
-    assert L.best_ask == 0.55 and L.best_bid == 0.53 and L.fee_bps == 500
+    assert L.best_ask == 0.55 and L.best_bid == 0.53 and L.fee_bps == 600
     assert abs(S.best_ask - 0.47) < 1e-9 and abs(S.best_bid - 0.45) < 1e-9 and S.ask_depth_at_or_below(0.47) == 40
     assert intent_for(token_id(slug, "S"), "BUY") == "ORDER_INTENT_BUY_SHORT" and intent_for(token_id(slug, "L"), "SELL") == "ORDER_INTENT_SELL_LONG"
     assert split_token("us:aec-x:S") == ("aec-x", "S") and split_token("us:aec-x") == ("aec-x", "L")

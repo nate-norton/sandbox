@@ -162,7 +162,8 @@ class Opportunity:
     expected_profit: float          # USD, after estimated fees
     edge: float                     # per-share edge in price units
     note: str = ""
-    ai_p: Optional[float] = None    # Jev's probability for the bought side, when assessed
+    ai_p: Optional[float] = None    # model / Jev probability for the bought side, when known
+    model_src: str = ""             # "moneyline" | "live_wp" | "final" for sports trades
 
     @property
     def key(self) -> str:

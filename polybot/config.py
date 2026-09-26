@@ -138,6 +138,14 @@ class Config:
     sports_min_liquidity: float = field(default_factory=lambda: _f("SPORTS_MIN_LIQUIDITY", 2000.0))
     sports_max_spread: float = field(default_factory=lambda: _f("SPORTS_MAX_SPREAD", 0.05))
     sports_book_hours_ahead: float = field(default_factory=lambda: _f("SPORTS_BOOK_HOURS_AHEAD", 36.0))   # fetch books this close to kickoff
+    # live-game guards (see docs/RESEARCH.md): more edge late in close games, none in the final minutes,
+    # and only on a stable ESPN snapshot
+    sports_margin_live_ramp: float = field(default_factory=lambda: _f("SPORTS_MARGIN_LIVE_RAMP", 0.07))
+    sports_decided_p: float = field(default_factory=lambda: _f("SPORTS_DECIDED_P", 0.90))
+    sports_min_minutes_left: float = field(default_factory=lambda: _f("SPORTS_MIN_MINUTES_LEFT", 4.0))
+    sports_min_price: float = field(default_factory=lambda: _f("SPORTS_MIN_PRICE", 0.08))
+    sports_exit_margin_decided: float = field(default_factory=lambda: _f("SPORTS_EXIT_MARGIN_DECIDED", 0.02))
+    sports_stability_wait: float = field(default_factory=lambda: _f("SPORTS_STABILITY_WAIT", 20.0))
 
     # --- scanning ---
     scan_limit: int = field(default_factory=lambda: _i("SCAN_LIMIT", 600))

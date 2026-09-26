@@ -70,11 +70,28 @@ def match_markets(markets: list[Market], games: list[Game], now: datetime, stats
 
 
 def _margin(cfg: Config, g: Game, p: float, src: str) -> float:
+    """Required edge. Live contested games need more edge as the clock runs down, because the
+    market sees possession, fouls and timeouts before a public feed does (ncaam-live-trader ramp)."""
     if src == "final":
         return cfg.sports_margin_final
     if src == "live_wp":
-        return cfg.sports_margin_live_sure if p >= 0.90 else cfg.sports_margin_live
+        if p >= cfg.sports_decided_p:
+            return cfg.sports_margin_live_sure
+        return cfg.sports_margin_live + cfg.sports_margin_live_ramp * g.elapsed_fraction() ** 2
     return cfg.sports_margin_pre
+
+
+def _live_blocked(cfg: Config, g: Game, p: float, src: str, stats: Counter) -> bool:
+    if src != "live_wp":
+        return False
+    if not g.stable:
+        stats["sports.unstable"] += 1
+        return True
+    contested = cfg.sports_decided_p > p > 1.0 - cfg.sports_decided_p
+    if contested and g.minutes_left() < cfg.sports_min_minutes_left:
+        stats["sports.late_contested"] += 1
+        return True
+    return False
 
 
 def find_sports_edges(matched: list[Matched], books: dict[str, Book], cfg: Config, now: datetime,
@@ -97,12 +114,15 @@ def find_sports_edges(matched: list[Matched], books: dict[str, Book], cfg: Confi
             if p is None:
                 st["sports.no_model"] += 1
                 continue
+            if _live_blocked(cfg, g, p, src, st):
+                continue
             b = books.get(m.token_ids[idx])
             if not b or b.best_ask is None or b.best_bid is None:
                 st["sports.no_book"] += 1
                 continue
             ask, bid = b.best_ask, b.best_bid
-            if ask >= 0.99:
+            if ask >= 0.99 or ask < cfg.sports_min_price:
+                st["sports.price_out_of_band"] += 1
                 continue
             if ask - bid > cfg.sports_max_spread:
                 st["sports.wide_spread"] += 1
@@ -140,8 +160,9 @@ def find_sports_edges(matched: list[Matched], books: dict[str, Book], cfg: Confi
             st["sports.candidate"] += 1
             o = Opportunity("sports_edge", m, [Leg(m.token_ids[idx], "BUY", worst, size, m.outcomes[idx])],
                             cost + fee, ev, p - worst - fee_ps,
-                            note=f"{m.outcomes[idx]} @ {ask:.3f} vs model {p:.3f} ({src}); {g.summary}; kelly f*={f_star:.2f}")
+                            note=f"{m.outcomes[idx]} @ {ask:.3f} vs model {p:.3f} ({src}, margin {margin:.3f}); {g.summary}; kelly f*={f_star:.2f}")
             o.ai_p = p
+            o.model_src = src
             out.append(o)
     out.sort(key=lambda o: -o.edge)
     return out
@@ -160,9 +181,13 @@ def sports_exits(matched: list[Matched], books: dict[str, Book], led: Ledger, cf
         b = books.get(tid)
         if p is None or not b or b.best_bid is None or src == "final":
             continue
+        if src == "live_wp" and not mm.game.stable:
+            continue
         bid = b.best_bid
         fee_ps = est_fee(b.fee_bps, 1, bid)
-        if bid - fee_ps - p >= cfg.sports_exit_margin:
+        decided = p >= cfg.sports_decided_p or p <= 1.0 - cfg.sports_decided_p
+        allowance = cfg.sports_exit_margin_decided if decided else cfg.sports_exit_margin
+        if bid - fee_ps - p >= allowance:
             out.append((tid, pos.size, bid, f"sell {pos.outcome} @ {bid:.3f}: model {p:.3f} ({src}); {mm.game.summary}"))
     return out
 

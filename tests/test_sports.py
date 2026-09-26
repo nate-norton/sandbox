@@ -1,4 +1,5 @@
 """Sports mode: ESPN parsing, market matching, model edges, exits, and a full cycle."""
+from collections import Counter
 from datetime import timedelta
 
 from polybot.config import Config
@@ -130,12 +131,18 @@ def test_sports_exit_when_market_overprices_our_side(tmp_path):
 
 
 class FakeEspn:
-    def __init__(self, games):
+    def __init__(self, games, unstable_ids=()):
         self._games = games
+        self._unstable = set(unstable_ids)
+        self.stability_calls = 0
     def games(self, league, now, days_ahead=7):
         return [g for g in self._games if g.league == league]
     def live_wp(self, game):
         return None
+    def stability_check(self, games, wait_seconds=20.0):
+        self.stability_calls += 1
+        for g in games:
+            g.stable = g.id not in self._unstable
 
 
 def test_full_sports_cycle_ignores_non_sports_markets(tmp_path):
@@ -190,3 +197,49 @@ def test_books_only_for_games_near_kickoff(tmp_path):
     clob = FakeClob({t: mk_book(t, [(0.5, 10)], [(0.48, 10)]) for t in ("sy", "sn", "fy", "fn")})
     led = run_once(c, FakeGamma([soon, far]), clob, now=NOW, espn=FakeEspn([g1, g2]))
     assert led.scan["books"] == 2 and led.scan["sports.matched"] == 2
+
+
+def test_live_guards_from_research(tmp_path):
+    """Stable-snapshot requirement, late-game ramp, and contested final-minutes skip."""
+    c = cfg(tmp_path)
+    m = mk_market("c1", "hou", "ind", hours=2)
+    m.question, m.outcomes, m.sports_type = "Texans vs. Colts", ["Texans", "Colts"], "moneyline"
+    books = {"hou": mk_book("hou", [(0.78, 100)], [(0.76, 100)], fee=600), "ind": mk_book("ind", [(0.23, 100)], [(0.21, 100)], fee=600)}
+    # Q2, Texans 88% live vs 78c ask: edge ~9c after fee, ramp small early -> trade
+    live = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), state="in", hs=14, aws=0, wp=0.88), "nfl")
+    live.period, live.clock = 2, "10:00"
+    assert abs(live.elapsed_fraction() - (20 / 60)) < 1e-9 and abs(live.minutes_left() - 40) < 1e-9
+    opps = find_sports_edges(match_markets([m], [live], NOW), books, c, NOW, 60.0, 30.0, set())
+    assert len(opps) == 1 and opps[0].model_src == "live_wp"
+    # same numbers but the snapshot was unstable (a play just happened): no trade
+    live.stable = False
+    st = Counter()
+    assert find_sports_edges(match_markets([m], [live], NOW), books, c, NOW, 60.0, 30.0, set(), st) == [] and st["sports.unstable"] == 2
+    live.stable = True
+    # Q4 3:00 left, still contested (88% < 90% decided): blocked in the final minutes
+    live.period, live.clock = 4, "3:00"
+    st = Counter()
+    assert find_sports_edges(match_markets([m], [live], NOW), books, c, NOW, 60.0, 30.0, set(), st) == [] and st["sports.late_contested"] == 2
+    # Q4 8:00 left, contested: margin has ramped (5c + 7c * 0.87^2 ~ 10.3c) so a 9c edge no longer qualifies
+    live.period, live.clock = 4, "8:00"
+    st = Counter()
+    assert find_sports_edges(match_markets([m], [live], NOW), books, c, NOW, 60.0, 30.0, set(), st) == [] and st["sports.no_edge"] >= 1
+    # decided game (95%) late: the 3c bar applies and the final-minutes block does not
+    live.home_wp, live.clock = 0.95, "2:00"
+    books["hou"] = mk_book("hou", [(0.90, 100)], [(0.89, 100)], fee=600)
+    assert len(find_sports_edges(match_markets([m], [live], NOW), books, c, NOW, 60.0, 30.0, set())) == 1
+
+
+def test_stability_check_runs_when_a_matched_game_is_live(tmp_path):
+    c = cfg(tmp_path)
+    m = mk_market("c1", "hou", "ind", hours=2)
+    m.question, m.outcomes, m.sports_type = "Texans vs. Colts", ["Texans", "Colts"], "moneyline"
+    live = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), state="in", hs=14, aws=0, wp=0.88), "nfl")
+    live.period, live.clock = 2, "10:00"
+    books = {"hou": mk_book("hou", [(0.78, 100)], [(0.76, 100)], fee=600), "ind": mk_book("ind", [(0.23, 100)], [(0.21, 100)], fee=600)}
+    espn = FakeEspn([live], unstable_ids={"1"})
+    led = run_once(c, FakeGamma([m]), FakeClob(books), now=NOW, espn=espn)
+    assert espn.stability_calls == 1 and not led.positions and led.scan.get("sports.unstable") == 2
+    espn = FakeEspn([live])
+    led = run_once(c, FakeGamma([m]), FakeClob(books), now=NOW, espn=espn)
+    assert len(led.positions) == 1 and led.trades[-1]["model_p"] == 0.88 and led.trades[-1]["model_src"] == "live_wp"

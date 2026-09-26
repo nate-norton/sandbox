@@ -115,6 +115,12 @@ def _sync_live(led: Ledger, live: LiveClob, data: Optional[DataApi], cfg: Config
     except Exception as e:
         log.error("balance lookup failed: %s", e)
         raise SystemExit(2)
+    if led.cash <= 0 and not led.positions:
+        msg = (f"{led.last_run} live wallet {live.funder[:6]}…{live.funder[-4:]} shows $0 USDC. "
+               "If you have deposited, POLYMARKET_FUNDER is probably not your Polymarket wallet address.")
+        log.warning(msg)
+        if not any("shows $0 USDC" in n for n in led.notes[-3:]):
+            led.notes.append(msg)
     if data:
         rows = data.positions(live.funder)
         pos: dict[str, Position] = {}

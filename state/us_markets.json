@@ -4293,6 +4293,25 @@
 },
 "tick": 0.005
 },
+"aec-nfl-ari-nyg-2026-10-04": {
+"description": "This market will settle to the winner of the Arizona Cardinals vs New York Giants NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "ari",
+"alias": "Cardinals",
+"name": "Arizona Cardinals",
+"safeName": "ARI Cardinals",
+"teamId": 48
+},
+"short": {
+"abbr": "nyg",
+"alias": "Giants",
+"name": "New York Giants",
+"safeName": "NY Giants",
+"teamId": 71
+},
+"tick": 0.0025
+},
 "aec-nfl-ari-sf-2026-09-27": {
 "description": "This market will settle to the winner of the Arizona Cardinals vs San Francisco 49ers NFL game scheduled for Sep 27, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
 "gameStartTime": "2026-09-27T20:05:00Z",
@@ -4369,6 +4388,44 @@
 },
 "tick": 0.005
 },
+"aec-nfl-dal-hou-2026-10-04": {
+"description": "This market will settle to the winner of the Dallas Cowboys vs Houston Texans NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "dal",
+"alias": "Cowboys",
+"name": "Dallas Cowboys",
+"safeName": "DAL Cowboys",
+"teamId": 56
+},
+"short": {
+"abbr": "hou",
+"alias": "Texans",
+"name": "Houston Texans",
+"safeName": "HOU Texans",
+"teamId": 60
+},
+"tick": 0.0025
+},
+"aec-nfl-gb-tb-2026-10-04": {
+"description": "This market will settle to the winner of the Green Bay Packers vs Tampa Bay Buccaneers NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "gb",
+"alias": "Packers",
+"name": "Green Bay Packers",
+"safeName": "GB Packers",
+"teamId": 59
+},
+"short": {
+"abbr": "tb",
+"alias": "Buccaneers",
+"name": "Tampa Bay Buccaneers",
+"safeName": "TB Buccaneers",
+"teamId": 77
+},
+"tick": 0.0025
+},
 "aec-nfl-hou-ind-2026-09-27": {
 "description": "This market will settle to the winner of the Houston Texans vs Indianapolis Colts NFL game scheduled for Sep 27, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
 "gameStartTime": "2026-09-27T17:00:00Z",
@@ -4404,6 +4461,25 @@
 "name": "Washington Commanders",
 "safeName": "WAS Commanders",
 "teamId": 79
+},
+"tick": 0.0025
+},
+"aec-nfl-jax-cin-2026-10-04": {
+"description": "This market will settle to the winner of the Jacksonville Jaguars vs Cincinnati Bengals NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "jax",
+"alias": "Jaguars",
+"name": "Jacksonville Jaguars",
+"safeName": "JAC Jaguars",
+"teamId": 62
+},
+"short": {
+"abbr": "cin",
+"alias": "Bengals",
+"name": "Cincinnati Bengals",
+"safeName": "CIN Bengals",
+"teamId": 54
 },
 "tick": 0.0025
 },
@@ -4464,6 +4540,25 @@
 },
 "tick": 0.005
 },
+"aec-nfl-lar-phi-2026-10-04": {
+"description": "This market will settle to the winner of the Los Angeles Rams vs Philadelphia Eagles NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "lar",
+"alias": "Rams",
+"name": "Los Angeles Rams",
+"safeName": "LA Rams",
+"teamId": 64
+},
+"short": {
+"abbr": "phi",
+"alias": "Eagles",
+"name": "Philadelphia Eagles",
+"safeName": "PHI Eagles",
+"teamId": 73
+},
+"tick": 0.0025
+},
 "aec-nfl-lv-no-2026-09-27": {
 "description": "This market will settle to the winner of the Las Vegas Raiders vs New Orleans Saints NFL game scheduled for Sep 27, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
 "gameStartTime": "2026-09-27T20:25:00Z",
@@ -4502,6 +4597,25 @@
 },
 "tick": 0.005
 },
+"aec-nfl-ne-buf-2026-10-04": {
+"description": "This market will settle to the winner of the New England Patriots vs Buffalo Bills NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "ne",
+"alias": "Patriots",
+"name": "New England Patriots",
+"safeName": "NE Patriots",
+"teamId": 69
+},
+"short": {
+"abbr": "buf",
+"alias": "Bills",
+"name": "Buffalo Bills",
+"safeName": "BUF Bills",
+"teamId": 51
+},
+"tick": 0.0025
+},
 "aec-nfl-ne-jax-2026-09-27": {
 "description": "This market will settle to the winner of the New England Patriots vs Jacksonville Jaguars NFL game scheduled for Sep 27, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
 "gameStartTime": "2026-09-27T17:00:00Z",
@@ -4520,6 +4634,25 @@
 "teamId": 62
 },
 "tick": 0.005
+},
+"aec-nfl-nyj-chi-2026-10-04": {
+"description": "This market will settle to the winner of the New York Jets vs Chicago Bears NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "nyj",
+"alias": "Jets",
+"name": "New York Jets",
+"safeName": "NY Jets",
+"teamId": 72
+},
+"short": {
+"abbr": "chi",
+"alias": "Bears",
+"name": "Chicago Bears",
+"safeName": "CHI Bears",
+"teamId": 53
+},
+"tick": 0.0025
 },
 "aec-nfl-nyj-det-2026-09-27": {
 "description": "This market will settle to the winner of the New York Jets vs Detroit Lions NFL game scheduled for Sep 27, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
@@ -4596,6 +4729,25 @@
 "teamId": 79
 },
 "tick": 0.005
+},
+"aec-nfl-ten-bal-2026-10-04": {
+"description": "This market will settle to the winner of the Tennessee Titans vs Baltimore Ravens NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-04T17:00:00Z",
+"long": {
+"abbr": "ten",
+"alias": "Titans",
+"name": "Tennessee Titans",
+"safeName": "TEN Titans",
+"teamId": 78
+},
+"short": {
+"abbr": "bal",
+"alias": "Ravens",
+"name": "Baltimore Ravens",
+"safeName": "BAL Ravens",
+"teamId": 50
+},
+"tick": 0.0025
 },
 "aec-nfl-ten-nyg-2026-09-27": {
 "description": "This market will settle to the winner of the Tennessee Titans vs New York Giants NFL game scheduled for Sep 27, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",

@@ -1,26 +1,78 @@
 {
- "cash": 25.0,
+ "cash": 15.290000000000001,
  "daily": {},
- "last_run": "2026-09-26T04:29:39Z",
+ "last_run": "2026-09-26T04:31:24Z",
  "mode": "paper",
  "notes": [],
- "positions": {},
+ "positions": {
+  "112827617879892007956970049062486816922462375312657627963114985887419321162634": {
+   "avg_price": 0.962,
+   "condition_id": "0x5eace6ff8de367f0c449705323d0b8ebb74fa6116aa08d270c29a89e1a6ab8d7",
+   "end_date": "2026-09-26T16:00:00+00:00",
+   "kind": "harvest",
+   "mark": 0.962,
+   "neg_risk": false,
+   "opened_at": "2026-09-26T04:31:35Z",
+   "outcome": "Ohio State",
+   "question": "Illinois vs. Ohio State",
+   "size": 5.0,
+   "token_id": "112827617879892007956970049062486816922462375312657627963114985887419321162634"
+  },
+  "76974295211872999319587134284633093538841249961635014724073198869353586017830": {
+   "avg_price": 0.9800000000000001,
+   "condition_id": "0xcd8009f9adc8244d02b35f239bb8897aeeae7e01198a6610ae14157f60012781",
+   "end_date": "2026-09-26T16:00:00+00:00",
+   "kind": "harvest",
+   "mark": 0.9800000000000001,
+   "neg_risk": true,
+   "opened_at": "2026-09-26T04:31:35Z",
+   "outcome": "No",
+   "question": "Will San Marino win on 2026-09-26?",
+   "size": 5.0,
+   "token_id": "76974295211872999319587134284633093538841249961635014724073198869353586017830"
+  }
+ },
  "realized_pnl": 0.0,
- "runs": 2,
+ "runs": 3,
  "scan": {
   "arb.best_pair_x1000": 1000,
-  "arb.no_book": 35,
-  "arb.no_edge": 300,
+  "arb.no_book": 34,
+  "arb.no_edge": 305,
   "books": 668,
-  "candidates": 335,
-  "harvest.fee_market": 10,
+  "candidates": 339,
+  "harvest.candidate": 10,
   "harvest.illiquid": 4,
-  "harvest.in_window": 189,
+  "harvest.in_window": 191,
   "harvest.no_book": 28,
-  "harvest.price_out_of_range": 332,
-  "harvest.window": 146,
+  "harvest.price_out_of_range": 336,
+  "harvest.window": 148,
   "markets": 600
  },
  "starting_bankroll": 25.0,
- "trades": []
+ "trades": [
+  {
+   "cost": 4.81,
+   "kind": "harvest",
+   "outcome": "Ohio State",
+   "price": 0.962,
+   "q": "Illinois vs. Ohio State",
+   "raw": null,
+   "side": "BUY",
+   "size": 5.0,
+   "t": "2026-09-26T04:31:35Z",
+   "token_id": "112827617879892007956970049062486816922462375312657627963114985887419321162634"
+  },
+  {
+   "cost": 4.9,
+   "kind": "harvest",
+   "outcome": "No",
+   "price": 0.9800000000000001,
+   "q": "Will San Marino win on 2026-09-26?",
+   "raw": null,
+   "side": "BUY",
+   "size": 5.0,
+   "t": "2026-09-26T04:31:35Z",
+   "token_id": "76974295211872999319587134284633093538841249961635014724073198869353586017830"
+  }
+ ]
 }

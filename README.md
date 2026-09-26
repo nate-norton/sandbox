@@ -65,7 +65,7 @@ Both profiles share these guards (all overridable by env vars / repo variables, 
 3. **Add them as GitHub Actions secrets** (repo → *Settings* → *Secrets and variables* → *Actions*):
    - `POLYMARKET_PRIVATE_KEY`
    - `POLYMARKET_FUNDER`
-   - `OPENROUTER_API_KEY` (turns on the Jev decider; optional but recommended)
+   - `OPENROUTER_API_KEY` or `OPEN_ROUTER_SECRET` (turns on the Jev decider; optional but recommended)
    - If you signed up with a browser wallet instead of email, also add a repository **variable** `POLYMARKET_SIGNATURE_TYPE=2` (email/Magic login is `1`, the default).
 4. **Merge this branch into `main`.** GitHub only runs scheduled workflows from the default branch. Until then you can start a cycle by hand from the *Actions* tab (*polybot* → *Run workflow*).
 

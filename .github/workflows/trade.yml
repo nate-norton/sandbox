@@ -43,7 +43,7 @@ jobs:
           LIVE: ${{ github.event.inputs.live || 'true' }}
           BANKROLL_USD: ${{ vars.BANKROLL_USD || '25' }}
           RISK_PROFILE: ${{ vars.RISK_PROFILE || 'aggressive' }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY || secrets.OPEN_ROUTER_SECRET }}
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || '~typesafe/jev-latest' }}
           HARVEST_ENABLED: ${{ vars.HARVEST_ENABLED || 'true' }}
           ENABLE_NEGRISK_ARB: ${{ vars.ENABLE_NEGRISK_ARB || 'false' }}

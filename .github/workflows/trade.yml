@@ -2,7 +2,7 @@ name: polybot
 
 on:
   schedule:
-    - cron: "*/30 * * * *"      # every 30 min (UTC); during games each run keeps cycling every 2 min (public repo: free)
+    - cron: "*/30 * * * *"      # GitHub throttles this; each run keeps cycling every 2 min for up to 5.5 h while games are live
   push:
     paths: ["polybot/**", "requirements.txt", ".github/workflows/trade.yml"]   # a code change runs one cycle
   workflow_dispatch:
@@ -21,7 +21,7 @@ permissions:
 jobs:
   trade:
     runs-on: ubuntu-latest
-    timeout-minutes: 32
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,7 +53,12 @@ jobs:
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || '~typesafe/jev-latest' }}
           HARVEST_ENABLED: ${{ vars.HARVEST_ENABLED || 'true' }}
           ENABLE_NEGRISK_ARB: ${{ vars.ENABLE_NEGRISK_ARB || 'false' }}
-        run: python -m polybot.run --loop-minutes ${{ vars.LOOP_MINUTES || '27' }} --interval-seconds ${{ vars.LOOP_INTERVAL_SECONDS || '120' }}
+        run: |
+          git config user.name "polybot"
+          git config user.email "polybot@users.noreply.github.com"
+          python -m polybot.run --loop-minutes ${{ vars.LOOP_MINUTES || '330' }} \
+            --interval-seconds ${{ vars.LOOP_INTERVAL_SECONDS || '120' }} \
+            --commit-every-minutes ${{ github.ref_name == 'main' && '10' || '0' }}
 
       - name: Commit state
         if: github.ref_name == 'main'

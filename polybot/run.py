@@ -540,11 +540,30 @@ def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Opt
         f.write("\n".join(lines) + "\n")
 
 
+def _commit_state(state_dir: str) -> None:
+    """Commit and push the state directory from inside a long-running loop (best effort)."""
+    import subprocess
+    try:
+        subprocess.run(["git", "add", state_dir], check=True, capture_output=True)
+        if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
+            return
+        subprocess.run(["git", "commit", "-q", "-m", f"polybot: state {datetime.now(timezone.utc):%Y-%m-%dT%H:%MZ}"],
+                       check=True, capture_output=True)
+        branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True).stdout.strip()
+        subprocess.run(["git", "pull", "--rebase", "-q", "origin", branch], check=True, capture_output=True)
+        subprocess.run(["git", "push", "-q", "origin", f"HEAD:{branch}"], check=True, capture_output=True)
+        log.info("state committed and pushed")
+    except subprocess.CalledProcessError as e:
+        log.warning("state commit failed: %s", (e.stderr or b"").decode()[:200])
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="polybot trading cycle")
     ap.add_argument("--loop-minutes", type=float, default=0.0,
                     help="keep cycling for this long while matched games are live or about to start")
     ap.add_argument("--interval-seconds", type=float, default=120.0, help="pause between cycles when looping")
+    ap.add_argument("--commit-every-minutes", type=float, default=0.0,
+                    help="while looping, commit and push state/ this often (0 = never; needs a git checkout with push rights)")
     args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", stream=sys.stdout)
     logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -587,6 +606,7 @@ def main(argv: list[str] | None = None) -> int:
     deadline = time.monotonic() + args.loop_minutes * 60
     espn = Espn() if cfg.sports_only else None
     cycles = 0
+    last_commit = time.monotonic()
     while True:
         cycles += 1
         try:
@@ -596,6 +616,9 @@ def main(argv: list[str] | None = None) -> int:
             if args.loop_minutes <= 0:
                 raise
             led = None
+        if args.commit_every_minutes > 0 and time.monotonic() - last_commit >= args.commit_every_minutes * 60:
+            _commit_state(cfg.state_dir)
+            last_commit = time.monotonic()
         remaining = deadline - time.monotonic()
         if args.loop_minutes <= 0 or remaining <= args.interval_seconds:
             break

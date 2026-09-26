@@ -89,7 +89,7 @@ def find_sports_edges(matched: list[Matched], books: dict[str, Book], cfg: Confi
         if g.start and g.state == "pre" and (g.start - now) > timedelta(hours=cfg.sports_max_hours_ahead):
             st["sports.too_far_ahead"] += 1
             continue
-        if m.liquidity < cfg.sports_min_liquidity:
+        if 0 < m.liquidity < cfg.sports_min_liquidity:      # unknown (0) liquidity: let book depth decide
             st["sports.illiquid"] += 1
             continue
         for idx, side in enumerate(mm.sides):

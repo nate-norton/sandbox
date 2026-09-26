@@ -141,7 +141,7 @@ class PolymarketUS:
             outcome_prices=[],
             end_date=parse_iso(ev.get("endTime")) or start,
             neg_risk=False,
-            liquidity=float(ev.get("liquidity") or 0),
+            liquidity=0.0,                          # the venue's event liquidity is not comparable; depth decides
             volume24h=float(ev.get("volume") or 0),
             spread=0.0, min_order_size=1.0, tick_size=float(sides.get("tick") or 0.005),
             accepting_orders=bool(ev.get("active", True)),

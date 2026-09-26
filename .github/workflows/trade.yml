@@ -2,7 +2,7 @@ name: polybot
 
 on:
   schedule:
-    - cron: "*/30 * * * *"      # every 30 min; during games each run keeps cycling every 2 min (public repo: free)
+    - cron: "*/30 * * * *"      # every 30 min (UTC); during games each run keeps cycling every 2 min (public repo: free)
   push:
     paths: ["polybot/**", "requirements.txt", ".github/workflows/trade.yml"]   # a code change runs one cycle
   workflow_dispatch:

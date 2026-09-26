@@ -358,12 +358,22 @@ class PolymarketUS:
         res = self.c.orders.create(params) or {}
         filled = 0.0
         fee = 0.0
+        why: list[str] = []
         for ex in res.get("executions") or []:
-            if ex.get("type") in ("EXECUTION_TYPE_FILL", "EXECUTION_TYPE_PARTIAL_FILL"):
+            t = str(ex.get("type") or "")
+            if t in ("EXECUTION_TYPE_FILL", "EXECUTION_TYPE_PARTIAL_FILL"):
                 filled += float(ex.get("lastShares") or 0)
                 fee += _amount(ex.get("commissionNotionalCollected")) or 0.0
+            else:
+                detail = " ".join(str(ex.get(k)) for k in ("orderRejectReason", "text") if ex.get(k))
+                why.append(f"{t.replace('EXECUTION_TYPE_', '').lower()}{': ' + detail if detail else ''}")
         raw = {"orderID": res.get("id"), "status": "matched" if filled > 0 else "unmatched",
                "success": True, "fee": round(fee, 4)}
+        if filled <= 0:
+            # keep the exchange's own words: a fill-or-kill that dies says why (no liquidity at the
+            # price, buying power, price band, ...) and the decision log needs that, not "unmatched"
+            raw["errorMsg"] = "; ".join(why) if why else f"no executions in response: {str(res)[:160]}"
+            log.info("  order %s not filled: %s", res.get("id"), raw["errorMsg"])
         return min(filled, leg.size), raw
 
 

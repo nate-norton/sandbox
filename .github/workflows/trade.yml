@@ -42,6 +42,7 @@ jobs:
           POLYMARKET_SIGNATURE_TYPE: ${{ vars.POLYMARKET_SIGNATURE_TYPE || '1' }}
           LIVE: ${{ github.event.inputs.live || 'true' }}
           BANKROLL_USD: ${{ vars.BANKROLL_USD || '25' }}
+          RISK_PROFILE: ${{ vars.RISK_PROFILE || 'aggressive' }}
           HARVEST_ENABLED: ${{ vars.HARVEST_ENABLED || 'true' }}
           ENABLE_NEGRISK_ARB: ${{ vars.ENABLE_NEGRISK_ARB || 'false' }}
         run: python -m polybot.run

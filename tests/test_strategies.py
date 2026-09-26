@@ -4,7 +4,7 @@ from tests.fakes import NOW, mk_book, mk_market
 
 
 def cfg(**kw):
-    c = Config()
+    c = Config(profile="conservative")
     for k, v in kw.items():
         setattr(c, k, v)
     return c

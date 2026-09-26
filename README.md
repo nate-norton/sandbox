@@ -13,13 +13,25 @@ are committed back to the repo after every run (`state/ledger.json`, `state/repo
 | `harvest` | Buy the heavy favourite (94c–98.5c) of a liquid market that resolves within 72 hours. Favourites at these prices historically win slightly more often than the price implies, and the capital turns over in days. Taker fees (about 0.4% on sports and crypto markets at these prices) are deducted before a trade qualifies. | Directional. Capped at 20% of equity per position, 8 positions, stop-loss if the price drops 25c, and only on books with tight spreads and real volume. |
 | `negrisk_arb` (off by default) | Buy every YES in a multi-outcome event when they add to less than $1.00. | Same as pair_arb, plus the risk that Polymarket adds an outcome to the event later. Turn on with repo variable `ENABLE_NEGRISK_ARB=true`. |
 
-## Bankroll protection (the "balance spend" part)
+## Risk profiles
 
-All in `polybot/config.py`, overridable by env vars / repo variables:
+Set with the repo variable `RISK_PROFILE`. **`aggressive` is the default.**
 
-- keeps `CASH_RESERVE_USD` ($2) untouched, never deploys more than 85% of equity
-- spends at most `MAX_SPEND_PER_RUN` ($12) per cycle and places at most 6 orders per cycle
-- halts for the day after losing 10% of equity, and halts entirely if equity falls under half the starting bankroll
+| | aggressive (default) | conservative |
+|---|---|---|
+| favourites bought from | 80c | 94c |
+| max per position | 50% of equity | 20% of equity |
+| max deployed | 100%, no cash reserve | 85%, $2 reserve |
+| spend per cycle | unlimited | $12 |
+| stop-loss | none | sell if a position drops 25c |
+| daily loss halt | 60% of equity | 10% of equity |
+| hard stop | equity under 20% of start | equity under 50% of start |
+| typical week on $25 | −$25 to +$8 | −$2 to +$1.50 |
+
+Winners compound automatically: every cap is a fraction of current equity, so position sizes grow with the bankroll.
+Both profiles share these guards (all overridable by env vars / repo variables, see `polybot/config.py`):
+
+- at most 8 open positions and 6 orders per cycle
 - **kill switch:** commit an empty file at `state/STOP` and the bot stops trading until it is removed
 - only fill-or-kill orders are used, so nothing ever rests on the book between runs; any stray open order is cancelled
 
@@ -46,7 +58,7 @@ Without the secrets the bot paper-trades with a simulated $25 so you can watch i
 ## Things to know
 
 - **Winning positions must be redeemed.** After a market resolves, the winnings sit as redeemable shares. Polymarket's website shows a *Claim* button and, for email-login accounts, redeems automatically over time; the bot lists redeemable positions in the report notes. Until they are claimed that cash is not reinvested.
-- **Expectations.** With $25 and Polymarket's $5-minimum orders, a good run makes cents, not dollars: a 3% favourite that resolves in two days is about 15c on a $4.80 position. Pair arbitrage is rarer and smaller still because faster bots compete for it. The point of the design is to compound slowly without blowing up, not to get rich.
+- **Expectations.** A favourite can never pay more than $1 per share, so the upside per trade is 2% to 25% depending on entry price. The aggressive profile bets half the bankroll per position: a run of winners compounds quickly, and a single loser costs half the bankroll. Pair arbitrage is rare and small because faster bots compete for it.
 - **Actions minutes.** Private repos get 2,000 free minutes/month; 48 runs/day at about a minute each fits. Making the repo public removes the limit.
 
 ## Development

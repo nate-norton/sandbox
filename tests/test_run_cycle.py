@@ -9,7 +9,7 @@ from tests.fakes import NOW, FakeClob, FakeGamma, mk_book, mk_market
 
 
 def make_cfg(tmp_path):
-    c = Config()
+    c = Config(profile="conservative")
     c.state_dir = str(tmp_path)
     c.kill_switch_file = str(tmp_path / "STOP")
     c.private_key = c.funder = ""

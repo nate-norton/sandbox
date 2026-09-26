@@ -34,8 +34,9 @@ class RiskManager:
         limit = -self.cfg.daily_loss_limit_frac * max(st.equity, self.cfg.starting_bankroll)
         if st.pnl_today < limit:
             return f"daily loss limit hit ({st.pnl_today:.2f} < {limit:.2f})"
-        if st.equity < self.cfg.starting_bankroll * 0.5:
-            return f"equity {st.equity:.2f} below half of starting bankroll; stopping to preserve capital"
+        floor = self.cfg.starting_bankroll * self.cfg.min_equity_frac
+        if st.equity < floor:
+            return f"equity {st.equity:.2f} below floor {floor:.2f} ({self.cfg.min_equity_frac:.0%} of start); stopping to preserve capital"
         return None
 
     def spendable(self, st: RiskState) -> float:

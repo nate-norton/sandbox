@@ -22,9 +22,6 @@ from .strategies import find_harvests, find_negrisk_arbs, find_pair_arbs
 
 log = logging.getLogger("polybot")
 
-STOP_LOSS_DROP = 0.25          # sell a directional position if it falls this far below entry
-
-
 def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClob] = None,
              data: Optional[DataApi] = None, now: Optional[datetime] = None) -> Ledger:
     now = now or datetime.now(timezone.utc)
@@ -33,7 +30,7 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
     led = Ledger.load(path, cfg.starting_bankroll, mode)
     led.runs += 1
     led.last_run = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    log.info("=== polybot run %d (%s mode) ===", led.runs, mode)
+    log.info("=== polybot run %d (%s mode, %s profile) ===", led.runs, mode, cfg.profile)
 
     if live:
         _sync_live(led, live, data, cfg)
@@ -56,7 +53,7 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
     log.info("books: %d of %d tokens", len(books), len(tokens))
 
     ex = Executor(led, books, live)
-    _mark_and_stop(led, books, ex, now)
+    _mark_and_stop(led, books, ex, now, cfg.stop_loss_drop)
 
     # 3) fee lookups only for candidates that pass a cheap price prefilter (keeps request count small)
     _prefetch_fees(cands, books, clob, cfg)
@@ -151,17 +148,17 @@ def _settle_paper(led: Ledger, gamma: Gamma, by_cid: dict[str, Market]) -> None:
             log.info("settled %s %s -> %.0f (pnl %+.3f)", p.question[:50], p.outcome, payout, pnl)
 
 
-def _mark_and_stop(led: Ledger, books: dict[str, Book], ex: Executor, now: datetime) -> None:
+def _mark_and_stop(led: Ledger, books: dict[str, Book], ex: Executor, now: datetime, stop_drop: float) -> None:
     for tid, p in list(led.positions.items()):
         b = books.get(tid)
         if not b or b.best_bid is None:
             continue
         p.mark = b.best_bid
-        if p.kind != "harvest":
+        if p.kind != "harvest" or stop_drop <= 0:
             continue
         end = parse_iso(p.end_date)
         hrs_left = (end - now).total_seconds() / 3600 if end else 999
-        if p.mark < p.avg_price - STOP_LOSS_DROP and hrs_left > 1:
+        if p.mark < p.avg_price - stop_drop and hrs_left > 1:
             log.warning("stop-loss: %s %s mark %.3f vs entry %.3f", p.question[:50], p.outcome, p.mark, p.avg_price)
             ex.sell(tid, p.size, p.mark, "harvest_stop")
 
@@ -204,7 +201,7 @@ def _finish(led: Ledger, path: str, cfg: Config, st: RiskState, done: list, halt
 
 def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Optional[str]) -> None:
     lines = [f"# polybot report", "",
-             f"- mode: **{led.mode}**  |  runs: {led.runs}  |  last run: {led.last_run}",
+             f"- mode: **{led.mode}**  |  profile: **{cfg.profile}**  |  runs: {led.runs}  |  last run: {led.last_run}",
              f"- equity: **${led.equity:.2f}** (started ${led.starting_bankroll:.2f}, realized {led.realized_pnl:+.2f})",
              f"- cash: ${led.cash:.2f}  |  deployed: ${led.deployed:.2f}  |  open positions: {len(led.positions)}",
              f"- P&L today: {led.pnl_today():+.2f}" + (f"  |  **HALTED: {halt}**" if halt else ""), ""]

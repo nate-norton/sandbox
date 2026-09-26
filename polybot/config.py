@@ -22,8 +22,36 @@ def _b(name: str, default: bool) -> bool:
     return v.strip().lower() in ("1", "true", "yes", "on")
 
 
+# Risk profiles. Values apply unless the matching env var is set explicitly.
+PROFILES: dict[str, dict] = {
+    "conservative": {},
+    "aggressive": {
+        "cash_reserve": 0.0,
+        "max_position_frac": 0.50,
+        "max_deployed_frac": 1.0,
+        "max_spend_per_run": 1000.0,
+        "daily_loss_limit_frac": 0.60,
+        "min_equity_frac": 0.20,
+        "stop_loss_drop": 0.0,             # disabled: a favourite that breaks usually goes to zero anyway
+        "harvest_min_price": 0.80,
+        "harvest_max_spread": 0.04,
+    },
+}
+
+ENV_NAMES = {
+    "cash_reserve": "CASH_RESERVE_USD", "max_position_frac": "MAX_POSITION_FRAC",
+    "max_deployed_frac": "MAX_DEPLOYED_FRAC", "max_spend_per_run": "MAX_SPEND_PER_RUN",
+    "daily_loss_limit_frac": "DAILY_LOSS_LIMIT_FRAC", "min_equity_frac": "MIN_EQUITY_FRAC",
+    "stop_loss_drop": "STOP_LOSS_DROP", "harvest_min_price": "HARVEST_MIN_PRICE",
+    "harvest_max_spread": "HARVEST_MAX_SPREAD",
+}
+
+
 @dataclass
 class Config:
+    # --- risk profile: "aggressive" (default) or "conservative" ---
+    profile: str = field(default_factory=lambda: os.environ.get("RISK_PROFILE", "aggressive").strip().lower())
+
     # --- credentials (absent => paper mode) ---
     private_key: str = field(default_factory=lambda: os.environ.get("POLYMARKET_PRIVATE_KEY", ""))
     funder: str = field(default_factory=lambda: os.environ.get("POLYMARKET_FUNDER", ""))
@@ -45,6 +73,8 @@ class Config:
     max_spend_per_run: float = field(default_factory=lambda: _f("MAX_SPEND_PER_RUN", 12.0))
     max_open_positions: int = field(default_factory=lambda: _i("MAX_OPEN_POSITIONS", 8))
     daily_loss_limit_frac: float = field(default_factory=lambda: _f("DAILY_LOSS_LIMIT_FRAC", 0.10))
+    min_equity_frac: float = field(default_factory=lambda: _f("MIN_EQUITY_FRAC", 0.50))     # halt below this
+    stop_loss_drop: float = field(default_factory=lambda: _f("STOP_LOSS_DROP", 0.25))       # 0 disables
 
     # --- strategy: pair arbitrage (YES ask + NO ask < 1) ---
     arb_min_edge: float = field(default_factory=lambda: _f("ARB_MIN_EDGE", 0.006))
@@ -73,6 +103,13 @@ class Config:
     # --- files ---
     state_dir: str = field(default_factory=lambda: os.environ.get("STATE_DIR", "state"))
     kill_switch_file: str = field(default_factory=lambda: os.environ.get("KILL_SWITCH_FILE", "state/STOP"))
+
+    def __post_init__(self) -> None:
+        if self.profile not in PROFILES:
+            raise ValueError(f"unknown RISK_PROFILE {self.profile!r}; choose one of {sorted(PROFILES)}")
+        for key, value in PROFILES[self.profile].items():
+            if os.environ.get(ENV_NAMES[key]) in (None, ""):
+                setattr(self, key, value)
 
     @property
     def is_live(self) -> bool:

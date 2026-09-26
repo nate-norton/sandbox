@@ -1,1005 +1,168 @@
 {
-"0x004a761afdf9540443259ce2fbaa9e88c251b59e50c926eb2d8cb99827ff5b74:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x004a761afdf9540443259ce2fbaa9e88c251b59e50c926eb2d8cb99827ff5b74",
-"error": "",
-"p_yes": 0.59,
-"risk": 0.86,
-"risk_confidence": 0.68,
-"with_prices": true
-},
-"0x00c5537715464238fe3548f938a5ee91a7e8c6642451e9ebaa890a96ce8310b9:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x00c5537715464238fe3548f938a5ee91a7e8c6642451e9ebaa890a96ce8310b9",
-"error": "",
-"p_yes": 0.41,
-"risk": 1.01,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"0x048f4f94d632e675ba8a23bf02e17af052fe8175da80e82388672448cc5ff4a7:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x048f4f94d632e675ba8a23bf02e17af052fe8175da80e82388672448cc5ff4a7",
-"error": "",
-"p_yes": 0.25,
-"risk": 0.98,
-"risk_confidence": 0.77,
-"with_prices": true
-},
-"0x06cb0130791e73595d2d22cceb1baaa9cae7dddfac52968dca7ca403c8cd3cc4:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x06cb0130791e73595d2d22cceb1baaa9cae7dddfac52968dca7ca403c8cd3cc4",
-"error": "",
-"p_yes": 0.56,
-"risk": 0.79,
-"risk_confidence": 0.39,
-"with_prices": true
-},
-"0x1422352f87053797893782d8f4d905a44b43518edb41ea96fa01e7e7e81cb561:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x1422352f87053797893782d8f4d905a44b43518edb41ea96fa01e7e7e81cb561",
-"error": "",
-"p_yes": 0.39,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0x14cc6f806bf7f724433747c8a56b9a8a3f5f68ea3fc17b0c82a5ae2515a3e868:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x14cc6f806bf7f724433747c8a56b9a8a3f5f68ea3fc17b0c82a5ae2515a3e868",
-"error": "",
-"p_yes": 0.5,
-"risk": 1.0,
-"risk_confidence": 0.98,
-"with_prices": false
-},
-"0x14cc6f806bf7f724433747c8a56b9a8a3f5f68ea3fc17b0c82a5ae2515a3e868:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x14cc6f806bf7f724433747c8a56b9a8a3f5f68ea3fc17b0c82a5ae2515a3e868",
-"error": "",
-"p_yes": 0.56,
-"risk": 1.01,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"0x1629480dbe9b632bcf578df4ae0273ccb7aa4c38bff3b30c304d8e0142a36468:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x1629480dbe9b632bcf578df4ae0273ccb7aa4c38bff3b30c304d8e0142a36468",
-"error": "",
-"p_yes": 0.51,
-"risk": 0.95,
-"risk_confidence": 0.78,
-"with_prices": true
-},
-"0x1910bca3159c8f3181e8b6e5b4b80173f8b465a9d75a51b75ebe709aeac0c378:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x1910bca3159c8f3181e8b6e5b4b80173f8b465a9d75a51b75ebe709aeac0c378",
-"error": "",
-"p_yes": 0.46,
-"risk": 1.07,
-"risk_confidence": 0.86,
-"with_prices": false
-},
-"0x1e78304879dfa9a442a2889bd7b9dbe5b082aee6c97cf081f1ebffdd5f0d4179:p": {
-"at": "2026-09-26T08:30:44Z",
-"condition_id": "0x1e78304879dfa9a442a2889bd7b9dbe5b082aee6c97cf081f1ebffdd5f0d4179",
-"error": "",
-"p_yes": 0.26,
-"risk": 0.99,
-"risk_confidence": 0.96,
-"with_prices": true
-},
-"0x235c65affd661409790ff9e2e1f77cf7ee1f01c0291a09a2f5f597c759819da8:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x235c65affd661409790ff9e2e1f77cf7ee1f01c0291a09a2f5f597c759819da8",
-"error": "",
-"p_yes": 0.23,
-"risk": 0.84,
-"risk_confidence": 0.69,
-"with_prices": true
-},
-"0x2e08e1ebf21e4cd06d7ec57bc26ce50062084e075b121a9337526651b8c1d9c9:p": {
-"at": "2026-09-26T08:02:07Z",
-"condition_id": "0x2e08e1ebf21e4cd06d7ec57bc26ce50062084e075b121a9337526651b8c1d9c9",
-"error": "",
-"p_yes": 0.54,
-"risk": 0.97,
-"risk_confidence": 0.83,
-"with_prices": true
-},
-"0x335e19a92673a5777772919074342571127587525968f7a55e199c1ffb96e3f3:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x335e19a92673a5777772919074342571127587525968f7a55e199c1ffb96e3f3",
-"error": "",
-"p_yes": 0.1,
-"risk": 0.81,
-"risk_confidence": 0.67,
-"with_prices": true
-},
-"0x3593fcea2bfa7519c145fd2ecc524fae0a074a54b1ccad234131210d8ce73d06:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x3593fcea2bfa7519c145fd2ecc524fae0a074a54b1ccad234131210d8ce73d06",
-"error": "",
-"p_yes": 0.11,
-"risk": 0.52,
-"risk_confidence": 0.25,
-"with_prices": true
-},
-"0x3f3fe7418fcc2c3b8da4a1a8d09fde9c83f9701f5d1960420edc75909186c79f:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x3f3fe7418fcc2c3b8da4a1a8d09fde9c83f9701f5d1960420edc75909186c79f",
-"error": "",
-"p_yes": 0.13,
-"risk": 0.72,
-"risk_confidence": 0.55,
-"with_prices": true
-},
-"0x487b6451f475a395aac8400a3283bf2fed980867225394095b2a4dc43ffcfb61:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x487b6451f475a395aac8400a3283bf2fed980867225394095b2a4dc43ffcfb61",
-"error": "",
-"p_yes": 0.5,
-"risk": 0.73,
-"risk_confidence": 0.19,
-"with_prices": true
-},
-"0x4c2175aa69b80651bbcb752e86250930c4e30ffe2504ec3bff71e1e1d133e5a8:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x4c2175aa69b80651bbcb752e86250930c4e30ffe2504ec3bff71e1e1d133e5a8",
-"error": "",
-"p_yes": 0.46,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x522f64ea4548bbed0edf8bbb0b59007c1a55e033b76f06cadaa2118afd1bfe9e:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x522f64ea4548bbed0edf8bbb0b59007c1a55e033b76f06cadaa2118afd1bfe9e",
-"error": "",
-"p_yes": 0.47,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x56000bc4be6e1f2f2a94637f122cb0e2cf0784a97b235fd0f4902a634997d4bf:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x56000bc4be6e1f2f2a94637f122cb0e2cf0784a97b235fd0f4902a634997d4bf",
-"error": "",
-"p_yes": 0.13,
-"risk": 0.87,
-"risk_confidence": 0.5,
-"with_prices": true
-},
-"0x56fda0f04440ef5a2b8f4cb1d33e256f0e28d5cb635d812b1314c8078a0a1b1d:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x56fda0f04440ef5a2b8f4cb1d33e256f0e28d5cb635d812b1314c8078a0a1b1d",
-"error": "",
-"p_yes": 0.09,
-"risk": 0.6,
-"risk_confidence": 0.35,
-"with_prices": false
-},
-"0x57b4e55171072707fc87faa560477f3ab1d9ed637377f91ec98249fa0ef46d1f:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x57b4e55171072707fc87faa560477f3ab1d9ed637377f91ec98249fa0ef46d1f",
-"error": "",
-"p_yes": 0.45,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x5a0b4f3edc3f77277512fc5165f3723e0dac103632187a6d201e1b97eb8a41d2:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x5a0b4f3edc3f77277512fc5165f3723e0dac103632187a6d201e1b97eb8a41d2",
-"error": "",
-"p_yes": 0.6,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0x5bc57a6b6345a157ec379ce0940c09dcbfdadebc30b915efe993db1805999dea:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x5bc57a6b6345a157ec379ce0940c09dcbfdadebc30b915efe993db1805999dea",
-"error": "",
-"p_yes": 0.45,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x5d5de8ef738b71232d72eb401fc9d0958941129dfef650e3461b7d7358088064:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x5d5de8ef738b71232d72eb401fc9d0958941129dfef650e3461b7d7358088064",
-"error": "",
-"p_yes": 0.63,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0x5eace6ff8de367f0c449705323d0b8ebb74fa6116aa08d270c29a89e1a6ab8d7:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x5eace6ff8de367f0c449705323d0b8ebb74fa6116aa08d270c29a89e1a6ab8d7",
-"error": "",
-"p_yes": 0.08,
-"risk": 0.58,
-"risk_confidence": 0.35,
-"with_prices": true
-},
-"0x62281d90712d1edb0550565b1f8711f90223a4a5768ef5c8feaa692df7bda25d:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x62281d90712d1edb0550565b1f8711f90223a4a5768ef5c8feaa692df7bda25d",
-"error": "",
-"p_yes": 0.08,
-"risk": 0.49,
-"risk_confidence": 0.26,
-"with_prices": true
-},
-"0x628e8ccf90bd08b4651916e8240ff7881c795f22820a4e064966b922a09c17ba:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x628e8ccf90bd08b4651916e8240ff7881c795f22820a4e064966b922a09c17ba",
-"error": "",
-"p_yes": 0.07,
-"risk": 0.41,
-"risk_confidence": 0.39,
-"with_prices": true
-},
-"0x690fafd3b7bb8b4919ccf0f219b0014b65334411a1076162e76353e76d7f9bec:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x690fafd3b7bb8b4919ccf0f219b0014b65334411a1076162e76353e76d7f9bec",
-"error": "",
-"p_yes": 0.73,
-"risk": 0.92,
-"risk_confidence": 0.64,
-"with_prices": false
-},
-"0x729ff1e2087b73e1d1a11c31d429450e6b0c231e49b3c7086725e35e9ade66ca:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x729ff1e2087b73e1d1a11c31d429450e6b0c231e49b3c7086725e35e9ade66ca",
-"error": "",
-"p_yes": 0.52,
-"risk": 1.05,
-"risk_confidence": 0.74,
-"with_prices": false
-},
-"0x73beb546468d55ef971db6f1e54518b2716af2636e4ced760e0b7bd9a301ad61:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x73beb546468d55ef971db6f1e54518b2716af2636e4ced760e0b7bd9a301ad61",
-"error": "",
-"p_yes": 0.64,
-"risk": 1.0,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"0x7830c4c2881a9f29a4d5d67bf161e3203f668dab9af4488ebd018ef85e5e9353:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x7830c4c2881a9f29a4d5d67bf161e3203f668dab9af4488ebd018ef85e5e9353",
-"error": "",
-"p_yes": 0.19,
-"risk": 0.84,
-"risk_confidence": 0.7,
-"with_prices": true
-},
-"0x7896eecdb75ad7b76b3cd7fcec10c26c6c03fa3b0c359e3498e3b1eaa1e3ef50:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x7896eecdb75ad7b76b3cd7fcec10c26c6c03fa3b0c359e3498e3b1eaa1e3ef50",
-"error": "",
-"p_yes": 0.46,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x7896eecdb75ad7b76b3cd7fcec10c26c6c03fa3b0c359e3498e3b1eaa1e3ef50:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x7896eecdb75ad7b76b3cd7fcec10c26c6c03fa3b0c359e3498e3b1eaa1e3ef50",
-"error": "",
-"p_yes": 0.22,
-"risk": 0.97,
-"risk_confidence": 0.92,
-"with_prices": true
-},
-"0x796c320ce22d16c53b34a8355f4f87085c2748f22db2d69bfb35a7f11243e261:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x796c320ce22d16c53b34a8355f4f87085c2748f22db2d69bfb35a7f11243e261",
-"error": "",
-"p_yes": 0.26,
-"risk": 1.07,
-"risk_confidence": 0.8,
-"with_prices": true
-},
-"0x79861124e6d96766e9241d1095abc2dea32226791fc4dcbde600d9cc9d0f9c4b:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x79861124e6d96766e9241d1095abc2dea32226791fc4dcbde600d9cc9d0f9c4b",
-"error": "",
-"p_yes": 0.19,
-"risk": 0.79,
-"risk_confidence": 0.64,
-"with_prices": true
-},
-"0x804fd3d0914e19c143b77de2db96199dce512a7ffa33224643b5c8ca40ae18a8:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x804fd3d0914e19c143b77de2db96199dce512a7ffa33224643b5c8ca40ae18a8",
-"error": "",
-"p_yes": 0.22,
-"risk": 0.92,
-"risk_confidence": 0.73,
-"with_prices": true
-},
-"0x80d5210cd69df03259b8837d798060018c41e0c64ebb4083df717254f32949aa:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x80d5210cd69df03259b8837d798060018c41e0c64ebb4083df717254f32949aa",
-"error": "",
-"p_yes": 0.51,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x85d03fe7cc41ca9adb1d145359b6f5359494142343a0c2c9b305f8190949ee3c:p": {
-"at": "2026-09-26T08:30:44Z",
-"condition_id": "0x85d03fe7cc41ca9adb1d145359b6f5359494142343a0c2c9b305f8190949ee3c",
-"error": "",
-"p_yes": 0.41,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0x87292ddc440148e1e6525db50003d57cf462aab50f88fedf709e2451cf595540:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x87292ddc440148e1e6525db50003d57cf462aab50f88fedf709e2451cf595540",
-"error": "",
-"p_yes": 0.69,
-"risk": 0.98,
-"risk_confidence": 0.67,
-"with_prices": true
-},
-"0x8a2f7f148962cacd883e87cb72fe6cf1cf452f542b1e2d508eb9a80be025025e:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x8a2f7f148962cacd883e87cb72fe6cf1cf452f542b1e2d508eb9a80be025025e",
-"error": "",
-"p_yes": 0.47,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x8a8cd4fd81bb519218256d76b9f07355d7b0962ac7d32390a6a3bf33c913aa92:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x8a8cd4fd81bb519218256d76b9f07355d7b0962ac7d32390a6a3bf33c913aa92",
-"error": "",
-"p_yes": 0.77,
-"risk": 0.87,
-"risk_confidence": 0.48,
-"with_prices": true
-},
-"0x9554193b1e44117abad069b6e993fbb68d13ac7abfd60787ab5a003b868227bf:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x9554193b1e44117abad069b6e993fbb68d13ac7abfd60787ab5a003b868227bf",
-"error": "",
-"p_yes": 0.51,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x95a01ebbdfe1d934bd35026d9a8877399d76ecf87b93f408bccd9bbcddd568c8:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x95a01ebbdfe1d934bd35026d9a8877399d76ecf87b93f408bccd9bbcddd568c8",
-"error": "",
-"p_yes": 0.47,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0x98470e62a9fa362a0b07c13020a455b5da78702e44d5c32d5c814e618278a2b4:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x98470e62a9fa362a0b07c13020a455b5da78702e44d5c32d5c814e618278a2b4",
-"error": "",
-"p_yes": 0.27,
-"risk": 1.08,
-"risk_confidence": 0.83,
-"with_prices": true
-},
-"0x9971d93943dc93d5c4a4efe9c2908107fed8d34662d4494e8169c4701df7c819:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0x9971d93943dc93d5c4a4efe9c2908107fed8d34662d4494e8169c4701df7c819",
-"error": "",
-"p_yes": 0.24,
-"risk": 0.99,
-"risk_confidence": 0.96,
-"with_prices": true
-},
-"0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661:n": {
-"at": "2026-09-26T08:02:07Z",
-"condition_id": "0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661",
-"error": "",
-"p_yes": 0.51,
-"risk": 1.05,
-"risk_confidence": 0.9,
-"with_prices": false
-},
-"0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x9c0ec5507f2e254be89626d0b883e4bfbeae1befecb49f5a1176c6a905027661",
-"error": "",
-"p_yes": 0.72,
-"risk": 0.88,
-"risk_confidence": 0.52,
-"with_prices": true
-},
-"0x9d232fb0b16979c4b3f281d3a53a0441ace232a0b79e1aa0f45fac51e7870be3:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0x9d232fb0b16979c4b3f281d3a53a0441ace232a0b79e1aa0f45fac51e7870be3",
-"error": "",
-"p_yes": 0.5,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xa37d3640241b49f44bbcfb40600ef80b57275c2511b2e1bb480d10c9d788f7e7:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xa37d3640241b49f44bbcfb40600ef80b57275c2511b2e1bb480d10c9d788f7e7",
-"error": "",
-"p_yes": 0.72,
-"risk": 0.9,
-"risk_confidence": 0.56,
-"with_prices": true
-},
-"0xa68808ed6b396312c2b90f23b85a8e7ba51d52643ebd736cf46378c97dad0b0b:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xa68808ed6b396312c2b90f23b85a8e7ba51d52643ebd736cf46378c97dad0b0b",
-"error": "",
-"p_yes": 0.45,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xaa59cf9c41a0455a3cd3a35b506cb2035c00bc5f3df23e441e31b221fddf3783:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xaa59cf9c41a0455a3cd3a35b506cb2035c00bc5f3df23e441e31b221fddf3783",
-"error": "",
-"p_yes": 0.41,
-"risk": 1.08,
-"risk_confidence": 0.86,
-"with_prices": false
-},
-"0xaa697a06342756935208227869d656909f14b6478b3c764f3d503deccfbc5676:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xaa697a06342756935208227869d656909f14b6478b3c764f3d503deccfbc5676",
-"error": "",
-"p_yes": 0.34,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0xabe1b08804513d42b9eeccd04b9b5cb5f25612ce4b2939f0c18ccfaeafc42cf6:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xabe1b08804513d42b9eeccd04b9b5cb5f25612ce4b2939f0c18ccfaeafc42cf6",
-"error": "",
-"p_yes": 0.57,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0xae1f56abdccd36a78bdb0672a087fa2d18483c4574b0030295b2e7e8eecf1667:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xae1f56abdccd36a78bdb0672a087fa2d18483c4574b0030295b2e7e8eecf1667",
-"error": "",
-"p_yes": 0.19,
-"risk": 0.98,
-"risk_confidence": 0.97,
-"with_prices": true
-},
-"0xb08965e979268e347cd4f3c8b6da098188261d491ecd9af4f157ef651369d8a2:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xb08965e979268e347cd4f3c8b6da098188261d491ecd9af4f157ef651369d8a2",
-"error": "",
-"p_yes": 0.47,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xb6db51b1ab710f3d9ff81fa3dbd39839e88c3e647bdeea7bce1242a2ec18e02d:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xb6db51b1ab710f3d9ff81fa3dbd39839e88c3e647bdeea7bce1242a2ec18e02d",
-"error": "",
-"p_yes": 0.52,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0xb965e3087c8a61afbc650cd50aee52c5db3e241ace2c49853700caf29f96c9af:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xb965e3087c8a61afbc650cd50aee52c5db3e241ace2c49853700caf29f96c9af",
-"error": "",
-"p_yes": 0.47,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xbf7a12b30d3ae16031fe07d7d46593fe53f78a2841cab277238184c06c86e16b:n": {
-"at": "2026-09-26T08:02:07Z",
-"condition_id": "0xbf7a12b30d3ae16031fe07d7d46593fe53f78a2841cab277238184c06c86e16b",
-"error": "",
-"p_yes": 0.42,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811",
-"error": "",
-"p_yes": 0.47,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xc4c47aa2f37a68d5f500939cf2be654fce34a003e8e5dafe0ad9fb6e36878811",
-"error": "",
-"p_yes": 0.58,
-"risk": 1.0,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"0xc858ac3d54dac9eadbb54e5124ccda60754a63180919ed27c24ad0b0c1d1e5a7:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xc858ac3d54dac9eadbb54e5124ccda60754a63180919ed27c24ad0b0c1d1e5a7",
-"error": "",
-"p_yes": 0.81,
-"risk": 0.61,
-"risk_confidence": 0.38,
-"with_prices": true
-},
-"0xc932650aa8804df78d28b38bb0035cbf59ad127f105d7f7ebd1618d25d488431:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xc932650aa8804df78d28b38bb0035cbf59ad127f105d7f7ebd1618d25d488431",
-"error": "",
-"p_yes": 0.24,
-"risk": 0.98,
-"risk_confidence": 0.96,
-"with_prices": true
-},
-"0xca6189581f97c5b82d256a196e708e21f6b95e1a982b9928e29eb69fe7ca222e:n": {
-"at": "2026-09-26T07:44:53Z",
-"condition_id": "0xca6189581f97c5b82d256a196e708e21f6b95e1a982b9928e29eb69fe7ca222e",
-"error": "",
-"p_yes": 0.49,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xca6189581f97c5b82d256a196e708e21f6b95e1a982b9928e29eb69fe7ca222e:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xca6189581f97c5b82d256a196e708e21f6b95e1a982b9928e29eb69fe7ca222e",
-"error": "",
-"p_yes": 0.6,
-"risk": 1.0,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"0xd007ef5d658f3a99ec7a39624bf0c59f0d2b18ccd5cffd61e65e6c7e77304e25:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xd007ef5d658f3a99ec7a39624bf0c59f0d2b18ccd5cffd61e65e6c7e77304e25",
-"error": "",
-"p_yes": 0.57,
-"risk": 1.01,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"0xd0ee09bc3955e774c42df27cc3b4685a483f8498000c2de26625f20fc9ed4f78:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xd0ee09bc3955e774c42df27cc3b4685a483f8498000c2de26625f20fc9ed4f78",
-"error": "",
-"p_yes": 0.54,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xd5021817f63063feb5556d3183ee1912b9e2902bbbf669146e45560487ca6dde:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xd5021817f63063feb5556d3183ee1912b9e2902bbbf669146e45560487ca6dde",
-"error": "",
-"p_yes": 0.66,
-"risk": 0.99,
-"risk_confidence": 0.95,
-"with_prices": true
-},
-"0xd53dae09db31326d2e877b3f9a7486d5118bc174f9f17b9029bffe48704b1681:p": {
-"at": "2026-09-26T08:02:07Z",
-"condition_id": "0xd53dae09db31326d2e877b3f9a7486d5118bc174f9f17b9029bffe48704b1681",
-"error": "",
-"p_yes": 0.25,
-"risk": 0.99,
-"risk_confidence": 0.85,
-"with_prices": true
-},
-"0xd69d448257ae7a1704b24b6ee0758c05bbb0177049e6e5d31322d450bd531299:n": {
-"at": "2026-09-26T07:55:09Z",
-"condition_id": "0xd69d448257ae7a1704b24b6ee0758c05bbb0177049e6e5d31322d450bd531299",
-"error": "",
-"p_yes": 0.19,
-"risk": 1.12,
-"risk_confidence": 0.78,
-"with_prices": false
-},
-"0xd77acd3c7667659ef75b6026d564c1ba91aaee799a5198d81e37810cc2bc9011:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xd77acd3c7667659ef75b6026d564c1ba91aaee799a5198d81e37810cc2bc9011",
-"error": "",
-"p_yes": 0.49,
-"risk": 1.06,
-"risk_confidence": 0.88,
-"with_prices": false
-},
-"0xd77acd3c7667659ef75b6026d564c1ba91aaee799a5198d81e37810cc2bc9011:p": {
-"at": "2026-09-26T07:44:53Z",
-"condition_id": "0xd77acd3c7667659ef75b6026d564c1ba91aaee799a5198d81e37810cc2bc9011",
-"error": "",
-"p_yes": 0.67,
-"risk": 1.05,
-"risk_confidence": 0.74,
-"with_prices": true
-},
-"0xdff427fce82c22dca74075108b8d6dbe6c97395225b60e20f10ab782e221727c:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xdff427fce82c22dca74075108b8d6dbe6c97395225b60e20f10ab782e221727c",
-"error": "",
-"p_yes": 0.46,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xe162231603daa0e28a6f81c8f2868b32745de30da439443ffd46d82028094943:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xe162231603daa0e28a6f81c8f2868b32745de30da439443ffd46d82028094943",
-"error": "",
-"p_yes": 0.67,
-"risk": 1.05,
-"risk_confidence": 0.71,
-"with_prices": true
-},
-"0xe2033349e8343193938b216a1f176ae5fdb1de011fe07374a819456d52aa1992:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xe2033349e8343193938b216a1f176ae5fdb1de011fe07374a819456d52aa1992",
-"error": "",
-"p_yes": 0.42,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xe24a92c76d416d6235076b7f54cc5e7d19f2abdbd075bd6738a02be4901297d2:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xe24a92c76d416d6235076b7f54cc5e7d19f2abdbd075bd6738a02be4901297d2",
-"error": "",
-"p_yes": 0.12,
-"risk": 0.74,
-"risk_confidence": 0.59,
-"with_prices": true
-},
-"0xe4ce3a7bab1a79fe4cf32abdc190858cdfa23eb62c00e2534370b0ebe56dd790:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xe4ce3a7bab1a79fe4cf32abdc190858cdfa23eb62c00e2534370b0ebe56dd790",
-"error": "",
-"p_yes": 0.49,
-"risk": 1.03,
-"risk_confidence": 0.91,
-"with_prices": false
-},
-"0xe4ce3a7bab1a79fe4cf32abdc190858cdfa23eb62c00e2534370b0ebe56dd790:p": {
-"at": "2026-09-26T07:44:53Z",
-"condition_id": "0xe4ce3a7bab1a79fe4cf32abdc190858cdfa23eb62c00e2534370b0ebe56dd790",
-"error": "",
-"p_yes": 0.76,
-"risk": 0.78,
-"risk_confidence": 0.49,
-"with_prices": true
-},
-"0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673",
-"error": "",
-"p_yes": 0.49,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xe5a54eaf6a6b729ed0a9b5e1247662b4177ac3a7692086b748a2ed101b2a0673",
-"error": "",
-"p_yes": 0.34,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0xed0a3d999ef6b84f0a818610fac2a4cb162e6ccefe1c08470a00be4da6e29ffe:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xed0a3d999ef6b84f0a818610fac2a4cb162e6ccefe1c08470a00be4da6e29ffe",
-"error": "",
-"p_yes": 0.28,
-"risk": 0.8,
-"risk_confidence": 0.62,
-"with_prices": true
-},
-"0xed537832cbf6774d5b54da06732b53ce6866d82941e593ca71292f8e247babc5:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xed537832cbf6774d5b54da06732b53ce6866d82941e593ca71292f8e247babc5",
-"error": "",
-"p_yes": 0.59,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xed537832cbf6774d5b54da06732b53ce6866d82941e593ca71292f8e247babc5:p": {
-"at": "2026-09-26T07:44:53Z",
-"condition_id": "0xed537832cbf6774d5b54da06732b53ce6866d82941e593ca71292f8e247babc5",
-"error": "",
-"p_yes": 0.79,
-"risk": 0.82,
-"risk_confidence": 0.68,
-"with_prices": true
-},
-"0xeed1ff210ca4a6760d0127927efdeb9a6d6e48adcb29218dcd41618831962dc2:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xeed1ff210ca4a6760d0127927efdeb9a6d6e48adcb29218dcd41618831962dc2",
-"error": "",
-"p_yes": 0.32,
-"risk": 1.01,
-"risk_confidence": 0.97,
-"with_prices": true
-},
-"0xf006c03ebca5e5657b8f7df03c40681e3d88234cea587435fc2359e729dcf173:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xf006c03ebca5e5657b8f7df03c40681e3d88234cea587435fc2359e729dcf173",
-"error": "",
-"p_yes": 0.37,
-"risk": 1.01,
-"risk_confidence": 0.98,
-"with_prices": false
-},
-"0xf0c55b0e639994de018e05691c53cb8830a4309c88922aea6019c8df896950fc:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xf0c55b0e639994de018e05691c53cb8830a4309c88922aea6019c8df896950fc",
-"error": "",
-"p_yes": 0.69,
-"risk": 1.03,
-"risk_confidence": 0.81,
-"with_prices": true
-},
-"0xf1ba127229086da850dcd78e789608f1f6bcfc6d631695c4cce2b814a8220fed:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xf1ba127229086da850dcd78e789608f1f6bcfc6d631695c4cce2b814a8220fed",
-"error": "",
-"p_yes": 0.74,
-"risk": 0.77,
-"risk_confidence": 0.62,
-"with_prices": true
-},
-"0xf284a697f90d9c7c5234ecc760a34777fa3e100fcdb0ce63feb28ed6a52a018f:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xf284a697f90d9c7c5234ecc760a34777fa3e100fcdb0ce63feb28ed6a52a018f",
-"error": "",
-"p_yes": 0.19,
-"risk": 0.69,
-"risk_confidence": 0.44,
-"with_prices": true
-},
-"0xf41ef204806d68f2a7732504a1c98f4c7119422c5913435b136a61a235829654:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xf41ef204806d68f2a7732504a1c98f4c7119422c5913435b136a61a235829654",
-"error": "",
-"p_yes": 0.54,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": true
-},
-"0xf44ade6df83c8d227bfa92d193f9ea6c820d5377ace87b0f01b836ad3d6c7bb2:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xf44ade6df83c8d227bfa92d193f9ea6c820d5377ace87b0f01b836ad3d6c7bb2",
-"error": "",
-"p_yes": 0.4,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xf7abe329b5bea6a7706fa70041a935053436df8d736a68a63d171a43f360afd3:n": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xf7abe329b5bea6a7706fa70041a935053436df8d736a68a63d171a43f360afd3",
-"error": "",
-"p_yes": 0.49,
-"risk": 1.0,
-"risk_confidence": 0.99,
-"with_prices": false
-},
-"0xfddf61ec7e14707fe765917ef9b9aa626c63abae0585df1346ad220a3804746b:p": {
-"at": "2026-09-26T08:17:12Z",
-"condition_id": "0xfddf61ec7e14707fe765917ef9b9aa626c63abae0585df1346ad220a3804746b",
-"error": "",
-"p_yes": 0.56,
-"risk": 1.01,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"0xff782922f818ae1870531d56b5d03693615d767a84c4f1d0b3000ae73763033f:p": {
-"at": "2026-09-26T07:42:40Z",
-"condition_id": "0xff782922f818ae1870531d56b5d03693615d767a84c4f1d0b3000ae73763033f",
-"error": "",
-"p_yes": 0.29,
-"risk": 0.78,
-"risk_confidence": 0.54,
-"with_prices": true
-},
 "cfb-ballst-kentst-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-ballst-kentst-2026-09-26",
 "error": "",
-"p_yes": 0.33,
-"risk": 1.01,
+"p_yes": 0.32,
+"risk": 1.0,
 "risk_confidence": 0.98,
 "with_prices": true
 },
 "cfb-boise-wmich-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-boise-wmich-2026-09-26",
 "error": "",
-"p_yes": 0.57,
-"risk": 1.01,
+"p_yes": 0.67,
+"risk": 1.0,
 "risk_confidence": 0.97,
 "with_prices": true
 },
 "cfb-buck-pitt-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-buck-pitt-2026-09-26",
 "error": "",
 "p_yes": 0.07,
-"risk": 0.9,
-"risk_confidence": 0.82,
+"risk": 0.86,
+"risk_confidence": 0.75,
 "with_prices": true
 },
 "cfb-cark-flst-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-cark-flst-2026-09-26",
 "error": "",
-"p_yes": 0.15,
-"risk": 1.01,
-"risk_confidence": 0.96,
+"p_yes": 0.07,
+"risk": 0.83,
+"risk_confidence": 0.69,
 "with_prices": true
 },
 "cfb-col-bayl-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-col-bayl-2026-09-26",
 "error": "",
-"p_yes": 0.24,
-"risk": 1.0,
-"risk_confidence": 0.96,
-"with_prices": true
-},
-"cfb-colst-utsa-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-colst-utsa-2026-09-26",
-"error": "",
-"p_yes": 0.15,
-"risk": 0.89,
-"risk_confidence": 0.79,
-"with_prices": true
-},
-"cfb-gardwb-marsh-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-gardwb-marsh-2026-09-26",
-"error": "",
 "p_yes": 0.19,
-"risk": 0.99,
-"risk_confidence": 0.96,
-"with_prices": true
-},
-"cfb-hawaii-wyom-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-hawaii-wyom-2026-09-26",
-"error": "",
-"p_yes": 0.35,
-"risk": 1.02,
-"risk_confidence": 0.96,
-"with_prices": true
-},
-"cfb-ill-ohiost-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-ill-ohiost-2026-09-26",
-"error": "",
-"p_yes": 0.12,
-"risk": 0.8,
-"risk_confidence": 0.64,
-"with_prices": true
-},
-"cfb-iowa-mich-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-iowa-mich-2026-09-26",
-"error": "",
-"p_yes": 0.27,
-"risk": 1.01,
-"risk_confidence": 0.97,
-"with_prices": true
-},
-"cfb-jac-emich-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-jac-emich-2026-09-26",
-"error": "",
-"p_yes": 0.21,
-"risk": 0.98,
-"risk_confidence": 0.93,
-"with_prices": true
-},
-"cfb-miss-fl-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-miss-fl-2026-09-26",
-"error": "",
-"p_yes": 0.3,
-"risk": 1.01,
-"risk_confidence": 0.98,
-"with_prices": true
-},
-"cfb-ncc-ecar-2026-09-26:p": {
-"at": "2026-09-26T08:56:32Z",
-"condition_id": "cfb-ncc-ecar-2026-09-26",
-"error": "",
-"p_yes": 0.14,
-"risk": 0.78,
-"risk_confidence": 0.59,
-"with_prices": true
-},
-"cfb-nd-pur-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-nd-pur-2026-09-26",
-"error": "",
-"p_yes": 0.6,
-"risk": 1.0,
-"risk_confidence": 0.96,
-"with_prices": true
-},
-"cfb-nill-gast-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
-"condition_id": "cfb-nill-gast-2026-09-26",
-"error": "",
-"p_yes": 0.25,
 "risk": 0.97,
 "risk_confidence": 0.93,
 "with_prices": true
 },
+"cfb-colst-utsa-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-colst-utsa-2026-09-26",
+"error": "",
+"p_yes": 0.15,
+"risk": 0.92,
+"risk_confidence": 0.85,
+"with_prices": true
+},
+"cfb-gardwb-marsh-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-gardwb-marsh-2026-09-26",
+"error": "",
+"p_yes": 0.09,
+"risk": 0.81,
+"risk_confidence": 0.68,
+"with_prices": true
+},
+"cfb-hawaii-wyom-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-hawaii-wyom-2026-09-26",
+"error": "",
+"p_yes": 0.48,
+"risk": 1.01,
+"risk_confidence": 0.98,
+"with_prices": true
+},
+"cfb-ill-ohiost-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-ill-ohiost-2026-09-26",
+"error": "",
+"p_yes": 0.08,
+"risk": 0.62,
+"risk_confidence": 0.39,
+"with_prices": true
+},
+"cfb-iowa-mich-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-iowa-mich-2026-09-26",
+"error": "",
+"p_yes": 0.25,
+"risk": 1.0,
+"risk_confidence": 0.98,
+"with_prices": true
+},
+"cfb-jac-emich-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-jac-emich-2026-09-26",
+"error": "",
+"p_yes": 0.09,
+"risk": 0.75,
+"risk_confidence": 0.59,
+"with_prices": true
+},
+"cfb-ncc-ecar-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-ncc-ecar-2026-09-26",
+"error": "",
+"p_yes": 0.06,
+"risk": 0.54,
+"risk_confidence": 0.27,
+"with_prices": true
+},
+"cfb-nd-pur-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-nd-pur-2026-09-26",
+"error": "",
+"p_yes": 0.74,
+"risk": 0.56,
+"risk_confidence": 0.29,
+"with_prices": true
+},
+"cfb-nill-gast-2026-09-26:p": {
+"at": "2026-09-26T14:24:36Z",
+"condition_id": "cfb-nill-gast-2026-09-26",
+"error": "",
+"p_yes": 0.19,
+"risk": 0.96,
+"risk_confidence": 0.91,
+"with_prices": true
+},
 "cfb-nmx-nmxst-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-nmx-nmxst-2026-09-26",
 "error": "",
-"p_yes": 0.59,
-"risk": 1.0,
-"risk_confidence": 0.96,
+"p_yes": 0.67,
+"risk": 0.93,
+"risk_confidence": 0.83,
 "with_prices": true
 },
 "cfb-okl-ga-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-okl-ga-2026-09-26",
 "error": "",
-"p_yes": 0.22,
-"risk": 0.98,
-"risk_confidence": 0.94,
+"p_yes": 0.16,
+"risk": 0.92,
+"risk_confidence": 0.84,
 "with_prices": true
 },
 "cfb-robms-buf-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-robms-buf-2026-09-26",
 "error": "",
-"p_yes": 0.15,
-"risk": 0.88,
-"risk_confidence": 0.77,
+"p_yes": 0.06,
+"risk": 0.48,
+"risk_confidence": 0.28,
 "with_prices": true
 },
 "cfb-sala-uk-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-sala-uk-2026-09-26",
 "error": "",
-"p_yes": 0.08,
-"risk": 0.8,
-"risk_confidence": 0.65,
+"p_yes": 0.09,
+"risk": 0.74,
+"risk_confidence": 0.56,
 "with_prices": true
 },
 "cfb-sdst-toledo-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-sdst-toledo-2026-09-26",
 "error": "",
 "p_yes": 0.36,
@@ -1008,102 +171,102 @@
 "with_prices": true
 },
 "cfb-smho-txtech-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-smho-txtech-2026-09-26",
 "error": "",
-"p_yes": 0.38,
-"risk": 1.01,
-"risk_confidence": 0.98,
+"p_yes": 0.09,
+"risk": 0.6,
+"risk_confidence": 0.36,
 "with_prices": true
 },
 "cfb-stnh-ohio-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-stnh-ohio-2026-09-26",
 "error": "",
-"p_yes": 0.11,
-"risk": 0.87,
-"risk_confidence": 0.73,
+"p_yes": 0.06,
+"risk": 0.44,
+"risk_confidence": 0.34,
 "with_prices": true
 },
 "cfb-tcu-ucf-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-tcu-ucf-2026-09-26",
 "error": "",
-"p_yes": 0.54,
+"p_yes": 0.59,
 "risk": 1.0,
 "risk_confidence": 0.99,
 "with_prices": true
 },
 "cfb-tx-tenn-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-tx-tenn-2026-09-26",
 "error": "",
-"p_yes": 0.59,
+"p_yes": 0.6,
 "risk": 1.0,
 "risk_confidence": 0.97,
 "with_prices": true
 },
 "cfb-ucla-mary-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-ucla-mary-2026-09-26",
 "error": "",
-"p_yes": 0.41,
+"p_yes": 0.53,
 "risk": 1.01,
-"risk_confidence": 0.98,
+"risk_confidence": 0.99,
 "with_prices": true
 },
 "cfb-uconn-miaoh-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-uconn-miaoh-2026-09-26",
 "error": "",
-"p_yes": 0.3,
+"p_yes": 0.34,
 "risk": 1.0,
 "risk_confidence": 0.99,
 "with_prices": true
 },
 "cfb-unlv-akron-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-unlv-akron-2026-09-26",
 "error": "",
-"p_yes": 0.64,
-"risk": 0.92,
-"risk_confidence": 0.85,
+"p_yes": 0.65,
+"risk": 0.93,
+"risk_confidence": 0.84,
 "with_prices": true
 },
 "cfb-utah-iowast-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-utah-iowast-2026-09-26",
 "error": "",
-"p_yes": 0.49,
-"risk": 1.01,
+"p_yes": 0.61,
+"risk": 0.99,
 "risk_confidence": 0.97,
 "with_prices": true
 },
 "cfb-vtech-boscol-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-vtech-boscol-2026-09-26",
 "error": "",
-"p_yes": 0.46,
-"risk": 1.01,
-"risk_confidence": 0.97,
+"p_yes": 0.66,
+"risk": 0.94,
+"risk_confidence": 0.86,
 "with_prices": true
 },
 "cfb-wake-lou-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-wake-lou-2026-09-26",
 "error": "",
-"p_yes": 0.21,
-"risk": 1.0,
-"risk_confidence": 0.97,
+"p_yes": 0.15,
+"risk": 0.95,
+"risk_confidence": 0.9,
 "with_prices": true
 },
 "cfb-wm-duke-2026-09-26:p": {
-"at": "2026-09-26T08:51:39Z",
+"at": "2026-09-26T14:24:36Z",
 "condition_id": "cfb-wm-duke-2026-09-26",
 "error": "",
-"p_yes": 0.25,
-"risk": 1.01,
-"risk_confidence": 0.98,
+"p_yes": 0.1,
+"risk": 0.97,
+"risk_confidence": 0.92,
 "with_prices": true
 }
 }

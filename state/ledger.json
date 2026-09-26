@@ -2,8 +2,8 @@
  "ai_info": {
   "active": true,
   "breaker": false,
-  "cache_hits": 30,
-  "calls": 0,
+  "cache_hits": 0,
+  "calls": 30,
   "edge_assessed": 0,
   "errors": 0,
   "extreme_accuracy": null,
@@ -322,7 +322,7 @@
  "cash": 50.00265,
  "daily": {},
  "game_window": false,
- "last_run": "2026-09-26T09:00:25Z",
+ "last_run": "2026-09-26T14:24:36Z",
  "mode": "live",
  "notes": [
   "2026-09-26T08:02:07Z POLYMARKET_PRIVATE_KEY rejected: expected 64 hex characters, got 88 characters",
@@ -338,11 +338,11 @@
  ],
  "positions": {
   "us:aec-cfb-miss-fl-2026-09-26:L": {
-   "avg_price": 0.3999333333333333,
+   "avg_price": 0.4165833333333333,
    "condition_id": "cfb-miss-fl-2026-09-26",
    "end_date": null,
    "kind": "external",
-   "mark": 0.39,
+   "mark": 0.385,
    "neg_risk": false,
    "opened_at": "2026-09-26T08:56:32Z",
    "outcome": "Rebels",
@@ -351,7 +351,7 @@
    "token_id": "us:aec-cfb-miss-fl-2026-09-26:L"
   },
   "us:aec-cfb-txam-lsu-2026-09-26:L": {
-   "avg_price": 0.2499,
+   "avg_price": 0.26305263157894737,
    "condition_id": "cfb-txam-lsu-2026-09-26",
    "end_date": null,
    "kind": "external",
@@ -365,18 +365,18 @@
   }
  },
  "realized_pnl": 0.0,
- "runs": 28,
+ "runs": 29,
  "scan": {
   "ai.edge_assessed": 0,
   "ai.gate_assessed": 30,
-  "books": 156,
-  "candidates": 78,
+  "books": 158,
+  "candidates": 79,
   "markets": 136,
   "sports.games": 145,
   "sports.matched": 136,
   "sports.moneyline_markets": 136,
-  "sports.no_book": 10,
-  "sports.no_edge": 137,
+  "sports.no_book": 8,
+  "sports.no_edge": 139,
   "sports.no_model": 20,
   "sports.too_far_ahead": 50
  },

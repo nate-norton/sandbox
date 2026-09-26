@@ -133,7 +133,7 @@ class PolymarketUS:
                              {"slug": ev.get("slug"), "title": ev.get("title"), "startTime": ev.get("startTime"),
                               "tags": [t.get("slug") for t in ev.get("tags") or []], "n_markets": len(all_ms),
                               "moneyline": [(m.get("slug"), m.get("title")) for m in ms],
-                              "others": [m.get("slug") for m in all_ms if m not in ms][:4]})
+                              "winner_slugs": [m.get("slug") for m in all_ms if "winner" in str(m.get("slug") or "")][:12]})
                 if len(ms) != 2 or not _looks_like_game(ev):
                     continue
                 a, b = ms
@@ -319,10 +319,13 @@ def _moneyline_markets(ev: dict) -> list[dict]:
     ev_slug = str(ev.get("slug") or "")
     if not ev_slug:
         return []
-    pat = re.compile(rf"^tec-{re.escape(ev_slug)}-([a-z0-9]+)$")
-    found = [m for m in ev.get("markets") or [] if pat.match(str(m.get("slug") or ""))]
-    if len(found) == 2:
-        return found
+    # full-game winner: atc-<event>-winner-<abbr> (period markets add a segment: -winner-1h-<abbr>)
+    for pat in (re.compile(rf"^atc-{re.escape(ev_slug)}-winner-([a-z0-9]+)$"),
+                re.compile(rf"^[a-z]+-{re.escape(ev_slug)}-winner-([a-z0-9]+)$"),
+                re.compile(rf"^tec-{re.escape(ev_slug)}-([a-z0-9]+)$")):
+        found = [m for m in ev.get("markets") or [] if pat.match(str(m.get("slug") or ""))]
+        if len(found) == 2:
+            return found
     # fallback for venues without the tec- convention: markets that are not spreads/totals/props
     plain = [m for m in ev.get("markets") or [] if _is_moneyline(m) and "-pos-" not in str(m.get("slug") or "")
              and "-1h-" not in str(m.get("slug") or "") and "-2h-" not in str(m.get("slug") or "")]

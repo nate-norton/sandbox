@@ -1,6 +1,6 @@
 # polybot report
 
-- mode: **paper**  |  profile: **aggressive**  |  runs: 27  |  last run: 2026-09-26T08:54:18Z
+- mode: **paper**  |  profile: **aggressive**  |  runs: 28  |  last run: 2026-09-26T08:56:31Z
 - equity: **$25.00** (started $25.00, realized +0.00)
 - cash: $25.00  |  deployed: $0.00  |  open positions: 0
 - P&L today: +0.00
@@ -18,7 +18,7 @@
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=30, books=76, candidates=136, markets=136, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=98, sports.no_edge=53, sports.no_model=20, sports.too_far_ahead=50
+ai.edge_assessed=0, ai.gate_assessed=30, books=38, candidates=136, markets=136, sports.games=145, sports.matched=136, sports.moneyline_markets=136, sports.no_book=124, sports.no_edge=28, sports.no_model=20, sports.too_far_ahead=50
 
 ## Notes
 

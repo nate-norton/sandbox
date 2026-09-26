@@ -62,6 +62,7 @@ class Ledger:
                 led.starting_bankroll = starting_bankroll if mode == "paper" else 0.0   # live: set from real equity
                 led.realized_pnl = 0.0
                 led.daily = {}
+                led.wallet = ""
             return led
         if mode == "live":
             return cls(mode=mode, cash=0.0, starting_bankroll=0.0)       # measured from the exchange

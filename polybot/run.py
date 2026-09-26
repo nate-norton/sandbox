@@ -522,32 +522,40 @@ def _write_report(led: Ledger, cfg: Config, st: RiskState, done: list, halt: Opt
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", stream=sys.stdout)
     cfg = Config()
-    gamma = Gamma(cfg.gamma_host)
-    clob = PublicClob(cfg.clob_host)
-    live = data = decider = us = None
+    gamma = clob = live = data = decider = us = None
     if cfg.ai_active:
         decider = JevDecider(cfg.openrouter_api_key, cfg.ai_model)
         log.info("AI decider: %s via OpenRouter", cfg.ai_model)
     else:
         log.info("AI decider off (set OPENROUTER_API_KEY to enable Jev)")
-    key_problem = ""
-    if cfg.is_live:
-        try:
-            cfg.private_key = normalize_private_key(cfg.private_key)
-        except ValueError as e:
-            key_problem = f"POLYMARKET_PRIVATE_KEY rejected: {e}"
-            log.error("%s; running in PAPER mode", key_problem)
     if cfg.sports_only:
         log.info("sports mode: %s moneylines only", ", ".join(cfg.sports_leagues).upper())
-    if cfg.is_live and not key_problem:
-        data = DataApi(cfg.data_host)
-        live = resolve_wallet(cfg, data=data)
-        log.info("LIVE mode: wallet %s (signature type %d)", live.funder, live.signature_type)
+    key_problem = ""
+    if cfg.exchange == "us":
+        us = PolymarketUS(make_client(cfg.us_key_id, cfg.us_secret), cfg.us_key_id)
+        if cfg.is_live:
+            live = us
+            log.info("LIVE mode on polymarket.us (%s)", us.funder)
+        else:
+            log.info("PAPER mode on polymarket.us (set POLYMARKET_US_KEY_ID and POLYMARKET_US_SECRET to go live)")
     else:
-        log.info("PAPER mode (set POLYMARKET_PRIVATE_KEY to go live)")
+        gamma = Gamma(cfg.gamma_host)
+        clob = PublicClob(cfg.clob_host)
+        if cfg.is_live:
+            try:
+                cfg.private_key = normalize_private_key(cfg.private_key)
+            except ValueError as e:
+                key_problem = f"POLYMARKET_PRIVATE_KEY rejected: {e}"
+                log.error("%s; running in PAPER mode", key_problem)
+        if cfg.is_live and not key_problem:
+            data = DataApi(cfg.data_host)
+            live = resolve_wallet(cfg, data=data)
+            log.info("LIVE mode: wallet %s (signature type %d)", live.funder, live.signature_type)
+        else:
+            log.info("PAPER mode on polymarket.com (set POLYMARKET_PRIVATE_KEY to go live)")
     if key_problem:
         os.environ["POLYBOT_KEY_PROBLEM"] = key_problem
-    run_once(cfg, gamma, clob, live, data, decider=decider)
+    run_once(cfg, gamma, clob, live, data, decider=decider, us=us)
     return 0
 
 

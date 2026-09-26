@@ -63,6 +63,8 @@ class Ledger:
                 led.realized_pnl = 0.0
                 led.daily = {}
             return led
+        if mode == "live":
+            return cls(mode=mode, cash=0.0, starting_bankroll=0.0)       # measured from the exchange
         return cls(mode=mode, cash=starting_bankroll, starting_bankroll=starting_bankroll)
 
     def save(self, path: str) -> None:

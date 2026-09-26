@@ -79,14 +79,26 @@ Both profiles share these guards (all overridable by env vars / repo variables, 
 
 ## One-time setup (about 10 minutes, no paid services)
 
-1. **Fund Polymarket with $25.** Sign up at polymarket.com with an email (this creates a gasless proxy wallet), deposit $25.
-2. **Export your private key**: Polymarket → *Settings* → *Developer* (or https://reveal.magic.link/polymarket for email accounts).
-3. **Add it as a GitHub Actions secret** (repo → *Settings* → *Secrets and variables* → *Actions*):
-   - `POLYMARKET_PRIVATE_KEY` (required)
+The bot supports two venues. **Polymarket US** (polymarket.us, the CFTC-regulated app with bank/card deposits) is the
+default. The global crypto exchange (polymarket.com) is available with `EXCHANGE=global`.
+
+**Polymarket US (default)**
+
+1. Fund your Polymarket US account.
+2. Go to https://polymarket.us/developer, sign in with the same method you use for the app, and create an API key.
+   Save the **Key ID** (a UUID) and the **Secret Key** (a long base64 string, shown once).
+3. Add them as GitHub Actions secrets (repo → *Settings* → *Secrets and variables* → *Actions*):
+   - `POLYMARKET_US_KEY_ID`
+   - `POLYMARKET_US_SECRET`
    - `OPENROUTER_API_KEY` or `OPEN_ROUTER_SECRET` (turns on the Jev decider; optional but recommended)
-   - `POLYMARKET_FUNDER` (optional). Your Polymarket wallet address is derived from the key automatically, using the
-     same formula as Polymarket's own client, and the bot picks whichever derived wallet holds your USDC. Set this
-     only if the report shows a $0 balance after you have deposited.
+
+Positions on Polymarket US settle to cash automatically, so there is nothing to claim.
+
+**Global exchange** (`EXCHANGE=global` repo variable)
+
+- Sign up at polymarket.com with an email, deposit USDC, export the wallet private key at
+  https://reveal.magic.link/polymarket and add it as `POLYMARKET_PRIVATE_KEY`. The wallet address is derived from the
+  key automatically (`POLYMARKET_FUNDER` overrides it).
 4. **Merge this branch into `main`.** GitHub only runs scheduled workflows from the default branch. Until then you can start a cycle by hand from the *Actions* tab (*polybot* → *Run workflow*).
 
 That is everything. From then on:
@@ -111,6 +123,6 @@ python -m pytest -q            # offline tests with fake exchange data
 python -m polybot.run          # one paper cycle against the real APIs (needs network)
 ```
 
-Layout: `gamma.py` (market discovery) → `clob.py` (order books, fees, orders) → `espn.py` (live football data) →
+Layout: `pmus.py` (Polymarket US) or `gamma.py` + `clob.py` (global exchange) → `espn.py` (live football data) →
 `sports.py` / `strategies.py` (pure opportunity finders) → `decider.py` (Jev) → `risk.py` (approval) → `executor.py` (fills, paper or live) →
 `ledger.py` (state) ; `run.py` wires one cycle together.

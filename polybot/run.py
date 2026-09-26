@@ -20,6 +20,7 @@ from .executor import Executor
 from .gamma import Gamma
 from .ledger import Ledger, Position
 from .models import Book, Market, parse_iso
+from .pmus import PolymarketUS, make_client
 from .risk import RiskManager, RiskState, state_from_ledger
 from .sports import Matched, find_sports_edges, match_markets, near_misses, sports_exits
 from .strategies import find_ai_edges, find_harvests, find_negrisk_arbs, find_pair_arbs
@@ -27,9 +28,12 @@ from .wallet import candidate_funders, normalize_private_key
 
 log = logging.getLogger("polybot")
 
-def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClob] = None,
+def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
              data: Optional[DataApi] = None, now: Optional[datetime] = None,
-             decider: Optional[JevDecider] = None, espn: Optional[Espn] = None) -> Ledger:
+             decider: Optional[JevDecider] = None, espn: Optional[Espn] = None,
+             us: Optional[PolymarketUS] = None) -> Ledger:
+    """One cycle. On the global exchange `gamma`/`clob` supply markets and books; on Polymarket US
+    the `us` adapter supplies both (and, when authenticated, is also the `live` executor)."""
     now = now or datetime.now(timezone.utc)
     mode = "live" if live else "paper"
     path = os.path.join(cfg.state_dir, "ledger.json")
@@ -44,7 +48,10 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
     if live:
         _sync_live(led, live, data, cfg)
 
-    markets = gamma.active_markets(limit=cfg.scan_limit)
+    if us is not None:
+        markets = us.football_markets(cfg.sports_leagues)
+    else:
+        markets = gamma.active_markets(limit=cfg.scan_limit)
     by_cid = {m.condition_id: m for m in markets}
 
     # sports mode: only NFL / CFB games that ESPN knows about
@@ -66,8 +73,12 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
 
     # 1) settle / mark held positions, and grade past Jev calls against resolved markets
     if not live:
-        _settle_paper(led, gamma, by_cid)
-    _grade_ai_log(led, gamma, by_cid, now)
+        if us is not None:
+            _settle_paper_us(led, us, by_cid)
+        else:
+            _settle_paper(led, gamma, by_cid)
+    if gamma is not None:
+        _grade_ai_log(led, gamma, by_cid, now)
     held_tokens = list(led.positions)
     # 2) candidate universe for books: binary markets inside either strategy window, plus holdings
     cands = []
@@ -76,7 +87,7 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
         if m.is_binary and h is not None and 0 < h <= cfg.arb_max_days_to_resolution * 24:
             cands.append(m)
     tokens = list(dict.fromkeys([t for m in cands for t in m.token_ids] + held_tokens))
-    books = clob.books(tokens, batch=cfg.book_batch)
+    books = (us or clob).books(tokens, batch=cfg.book_batch)
     log.info("books: %d of %d tokens", len(books), len(tokens))
 
     ex = Executor(led, books, live)
@@ -88,7 +99,8 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
             log.info("  sold for $%.2f", got)
 
     # 3) fee lookups only for candidates that pass a cheap price prefilter (keeps request count small)
-    _prefetch_fees(cands, books, clob, cfg)
+    if us is None:
+        _prefetch_fees(cands, books, clob, cfg)
 
     rm = RiskManager(cfg)
     st = state_from_ledger(led)
@@ -109,7 +121,8 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
         led.ai_info = ai_info
         opps = find_sports_edges(matched, books, cfg, now, st.equity, rm.per_position_budget(st), held_cids, stats)
         opps = _apply_gate(opps, gate, cfg, stats)
-        opps += find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)
+        if us is None:
+            opps += find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)   # ties break the pair on US markets
         for line in near_misses(matched, books, now):
             log.info("  sports near: %s", line)
     else:
@@ -138,6 +151,8 @@ def run_once(cfg: Config, gamma: Gamma, clob: PublicClob, live: Optional[LiveClo
             log.info("skip %s %s: %s", o.kind, o.market.question[:60], why)
             continue
         log.info("TRADE %s: %s | %s | cost $%.2f, +$%.3f exp", o.kind, o.market.question[:70], o.note, o.cost, o.expected_profit)
+        if us is not None and live is not None and not _us_fee_ok(us, o, cfg):
+            continue
         spent = ex.buy(o)
         rm.commit(o, st, spent)
         seen_cids.add(o.market.condition_id)
@@ -179,8 +194,37 @@ def resolve_wallet(cfg: Config, make_client=None, data: Optional[DataApi] = None
     return first
 
 
-def _sync_live(led: Ledger, live: LiveClob, data: Optional[DataApi], cfg: Config) -> None:
-    """Live truth comes from the exchange: cash from the CLOB, positions from the data API."""
+def _us_fee_ok(us: PolymarketUS, o, cfg: Config) -> bool:
+    """Re-check the edge with the exchange's exact commission before spending real money."""
+    leg = o.legs[0]
+    from .pmus import slug_of
+    fee = us.preview_fee(slug_of(leg.token_id), "ORDER_INTENT_BUY_LONG", leg.price, int(leg.size))
+    if fee is None:
+        return True
+    p = o.ai_p or 0.0
+    edge = p - leg.price - fee / max(leg.size, 1)
+    if edge < cfg.sports_margin_final:
+        log.info("  skipped after fee preview: fee $%.3f leaves edge %.3f", fee, edge)
+        return False
+    return True
+
+
+def _settle_paper_us(led: Ledger, us: PolymarketUS, by_cid: dict[str, Market]) -> None:
+    held = {p.condition_id for p in led.positions.values()}
+    if not held:
+        return
+    done = us.resolved(held)
+    for tid, p in list(led.positions.items()):
+        pays = done.get(p.condition_id)
+        m = by_cid.get(p.condition_id)
+        if pays and m and tid in m.token_ids:
+            payout = pays[m.token_ids.index(tid)]
+            pnl = led.settle(tid, payout)
+            log.info("settled %s %s -> %.0f (pnl %+.3f)", p.question[:50], p.outcome, payout, pnl)
+
+
+def _sync_live(led: Ledger, live, data: Optional[DataApi], cfg: Config) -> None:
+    """Live truth comes from the exchange: cash and positions from the venue's account endpoints."""
     try:
         led.cash = live.usdc_balance()
     except Exception as e:
@@ -193,8 +237,12 @@ def _sync_live(led: Ledger, live: LiveClob, data: Optional[DataApi], cfg: Config
         log.warning(msg)
         if not any("shows $0 USDC" in n for n in led.notes[-3:]):
             led.notes.append(msg)
+    rows = None
     if data:
         rows = data.positions(live.funder)
+    elif hasattr(live, "positions"):
+        rows = live.positions()
+    if rows is not None:
         pos: dict[str, Position] = {}
         for r in rows:
             tid = str(r.get("asset", ""))
@@ -476,7 +524,7 @@ def main(argv: list[str] | None = None) -> int:
     cfg = Config()
     gamma = Gamma(cfg.gamma_host)
     clob = PublicClob(cfg.clob_host)
-    live = data = decider = None
+    live = data = decider = us = None
     if cfg.ai_active:
         decider = JevDecider(cfg.openrouter_api_key, cfg.ai_model)
         log.info("AI decider: %s via OpenRouter", cfg.ai_model)

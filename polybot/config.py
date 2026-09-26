@@ -53,6 +53,11 @@ class Config:
     # --- risk profile: "aggressive" (default) or "conservative" ---
     profile: str = field(default_factory=lambda: os.environ.get("RISK_PROFILE", "aggressive").strip().lower())
 
+    # --- exchange: "us" (polymarket.us, USD account, Ed25519 API key) or "global" (polymarket.com CLOB) ---
+    exchange: str = field(default_factory=lambda: os.environ.get("EXCHANGE", "us").strip().lower())
+    us_key_id: str = field(default_factory=lambda: os.environ.get("POLYMARKET_US_KEY_ID", ""))
+    us_secret: str = field(default_factory=lambda: os.environ.get("POLYMARKET_US_SECRET", ""))
+
     # --- credentials (absent => paper mode) ---
     private_key: str = field(default_factory=lambda: os.environ.get("POLYMARKET_PRIVATE_KEY", ""))
     funder: str = field(default_factory=lambda: os.environ.get("POLYMARKET_FUNDER", ""))
@@ -153,5 +158,9 @@ class Config:
 
     @property
     def is_live(self) -> bool:
+        if not self.live_enabled:
+            return False
+        if self.exchange == "us":
+            return bool(self.us_key_id and self.us_secret)
         # the funder (wallet address) is optional: it is derived from the key when absent
-        return bool(self.private_key and self.live_enabled)
+        return bool(self.private_key)

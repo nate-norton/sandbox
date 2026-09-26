@@ -135,6 +135,7 @@ class Config:
     sports_max_hours_ahead: float = field(default_factory=lambda: _f("SPORTS_MAX_HOURS_AHEAD", 7 * 24.0))
     sports_min_liquidity: float = field(default_factory=lambda: _f("SPORTS_MIN_LIQUIDITY", 2000.0))
     sports_max_spread: float = field(default_factory=lambda: _f("SPORTS_MAX_SPREAD", 0.05))
+    sports_book_hours_ahead: float = field(default_factory=lambda: _f("SPORTS_BOOK_HOURS_AHEAD", 36.0))   # fetch books this close to kickoff
 
     # --- scanning ---
     scan_limit: int = field(default_factory=lambda: _i("SCAN_LIMIT", 600))

@@ -14,6 +14,7 @@ import logging
 import math
 import os
 import re
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -75,6 +76,7 @@ class PolymarketUS:
         self._market_meta: dict[str, dict] = {}       # aec slug -> {event, sides, tick}
         self._cache_path = cache_path
         self._sides_cache: dict[str, dict] = self._load_cache()
+        self.book_delay = 0.15                          # seconds between order-book requests (venue rate limit)
 
     # ------------------------------------------------------------------ discovery
     def football_markets(self, leagues: tuple = ("nfl", "cfb"), page: int = 100, max_pages: int = 20,
@@ -227,12 +229,23 @@ class PolymarketUS:
         errors: dict[str, int] = {}
         states: dict[str, int] = {}
         for slug, toks in by_slug.items():
-            try:
-                md = (self.c.markets.book(slug) or {}).get("marketData") or {}
-            except Exception as e:
-                key = f"{type(e).__name__}: {str(e)[:80]}"
-                errors[key] = errors.get(key, 0) + 1
+            md = None
+            for attempt in range(3):
+                try:
+                    md = (self.c.markets.book(slug) or {}).get("marketData") or {}
+                    break
+                except Exception as e:
+                    name = type(e).__name__
+                    if "RateLimit" in name or "429" in str(e):
+                        time.sleep(self.book_delay * (4 ** (attempt + 1)))      # 0.6s, 2.4s, ...
+                        continue
+                    key = f"{name}: {str(e)[:80]}"
+                    errors[key] = errors.get(key, 0) + 1
+                    break
+            if md is None:
+                errors["RateLimitError"] = errors.get("RateLimitError", 0) + 1
                 continue
+            time.sleep(self.book_delay)
             states[str(md.get("state"))] = states.get(str(md.get("state")), 0) + 1
             open_ = md.get("state") in (None, "MARKET_STATE_OPEN")
             bids = [(p, float(l.get("qty") or 0)) for l in md.get("bids") or [] if (p := _amount(l.get("px"))) is not None]

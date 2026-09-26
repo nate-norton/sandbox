@@ -177,3 +177,16 @@ def test_match_by_alias_when_title_is_truncated():
     m.outcome_aliases = [["lac", "Los Angeles C"], ["buf", "Buffalo"]]
     matched = match_markets([m], [g], NOW)
     assert len(matched) == 1 and matched[0].sides == ["away", "home"]
+
+
+def test_books_only_for_games_near_kickoff(tmp_path):
+    c = cfg(tmp_path)
+    soon = mk_market("s", "sy", "sn", hours=6)
+    soon.question, soon.outcomes, soon.sports_type, soon.game_start = "Texans vs. Colts", ["Texans", "Colts"], "moneyline", NOW + timedelta(hours=6)
+    far = mk_market("f", "fy", "fn", hours=100)
+    far.question, far.outcomes, far.sports_type, far.game_start = "Bills vs. Jets", ["Bills", "Jets"], "moneyline", NOW + timedelta(hours=100)
+    g1 = parse_event(espn_event("1", ("Houston", "Texans"), ("Indianapolis", "Colts"), ml_home=-150, ml_away=130), "nfl")
+    g2 = parse_event(espn_event("2", ("Buffalo", "Bills"), ("New York", "Jets"), ml_home=-150, ml_away=130, start=NOW + timedelta(hours=100)), "nfl")
+    clob = FakeClob({t: mk_book(t, [(0.5, 10)], [(0.48, 10)]) for t in ("sy", "sn", "fy", "fn")})
+    led = run_once(c, FakeGamma([soon, far]), clob, now=NOW, espn=FakeEspn([g1, g2]))
+    assert led.scan["books"] == 2 and led.scan["sports.matched"] == 2

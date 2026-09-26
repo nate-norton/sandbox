@@ -91,6 +91,10 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
         h = m.hours_to_end(now)
         if m.is_binary and h is not None and 0 < h <= cfg.arb_max_days_to_resolution * 24:
             cands.append(m)
+    if cfg.sports_only:
+        # books are the expensive, rate-limited call: only games close to kickoff (or under way) matter
+        cands = [m for m in cands if m.game_start is None
+                 or (m.game_start - now).total_seconds() <= cfg.sports_book_hours_ahead * 3600]
     tokens = list(dict.fromkeys([t for m in cands for t in m.token_ids] + held_tokens))
     books = (us or clob).books(tokens, batch=cfg.book_batch)
     log.info("books: %d of %d tokens", len(books), len(tokens))

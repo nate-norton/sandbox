@@ -117,6 +117,7 @@ def test_books_mirror_short_side_and_orders_use_the_right_intent(tmp_path):
     slug = "aec-nfl-hou-ind-2026-09-27"
     sdk = FakeSDK(events, details, {slug: {"bids": [(0.53, 40)], "offers": [(0.55, 100), (0.56, 50)]}})
     us = PolymarketUS(sdk, key_id="abcdef12-0000")
+    us.book_delay = 0.0
     us.football_markets()
     books = us.books([token_id(slug, "L"), token_id(slug, "S")])
     L, S = books[token_id(slug, "L")], books[token_id(slug, "S")]

@@ -273,6 +273,18 @@ class PolymarketUS:
         commission still comes from the order preview at execution time."""
         return 600
 
+    def payout(self, token: str) -> Optional[float]:
+        """What one share of this token paid once its market settled, or None while it is open."""
+        slug, side = split_token(token)
+        try:
+            st = self.c.markets.settlement(slug) or {}
+            s = float(st.get("settlement"))
+        except Exception:
+            return None
+        if not 0.0 <= s <= 1.0:
+            return None
+        return s if side == "L" else 1.0 - s
+
     def resolved(self, condition_ids: set[str]) -> dict[str, list[float]]:
         """event slug -> [payout long, payout short] once the game's market has settled."""
         out = {}

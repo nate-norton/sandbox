@@ -198,3 +198,9 @@ def test_us_live_cycle_uses_exchange_balance_and_fee_preview(tmp_path):
     assert led.mode == "live" and led.starting_bankroll == 60.0
     assert sdk.previews and sdk.created[-1]["intent"] == "ORDER_INTENT_BUY_LONG" and sdk.created[-1]["tif"] == "TIME_IN_FORCE_IMMEDIATE_OR_CANCEL"
     assert len(led.positions) == 1 and abs(led.positions[token_id(slug, "L")].avg_price - 0.55) < 1e-9
+    # next cycle the exchange no longer lists the position and the market has settled long=1: book the P&L
+    sdk.settlements = {slug: 1.0}
+    sdk._balance = 60.0 + 22 * 0.45
+    led = run_once(c, None, None, live=us, now=NOW, espn=FakeEspn([]), us=us)      # game over: nothing to match
+    assert not led.positions and led.trades[-1]["side"] == "SETTLE" and abs(led.realized_pnl - 22 * 0.45) < 1e-6
+    assert any("settled" in n and "+9.90" in n for n in led.notes)

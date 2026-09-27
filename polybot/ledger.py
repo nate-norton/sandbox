@@ -144,6 +144,18 @@ class Ledger:
                             "kind": p.kind, "q": p.question[:80]})
         return pnl
 
+    def record_settlement(self, token_id: str, payout_per_share: float) -> float:
+        """Live mode: the exchange already paid out (cash is synced from it), so only book the P&L."""
+        p = self.positions.pop(token_id, None)
+        if not p:
+            return 0.0
+        pnl = p.size * payout_per_share - p.cost
+        self._book_pnl(pnl)
+        self.trades.append({"t": _now(), "side": "SETTLE", "token_id": token_id, "outcome": p.outcome, "size": p.size,
+                            "price": payout_per_share, "proceeds": round(p.size * payout_per_share, 4), "pnl": round(pnl, 4),
+                            "kind": p.kind, "q": p.question[:80]})
+        return pnl
+
     # ---------- AI outcome tracking ----------
     def log_ai(self, condition_id: str, question: str, p_yes: float, price_yes: Optional[float],
                risk: Optional[float], with_prices: bool, when: str) -> None:

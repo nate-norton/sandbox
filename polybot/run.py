@@ -145,10 +145,10 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
         opps = _apply_gate(opps, gate, cfg, stats)
         # observation log: every quote next to the model, and each game's final outcome (once)
         stats["obs.rows"] = observe.append(cfg.state_dir, f"{now:%Y-%m-%d}.jsonl", observe.snapshot_rows(matched, books, cfg, now))
-        outs = observe.outcome_rows(matched, set(led.resolved_events), now)
+        outs = observe.outcome_rows(matched, set(led.resolved_events), now, games)
         if outs:
             observe.append(cfg.state_dir, "outcomes.jsonl", outs)
-            led.resolved_events = (led.resolved_events + [o["event"] for o in outs])[-2000:]
+            led.resolved_events = (led.resolved_events + [o["event"] or f"game:{o['game']}" for o in outs])[-2000:]
             stats["obs.outcomes"] = len(outs)
         if us is None:
             opps += find_pair_arbs(cands, books, cfg, now, rm.spendable(st), stats)   # ties break the pair on US markets
@@ -362,6 +362,19 @@ def _sync_live(led: Ledger, live, data: Optional[DataApi], cfg: Config) -> None:
             )
             if r.get("redeemable"):
                 led.notes.append(f"{led.last_run} redeemable: {pos[tid].question[:60]} ({size:.1f} {pos[tid].outcome})")
+        for tid, p in list(led.positions.items()):
+            if tid in pos:
+                continue
+            pay = live.payout(tid) if hasattr(live, "payout") else None
+            if pay is not None:
+                pnl = led.record_settlement(tid, pay)
+                note = (f"{led.last_run} settled {p.question[:50]}: {p.outcome} paid {pay:.2f}/share on "
+                        f"{p.size:.0f} @ {p.avg_price:.3f} -> {pnl:+.2f}")
+            else:
+                note = (f"{led.last_run} position gone from the exchange (sold by hand, or settlement not posted yet): "
+                        f"{p.question[:50]} {p.outcome} {p.size:.0f} @ {p.avg_price:.3f}")
+            log.info(note)
+            led.notes.append(note)
         led.positions = pos
     if led.equity <= 0 and not led.positions:
         led.starting_bankroll = 0.0                  # nothing has arrived yet; measure from the first funded run

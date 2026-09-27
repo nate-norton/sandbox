@@ -38,16 +38,27 @@ def snapshot_rows(matched: list[Matched], books: dict[str, Book], cfg, now: date
     return rows
 
 
-def outcome_rows(matched: list[Matched], already: set[str], now: datetime) -> list[dict]:
+def outcome_rows(matched: list[Matched], already: set[str], now: datetime, games: list | None = None) -> list[dict]:
+    """One row per final game, logged once. Matched games carry the market's event slug; a game whose
+    market has already settled and left discovery is logged by ESPN game id, which the snapshot rows
+    also carry, so calibration can still join price to outcome."""
     rows = []
     t = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    seen_games = set()
     for mm in matched:
         g = mm.game
+        seen_games.add(g.id)
         if g.completed and g.winner_home is not None and mm.market.condition_id not in already:
             rows.append({"t": t, "event": mm.market.condition_id, "game": g.id, "league": g.league,
                          "winner_home": g.winner_home, "home": g.home.display, "away": g.away.display,
                          "home_score": g.home.score, "away_score": g.away.score,
                          "sides": mm.sides, "teams": mm.market.outcomes})
+    for g in games or []:
+        if g.id in seen_games or not (g.completed and g.winner_home is not None) or f"game:{g.id}" in already:
+            continue
+        rows.append({"t": t, "event": "", "game": g.id, "league": g.league,
+                     "winner_home": g.winner_home, "home": g.home.display, "away": g.away.display,
+                     "home_score": g.home.score, "away_score": g.away.score, "sides": [], "teams": []})
     return rows
 
 

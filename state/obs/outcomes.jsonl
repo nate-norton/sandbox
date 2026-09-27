@@ -44,3 +44,4 @@
 {"t":"2026-09-27T00:59:17Z","event":"","game":"401864579","league":"cfb","winner_home":false,"home":"New Mexico St","away":"New Mexico","home_score":18,"away_score":42,"sides":[],"teams":[]}
 {"t":"2026-09-27T01:10:21Z","event":"","game":"401858466","league":"cfb","winner_home":false,"home":"Penn State","away":"Wisconsin","home_score":20,"away_score":24,"sides":[],"teams":[]}
 {"t":"2026-09-27T01:10:21Z","event":"","game":"401858464","league":"cfb","winner_home":false,"home":"Michigan St","away":"Nebraska","home_score":13,"away_score":31,"sides":[],"teams":[]}
+{"t":"2026-09-27T01:20:57Z","event":"cfb-del-vir-2026-09-26","game":"401858239","league":"cfb","winner_home":true,"home":"Virginia","away":"Delaware","home_score":42,"away_score":3,"sides":["away","home"],"teams":["Delaware","Virginia"]}

@@ -1,15 +1,16 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 90  |  last run: 2026-09-27T00:01:20Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$46.67** (started $59.49, realized +0.00)
-- cash: $43.34  |  deployed: $5.00  |  open positions: 1
+- mode: **live**  |  profile: **aggressive**  |  runs: 94  |  last run: 2026-09-27T00:18:40Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$48.32** (started $59.49, realized +0.00)
+- cash: $33.34  |  deployed: $14.57  |  open positions: 2
 - P&L today: +0.00
 
 ## Open positions
 
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
-| Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.175 |  | external |
+| Oregon vs. USC | Trojans | 27.0 | 0.354 | 0.435 |  | external |
+| Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.170 |  | external |
 
 ## Recent trades
 
@@ -21,16 +22,16 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 32 API calls, 29 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 30 favourites gated, 0 markets judged blind, 2 API calls, 30 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 4387 quote/model snapshots and 6 game outcomes across 3 files in `state/obs/`
+- 4607 quote/model snapshots and 37 game outcomes across 3 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=30, books=62, candidates=33, markets=120, obs.rows=52, sports.games=154, sports.late_contested=2, sports.matched=120, sports.moneyline_markets=120, sports.no_book=78, sports.no_edge=28, sports.no_model=82, sports.price_out_of_band=4, sports.stale_book=4, sports.too_far_ahead=18, sports.unstable=8
+ai.edge_assessed=0, ai.gate_assessed=30, books=64, candidates=32, markets=119, obs.rows=54, sports.games=154, sports.matched=119, sports.moneyline_markets=119, sports.no_book=78, sports.no_edge=28, sports.no_model=82, sports.price_out_of_band=4, sports.stale_book=0, sports.too_far_ahead=18, sports.unstable=6
 
 ## Notes
 
@@ -54,3 +55,4 @@ ai.edge_assessed=0, ai.gate_assessed=30, books=62, candidates=33, markets=120, o
 - 2026-09-26T18:10:07Z NOT FILLED Boston College @ 0.120 x82 (model 0.27, live_wp): new: ORD_REJECT_REASON_EXCHANGE_OPTION; expired: ORD_REJECT_REASON_EXCHANGE_OPTION
 - 2026-09-26T18:10:07Z BOUGHT Georgia State @ 0.775 x33 (model 0.87, live_wp) for $25.41
 - 2026-09-26T23:49:59Z skip South Florida @ 0.930 x27 (model 0.97, live_wp): ask moved 0.930 -> 0.970 before the order
+- 2026-09-27T00:07:47Z NOT FILLED Kennesaw State @ 0.180 x29 (model 0.27, live_wp): new: ORD_REJECT_REASON_EXCHANGE_OPTION; expired: ORD_REJECT_REASON_EXCHANGE_OPTION

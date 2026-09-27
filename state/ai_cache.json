@@ -224,6 +224,15 @@
 "risk_confidence": 0.85,
 "with_prices": true
 },
+"cfb-rice-frest-2026-09-26:p": {
+"at": "2026-09-27T00:15:04Z",
+"condition_id": "cfb-rice-frest-2026-09-26",
+"error": "",
+"p_yes": 0.14,
+"risk": 0.96,
+"risk_confidence": 0.87,
+"with_prices": true
+},
 "cfb-sc-ala-2026-09-26:p": {
 "at": "2026-09-26T23:49:59Z",
 "condition_id": "cfb-sc-ala-2026-09-26",
@@ -267,6 +276,15 @@
 "p_yes": 0.19,
 "risk": 0.99,
 "risk_confidence": 0.95,
+"with_prices": true
+},
+"cfb-umass-sacst-2026-09-26:p": {
+"at": "2026-09-27T00:07:47Z",
+"condition_id": "cfb-umass-sacst-2026-09-26",
+"error": "",
+"p_yes": 0.56,
+"risk": 1.01,
+"risk_confidence": 0.94,
 "with_prices": true
 },
 "cfb-vand-aubrn-2026-09-26:p": {

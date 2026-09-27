@@ -1,4 +1,13 @@
 {
+"cfb-airf-nevada-2026-09-26:p": {
+"at": "2026-09-27T00:32:35Z",
+"condition_id": "cfb-airf-nevada-2026-09-26",
+"error": "",
+"p_yes": 0.59,
+"risk": 1.0,
+"risk_confidence": 0.96,
+"with_prices": true
+},
 "cfb-applst-ncst-2026-09-26:p": {
 "at": "2026-09-26T23:49:59Z",
 "condition_id": "cfb-applst-ncst-2026-09-26",
@@ -51,6 +60,15 @@
 "p_yes": 0.04,
 "risk": 0.25,
 "risk_confidence": 0.62,
+"with_prices": true
+},
+"cfb-gtech-stan-2026-09-26:p": {
+"at": "2026-09-27T00:32:35Z",
+"condition_id": "cfb-gtech-stan-2026-09-26",
+"error": "",
+"p_yes": 0.5,
+"risk": 1.01,
+"risk_confidence": 0.97,
 "with_prices": true
 },
 "cfb-hou-gas-2026-09-26:p": {

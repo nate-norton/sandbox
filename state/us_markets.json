@@ -4426,6 +4426,25 @@
 },
 "tick": 0.0025
 },
+"aec-nfl-det-car-2026-10-04": {
+"description": "This market will settle to the winner of the Detroit Lions vs Carolina Panthers NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
+"gameStartTime": "2026-10-05T00:20:00Z",
+"long": {
+"abbr": "det",
+"alias": "Lions",
+"name": "Detroit Lions",
+"safeName": "DET Lions",
+"teamId": 58
+},
+"short": {
+"abbr": "car",
+"alias": "Panthers",
+"name": "Carolina Panthers",
+"safeName": "CAR Panthers",
+"teamId": 52
+},
+"tick": 0.0025
+},
 "aec-nfl-gb-tb-2026-10-04": {
 "description": "This market will settle to the winner of the Green Bay Packers vs Tampa Bay Buccaneers NFL game scheduled for Oct 4, 2026. Overtime is included if played. If the game ends in a tie, the market will settle to $0.50. If the game is delayed, postponed, or suspended and not rescheduled to a date within two weeks of the originally scheduled date, the market will settle to the last fair market price. Outcome sourced from NFL.",
 "gameStartTime": "2026-10-04T17:00:00Z",

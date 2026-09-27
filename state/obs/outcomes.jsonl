@@ -40,3 +40,5 @@
 {"t":"2026-09-27T00:29:24Z","event":"cfb-wisc-pennst-2026-09-26","game":"401858466","league":"cfb","winner_home":false,"home":"Penn State","away":"Wisconsin","home_score":20,"away_score":24,"sides":["away","home"],"teams":["Wisconsin","Penn State"]}
 {"t":"2026-09-27T00:32:35Z","event":"cfb-nebr-mst-2026-09-26","game":"401858464","league":"cfb","winner_home":false,"home":"Michigan St","away":"Nebraska","home_score":13,"away_score":31,"sides":["away","home"],"teams":["Nebraska","Michigan State"]}
 {"t":"2026-09-27T00:42:52Z","event":"","game":"401862785","league":"cfb","winner_home":false,"home":"Bowling Green","away":"South Florida","home_score":6,"away_score":14,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:52:13Z","event":"cfb-liub-flint-2026-09-26","game":"401867909","league":"cfb","winner_home":true,"home":"FIU","away":"Long Island","home_score":20,"away_score":3,"sides":["away","home"],"teams":["LIU","Florida International"]}
+{"t":"2026-09-27T00:59:17Z","event":"","game":"401864579","league":"cfb","winner_home":false,"home":"New Mexico St","away":"New Mexico","home_score":18,"away_score":42,"sides":[],"teams":[]}

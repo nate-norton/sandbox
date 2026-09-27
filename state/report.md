@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 101  |  last run: 2026-09-27T00:42:52Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$48.28** (started $59.49, realized +0.00)
+- mode: **live**  |  profile: **aggressive**  |  runs: 105  |  last run: 2026-09-27T00:59:17Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$43.64** (started $59.49, realized +0.00)
 - cash: $23.34  |  deployed: $24.23  |  open positions: 3
 - P&L today: +0.00
 
@@ -9,9 +9,9 @@
 
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
-| Oklahoma State vs. West Virginia | Cowboys | 19.0 | 0.508 | 0.480 |  | external |
-| Oregon vs. USC | Trojans | 27.0 | 0.354 | 0.410 |  | external |
-| Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.250 |  | external |
+| Oklahoma State vs. West Virginia | Cowboys | 19.0 | 0.508 | 0.290 |  | external |
+| Oregon vs. USC | Trojans | 27.0 | 0.354 | 0.400 |  | external |
+| Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.210 |  | external |
 
 ## Recent trades
 
@@ -23,16 +23,16 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 28 favourites gated, 0 markets judged blind, 2 API calls, 28 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 0 favourites gated, 0 markets judged blind, 0 API calls, 0 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 4971 quote/model snapshots and 42 game outcomes across 3 files in `state/obs/`
+- 5145 quote/model snapshots and 44 game outcomes across 3 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=28, books=58, candidates=31, markets=117, obs.outcomes=1, obs.rows=50, sports.games=154, sports.matched=117, sports.moneyline_markets=117, sports.no_book=76, sports.no_edge=31, sports.no_model=80, sports.price_out_of_band=3, sports.stale_book=4, sports.too_far_ahead=19
+ai.edge_assessed=0, ai.gate_assessed=0, books=48, candidates=30, markets=116, obs.outcomes=1, obs.rows=40, sports.games=154, sports.matched=116, sports.moneyline_markets=116, sports.no_book=80, sports.no_edge=18, sports.no_model=80, sports.price_out_of_band=4, sports.stale_book=12, sports.too_far_ahead=19, sports.unstable=6
 
 ## Notes
 

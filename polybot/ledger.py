@@ -46,6 +46,7 @@ class Ledger:
     game_window: bool = False                                       # a matched game is live or imminent
     resolved_events: list = field(default_factory=list)             # events whose outcome is already logged
     decisions: list[str] = field(default_factory=list)              # why each recent trade attempt did or did not happen
+    book_seen: dict[str, list] = field(default_factory=dict)        # token -> [top-of-book signature, repeat count, last seen]
 
     # ---------- persistence ----------
     @classmethod

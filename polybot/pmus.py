@@ -77,6 +77,7 @@ class PolymarketUS:
         self._cache_path = cache_path
         self._sides_cache: dict[str, dict] = self._load_cache()
         self.book_delay = 0.15                          # seconds between order-book requests (venue rate limit)
+        self.fresh_source = ""                          # which host answered the last fresh (pre-order) book read
 
     # ------------------------------------------------------------------ discovery
     def football_markets(self, leagues: tuple = ("nfl", "cfb"), page: int = 100, max_pages: int = 20,
@@ -221,7 +222,10 @@ class PolymarketUS:
             log.info("could not save sides cache: %s", e)
 
     # ------------------------------------------------------------------ market data
-    def books(self, token_ids: list[str], batch: int = 40) -> dict[str, Book]:
+    def books(self, token_ids: list[str], batch: int = 40, fresh: bool = False) -> dict[str, Book]:
+        """`fresh=True` (the read right before an order) asks the authenticated API host first, since
+        the public gateway has served one frozen quote for ten minutes at a time; falls back to the
+        gateway when that host does not answer."""
         out: dict[str, Book] = {}
         by_slug: dict[str, list[str]] = {}
         for tok in token_ids:
@@ -231,7 +235,9 @@ class PolymarketUS:
         states: dict[str, int] = {}
         for slug, toks in by_slug.items():
             md = None
-            for attempt in range(3):
+            if fresh:
+                md = self._book_authenticated(slug)
+            for attempt in range(3 if md is None else 0):
                 try:
                     md = (self.c.markets.book(slug) or {}).get("marketData") or {}
                     break
@@ -267,6 +273,19 @@ class PolymarketUS:
         if errors or states:
             log.info("polymarket.us books: states=%s errors=%s", states, errors)
         return out
+
+    def _book_authenticated(self, slug: str) -> Optional[dict]:
+        client = getattr(self.c, "_client", None)
+        if client is None or not self.key_id:
+            return None
+        try:
+            md = (client.get(f"/v1/markets/{slug}/book", authenticated=True) or {}).get("marketData") or {}
+            self.fresh_source = "api"
+            return md
+        except Exception as e:
+            log.info("authenticated book unavailable for %s (%s); using the gateway", slug, str(e)[:80])
+            self.fresh_source = "gateway"
+            return None
 
     def fee_bps(self, slug: str) -> int:
         """Polymarket US taker fee is 0.06 * C * p * (1-p) (docs.polymarket.us/fees); the exact

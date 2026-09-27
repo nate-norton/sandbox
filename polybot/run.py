@@ -110,7 +110,11 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
     ex = Executor(led, books, live)
     _mark_and_stop(led, books, ex, now, cfg.stop_loss_drop)
     if cfg.sports_only:
+        if led.book_seen and not _BOOK_SEEN:
+            for tid, (sig, n, at) in led.book_seen.items():          # restarts must not forget a frozen quote
+                _BOOK_SEEN[tid] = (tuple(sig), int(n), parse_iso(at) or now)
         stale = _stale_books(books, matched, now)
+        led.book_seen = {tid: [list(sig), n, at.isoformat()] for tid, (sig, n, at) in _BOOK_SEEN.items()}
         for tid in stale:
             books.pop(tid, None)            # a frozen quote is not a price: no entries or exits on it
     if cfg.sports_only:
@@ -201,7 +205,8 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
             done.append(o)
             _decide(led, f"BOUGHT {what} for ${spent:.2f}")
         else:
-            _decide(led, f"NOT FILLED {what}: {ex.last_error or 'fill-or-kill order returned no fill'}")
+            fresh = o.note[o.note.rfind("; fresh ") + 2:] if "; fresh " in o.note else ""
+            _decide(led, f"NOT FILLED {what}: {ex.last_error or 'order returned no fill'}{' | ' + fresh if fresh else ''}")
     _finish(led, path, cfg, st, done, halt)
     return led
 
@@ -289,12 +294,13 @@ def _refresh_live_price(us: PolymarketUS, o, cfg: Config) -> str:
     more than the slippage allowance above the price the edge was computed on."""
     leg = o.legs[0]
     try:
-        b = us.books([leg.token_id]).get(leg.token_id)
+        b = us.books([leg.token_id], fresh=True).get(leg.token_id)
     except Exception as e:
         log.info("  fresh book failed for %s: %s", leg.outcome, e)
         return ""
     if not b or b.best_ask is None:
         return "no ask on the fresh book"
+    o.note += f"; fresh {getattr(us, 'fresh_source', '') or 'gateway'} book {b.best_bid:.3f}/{b.best_ask:.3f} x{b.asks[0].size:.0f}"
     tick = o.market.tick_size or 0.005
     if b.best_ask > leg.price + cfg.sports_max_slippage + 1e-9:
         return f"ask moved {leg.price:.3f} -> {b.best_ask:.3f} before the order"

@@ -4,3 +4,34 @@
 {"t":"2026-09-26T23:49:59Z","event":"cfb-okl-ga-2026-09-26","game":"401856700","league":"cfb","winner_home":true,"home":"Georgia","away":"Oklahoma","home_score":41,"away_score":13,"sides":["away","home"],"teams":["Oklahoma","Georgia"]}
 {"t":"2026-09-26T23:49:59Z","event":"cfb-vand-aubrn-2026-09-26","game":"401856698","league":"cfb","winner_home":true,"home":"Auburn","away":"Vanderbilt","home_score":21,"away_score":15,"sides":["away","home"],"teams":["Vanderbilt","Auburn"]}
 {"t":"2026-09-26T23:49:59Z","event":"cfb-hou-gas-2026-09-26","game":"401856806","league":"cfb","winner_home":false,"home":"GA Southern","away":"Houston","home_score":28,"away_score":42,"sides":["away","home"],"teams":["Houston","Georgia Southern"]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401856704","league":"cfb","winner_home":false,"home":"Tennessee","away":"Texas","home_score":17,"away_score":20,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401856700","league":"cfb","winner_home":true,"home":"Georgia","away":"Oklahoma","home_score":41,"away_score":13,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858467","league":"cfb","winner_home":false,"home":"Purdue","away":"Notre Dame","home_score":10,"away_score":49,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401856699","league":"cfb","winner_home":true,"home":"Florida","away":"Ole Miss","home_score":52,"away_score":28,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858465","league":"cfb","winner_home":true,"home":"Ohio State","away":"Illinois","home_score":42,"away_score":19,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401856805","league":"cfb","winner_home":true,"home":"Texas Tech","away":"Sam Houston","home_score":49,"away_score":14,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401856816","league":"cfb","winner_home":false,"home":"Iowa State","away":"Utah","home_score":17,"away_score":31,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858243","league":"cfb","winner_home":false,"home":"Louisville","away":"Wake Forest","home_score":27,"away_score":30,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858463","league":"cfb","winner_home":false,"home":"Michigan","away":"Iowa","home_score":19,"away_score":20,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401856813","league":"cfb","winner_home":true,"home":"Baylor","away":"Colorado","home_score":23,"away_score":13,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858236","league":"cfb","winner_home":true,"home":"Pitt","away":"Bucknell","home_score":59,"away_score":0,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858242","league":"cfb","winner_home":false,"home":"Boston College","away":"Virginia Tech","home_score":14,"away_score":21,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401860893","league":"cfb","winner_home":true,"home":"Toledo","away":"San Diego St","home_score":41,"away_score":16,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401860896","league":"cfb","winner_home":true,"home":"UTSA","away":"Colorado St","home_score":59,"away_score":45,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401864512","league":"cfb","winner_home":false,"home":"Akron","away":"UNLV","home_score":10,"away_score":38,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401866425","league":"cfb","winner_home":true,"home":"Kent State","away":"Ball State","home_score":26,"away_score":13,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401864576","league":"cfb","winner_home":true,"home":"Kentucky","away":"South Alabama","home_score":45,"away_score":21,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401866427","league":"cfb","winner_home":true,"home":"E Michigan","away":"Lindenwood","home_score":29,"away_score":3,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858462","league":"cfb","winner_home":false,"home":"Maryland","away":"UCLA","home_score":3,"away_score":54,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401864511","league":"cfb","winner_home":true,"home":"Georgia St","away":"N Illinois","home_score":35,"away_score":14,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858237","league":"cfb","winner_home":true,"home":"Florida St","away":"C Arkansas","home_score":34,"away_score":7,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401864510","league":"cfb","winner_home":true,"home":"Wyoming","away":"Hawai'i","home_score":27,"away_score":10,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401856815","league":"cfb","winner_home":true,"home":"UCF","away":"TCU","home_score":21,"away_score":13,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401858244","league":"cfb","winner_home":true,"home":"Duke","away":"William & Mary","home_score":62,"away_score":7,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401860897","league":"cfb","winner_home":false,"home":"W Michigan","away":"Boise St","home_score":7,"away_score":32,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401861970","league":"cfb","winner_home":true,"home":"Miami OH","away":"UConn","home_score":24,"away_score":21,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401866426","league":"cfb","winner_home":true,"home":"Buffalo","away":"Robert Morris","home_score":31,"away_score":28,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401866428","league":"cfb","winner_home":true,"home":"Ohio","away":"Stonehill","home_score":35,"away_score":7,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401868188","league":"cfb","winner_home":true,"home":"Marshall","away":"Gardner-Webb","home_score":36,"away_score":35,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:07:47Z","event":"","game":"401862781","league":"cfb","winner_home":true,"home":"East Carolina","away":"NC Central","home_score":42,"away_score":9,"sides":[],"teams":[]}
+{"t":"2026-09-27T00:15:04Z","event":"cfb-sfl-bowlgr-2026-09-26","game":"401862785","league":"cfb","winner_home":false,"home":"Bowling Green","away":"South Florida","home_score":6,"away_score":14,"sides":["away","home"],"teams":["South Florida","Bowling Green"]}

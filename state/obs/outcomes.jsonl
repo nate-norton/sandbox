@@ -53,3 +53,4 @@
 {"t":"2026-09-27T01:56:08Z","event":"","game":"401858239","league":"cfb","winner_home":true,"home":"Virginia","away":"Delaware","home_score":42,"away_score":3,"sides":[],"teams":[]}
 {"t":"2026-09-27T01:59:42Z","event":"cfb-kenest-arkst-2026-09-26","game":"401869931","league":"cfb","winner_home":true,"home":"Arkansas St","away":"Kennesaw St","home_score":17,"away_score":14,"sides":["away","home"],"teams":["Kennesaw State","Arkansas State"]}
 {"t":"2026-09-27T01:59:42Z","event":"cfb-mtnst-jaxst-2026-09-26","game":"401871048","league":"cfb","winner_home":true,"home":"Jax State","away":"MTSU","home_score":23,"away_score":13,"sides":["away","home"],"teams":["Middle Tennessee","Jacksonville State"]}
+{"t":"2026-09-27T02:10:11Z","event":"cfb-mrcy-wkent-2026-09-26","game":"401870745","league":"cfb","winner_home":true,"home":"Western KY","away":"Mercyhurst","home_score":52,"away_score":7,"sides":["away","home"],"teams":["Mercyhurst","Western Kentucky"]}

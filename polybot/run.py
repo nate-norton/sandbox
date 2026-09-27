@@ -140,13 +140,16 @@ def run_once(cfg: Config, gamma: Optional[Gamma], clob, live=None,
     if cfg.sports_only:
         stats["sports.games"] = len(games)
         match_markets([mm.market for mm in matched], games, now, stats)   # recount for the report
-        gate, edge, ai_info = _assess_with_jev(cands, books, cfg, now, decider, led, stats, held_cids,
-                                               game_notes={mm.market.condition_id: mm.game.summary for mm in matched},
-                                               blind=False)
-        led.ai_info = ai_info
         stats["sports.stale_book"] = sum(1 for t in _BOOK_SEEN.values() if t[1] >= STALE_AFTER)
         opps = find_sports_edges(matched, books, cfg, now, st.equity, rm.per_position_budget(st), held_cids, stats)
-        opps = _apply_gate(opps, gate, cfg, stats)
+        # Jev is asked only about the markets we are about to buy, and always afresh for a game in
+        # progress: a cached pregame opinion (Wisconsin 5%) vetoed a 98% fourth-quarter lead
+        live_cids = {mm.market.condition_id for mm in matched if mm.game.state == "in"}
+        gate, edge, ai_info = _assess_with_jev([o.market for o in opps], books, cfg, now, decider, led, stats, held_cids,
+                                               game_notes={mm.market.condition_id: mm.game.summary for mm in matched},
+                                               blind=False, no_cache=live_cids)
+        led.ai_info = ai_info
+        opps = _apply_gate(opps, gate, cfg, stats, led)
         # observation log: every quote next to the model, and each game's final outcome (once)
         stats["obs.rows"] = observe.append(cfg.state_dir, f"{now:%Y-%m-%d}.jsonl", observe.snapshot_rows(matched, books, cfg, now))
         outs = observe.outcome_rows(matched, set(led.resolved_events), now, games)
@@ -438,6 +441,7 @@ def _prefetch_fees(cands: list[Market], books: dict[str, Book], clob: PublicClob
 def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, now: datetime,
                      decider: Optional[JevDecider], led: Ledger, stats: Counter, held: set[str],
                      game_notes: Optional[dict[str, str]] = None, blind: bool = True,
+                     no_cache: Optional[set[str]] = None,
                      ) -> tuple[dict[str, Assessment], dict[str, Assessment], dict]:
     """Two assessment sets: favourites WITH prices (gate) and mid-priced markets WITHOUT (edge)."""
     info: dict = {"active": decider is not None}
@@ -491,8 +495,9 @@ def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, n
     todo: list[tuple[Market, Optional[dict[str, float]]]] = []
     gate: dict[str, Assessment] = {}
     edge: dict[str, Assessment] = {}
+    no_cache = no_cache or set()
     for m in gate_ms:
-        a = cache.get(m.condition_id, True, now)
+        a = None if m.condition_id in no_cache else cache.get(m.condition_id, True, now)
         if a:
             gate[m.condition_id] = a
         else:
@@ -511,7 +516,8 @@ def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, n
         if a.error:
             stats["ai.errors"] += 1
             continue
-        cache.put(a)
+        if m.condition_id not in no_cache:
+            cache.put(a)
         (gate if pr is not None else edge)[m.condition_id] = a
     cache.save(now)
 
@@ -541,7 +547,7 @@ def _assess_with_jev(cands: list[Market], books: dict[str, Book], cfg: Config, n
     return gate, edge, info
 
 
-def _apply_gate(opps: list, gate: dict[str, Assessment], cfg: Config, stats: Counter) -> list:
+def _apply_gate(opps: list, gate: dict[str, Assessment], cfg: Config, stats: Counter, led: Optional[Ledger] = None) -> list:
     """Drop sports trades where Jev, shown the game state and prices, leans the other way."""
     out = []
     for o in opps:
@@ -554,6 +560,8 @@ def _apply_gate(opps: list, gate: dict[str, Assessment], cfg: Config, stats: Cou
             if ai_p < min(cfg.ai_gate_min_p, o.legs[0].price):
                 stats["sports.ai_vetoed"] += 1
                 log.info("  jev veto: %s (%s @ %.2f, jev %.2f)", o.market.question[:50], o.legs[0].outcome, o.legs[0].price, ai_p)
+                if led is not None:
+                    _decide(led, f"jev veto {o.legs[0].outcome} @ {o.legs[0].price:.3f} (model {o.ai_p or 0:.2f}, jev {ai_p:.2f})")
                 continue
             o.note += f", jev {ai_p:.2f}"
         out.append(o)

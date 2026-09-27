@@ -161,3 +161,29 @@ def test_circuit_breaker_pauses_edge_trades(tmp_path):
     led.save(str(tmp_path / "ledger.json"))
     led = run_once(c, FakeGamma([mid]), FakeClob(books), now=NOW, decider=dec)
     assert led.ai_info["breaker"] is True and not led.positions
+
+
+def test_live_game_gate_is_never_served_from_cache(tmp_path):
+    """A cached pregame opinion must not veto a live game: Wisconsin was cached at 5% before taking the lead."""
+    from collections import Counter
+    from polybot.ai_cache import AiCache
+    from polybot.ledger import Ledger
+    from polybot.run import _assess_with_jev
+    c = cfg(tmp_path)
+    m = mk_market("g1", "gy", "gn", hours=1)
+    m.game_start = NOW
+    books = {"gy": mk_book("gy", [(0.92, 100)], [(0.90, 100)]), "gn": mk_book("gn", [(0.10, 100)], [(0.08, 100)])}
+    stale = Assessment("g1", 0.05, 0.1, 0.9, True, (NOW - timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ"))
+    cache = AiCache(str(tmp_path / "ai_cache.json"), c.ai_cache_hours)
+    cache.put(stale)
+    cache.save(NOW)
+    dec = FakeDecider({"g1": (0.97, 0.1)})
+    led = Ledger()
+    notes = {"g1": "Penn State 20 @ Wisconsin 24, Q4 1:13, home wp 0.98"}
+    # pregame / not live: the cached answer is used, no call
+    gate, _, _ = _assess_with_jev([m], books, c, NOW, dec, led, Counter(), set(), game_notes=notes, blind=False)
+    assert dec.calls == 0 and gate["g1"].p_yes == 0.05
+    # live: asked afresh, and the fresh answer is not written back over the cache for the next cycle
+    gate, _, _ = _assess_with_jev([m], books, c, NOW, dec, led, Counter(), set(), game_notes=notes, blind=False, no_cache={"g1"})
+    assert dec.calls == 1 and gate["g1"].p_yes == 0.97
+    assert AiCache(str(tmp_path / "ai_cache.json"), c.ai_cache_hours).get("g1", True, NOW).p_yes == 0.05

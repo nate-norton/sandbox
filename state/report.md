@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 120  |  last run: 2026-09-27T01:52:47Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$45.59** (started $59.49, realized +0.00)
+- mode: **live**  |  profile: **aggressive**  |  runs: 123  |  last run: 2026-09-27T02:03:36Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$48.04** (started $59.49, realized +0.00)
 - cash: $23.34  |  deployed: $24.23  |  open positions: 3
 - P&L today: +0.00
 
@@ -9,9 +9,9 @@
 
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
-| Oklahoma State vs. West Virginia | Cowboys | 19.0 | 0.508 | 0.685 |  | external |
-| Oregon vs. USC | Trojans | 27.0 | 0.354 | 0.335 |  | external |
-| Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.010 |  | external |
+| Oklahoma State vs. West Virginia | Cowboys | 19.0 | 0.508 | 0.975 |  | external |
+| Oregon vs. USC | Trojans | 27.0 | 0.354 | 0.225 |  | external |
+| Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.005 |  | external |
 
 ## Recent trades
 
@@ -23,16 +23,16 @@
 
 ## Jev (AI decider)
 
-- model `~typesafe/jev-latest`: 1 favourites gated, 0 markets judged blind, 3 API calls, 0 cache hits, 0 errors
+- model `~typesafe/jev-latest`: 0 favourites gated, 0 markets judged blind, 4 API calls, 0 cache hits, 0 errors
 - blind-call accuracy by stated probability (resolved markets only): <=0.05: 0 calls, 0.05-0.5: 0 calls, 0.5-0.95: 0 calls, >=0.95: 0 calls
 
 ## Observation log
 
-- 5861 quote/model snapshots and 52 game outcomes across 3 files in `state/obs/`
+- 5983 quote/model snapshots and 55 game outcomes across 3 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=1, books=52, candidates=28, markets=113, obs.rows=40, sports.candidate=1, sports.games=154, sports.matched=113, sports.moneyline_markets=113, sports.no_book=72, sports.no_edge=21, sports.no_model=82, sports.price_out_of_band=6, sports.stale_book=4, sports.too_far_ahead=18, sports.unstable=2
+ai.edge_assessed=0, ai.gate_assessed=0, books=54, candidates=27, markets=112, obs.rows=40, sports.games=154, sports.matched=112, sports.moneyline_markets=112, sports.no_book=70, sports.no_edge=20, sports.no_model=82, sports.price_out_of_band=4, sports.stale_book=0, sports.too_far_ahead=18, sports.unstable=6
 
 ## Notes
 
@@ -60,3 +60,4 @@ ai.edge_assessed=0, ai.gate_assessed=1, books=52, candidates=28, markets=113, ob
 - 2026-09-27T01:34:50Z NOT FILLED Jacksonville State @ 0.940 x24 (model 0.98, live_wp): new: ORD_REJECT_REASON_EXCHANGE_OPTION; expired: ORD_REJECT_REASON_EXCHANGE_OPTION | fresh gateway book 0.925/0.935 x0
 - 2026-09-27T01:38:25Z NOT FILLED Jacksonville State @ 0.940 x24 (model 0.98, live_wp): new: ORD_REJECT_REASON_EXCHANGE_OPTION; expired: ORD_REJECT_REASON_EXCHANGE_OPTION | fresh gateway book 0.925/0.935 x0
 - 2026-09-27T01:52:47Z skip Arkansas State @ 0.950 x22 (model 1.00, live_wp): ask moved 0.950 -> 0.980 before the order
+- 2026-09-27T01:59:42Z NOT FILLED Washington State @ 0.300 x19 (model 0.40, live_wp): new: ORD_REJECT_REASON_EXCHANGE_OPTION; expired: ORD_REJECT_REASON_EXCHANGE_OPTION | fresh gateway book 0.295/0.300 x13173

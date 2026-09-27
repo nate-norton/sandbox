@@ -1,7 +1,7 @@
 # polybot report
 
-- mode: **live**  |  profile: **aggressive**  |  runs: 111  |  last run: 2026-09-27T01:20:57Z  |  wallet `polymarket.us key 865b51eb…`
-- equity: **$43.55** (started $59.49, realized +0.00)
+- mode: **live**  |  profile: **aggressive**  |  runs: 114  |  last run: 2026-09-27T01:31:12Z  |  wallet `polymarket.us key 865b51eb…`
+- equity: **$46.02** (started $59.49, realized +0.00)
 - cash: $23.34  |  deployed: $24.23  |  open positions: 3
 - P&L today: +0.00
 
@@ -9,7 +9,7 @@
 
 | market | side | size | entry | mark | ends | kind |
 |---|---|---|---|---|---|---|
-| Oklahoma State vs. West Virginia | Cowboys | 19.0 | 0.508 | 0.430 |  | external |
+| Oklahoma State vs. West Virginia | Cowboys | 19.0 | 0.508 | 0.560 |  | external |
 | Oregon vs. USC | Trojans | 27.0 | 0.354 | 0.365 |  | external |
 | Texas A&M vs. LSU | Aggies | 19.0 | 0.263 | 0.115 |  | external |
 
@@ -28,11 +28,11 @@
 
 ## Observation log
 
-- 5449 quote/model snapshots and 47 game outcomes across 3 files in `state/obs/`
+- 5595 quote/model snapshots and 47 game outcomes across 3 files in `state/obs/`
 
 ## Last scan
 
-ai.edge_assessed=0, ai.gate_assessed=0, books=56, candidates=29, markets=114, obs.outcomes=1, obs.rows=52, sports.games=154, sports.matched=114, sports.moneyline_markets=114, sports.no_book=70, sports.no_edge=21, sports.no_model=80, sports.price_out_of_band=5, sports.stale_book=2, sports.too_far_ahead=19, sports.unstable=8
+ai.edge_assessed=0, ai.gate_assessed=0, books=54, candidates=29, markets=114, obs.rows=48, sports.games=154, sports.matched=114, sports.moneyline_markets=114, sports.no_book=72, sports.no_edge=20, sports.no_model=82, sports.price_out_of_band=2, sports.stale_book=4, sports.too_far_ahead=18, sports.unstable=10
 
 ## Notes
 

@@ -1,0 +1,5 @@
+# Direct dependencies. requirements.txt is compiled from this file with
+# hashes; CI installs it with --require-hashes.
+py-clob-client==0.34.6
+requests>=2.31
+polymarket-us>=1.0.2

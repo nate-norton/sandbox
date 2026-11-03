@@ -23,25 +23,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 1
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.11"
           cache: pip
 
-      - run: pip install -r requirements.txt
+      # Every package, including dependencies, is pinned to a version and hash
+      # (requirements.txt, compiled from requirements.in), since this step runs
+      # with the wallet key in reach.
+      - run: pip install --require-hashes -r requirements.txt
 
       - name: Run one trading cycle
         env:
           EXCHANGE: ${{ vars.EXCHANGE || 'us' }}
-          POLYMARKET_US_KEY_ID: ${{ secrets.POLYMARKET_US_KEY_ID }}
-          POLYMARKET_US_SECRET: ${{ secrets.POLYMARKET_US_SECRET }}
-          POLYMARKET_PRIVATE_KEY: ${{ secrets.POLYMARKET_PRIVATE_KEY }}
-          POLYMARKET_FUNDER: ${{ secrets.POLYMARKET_FUNDER }}
+          # Trading credentials reach the default branch only; every other branch
+          # paper-trades and never needs them.
+          POLYMARKET_US_KEY_ID: ${{ github.ref_name == 'main' && secrets.POLYMARKET_US_KEY_ID || '' }}
+          POLYMARKET_US_SECRET: ${{ github.ref_name == 'main' && secrets.POLYMARKET_US_SECRET || '' }}
+          POLYMARKET_PRIVATE_KEY: ${{ github.ref_name == 'main' && secrets.POLYMARKET_PRIVATE_KEY || '' }}
+          POLYMARKET_FUNDER: ${{ github.ref_name == 'main' && secrets.POLYMARKET_FUNDER || '' }}
           POLYMARKET_SIGNATURE_TYPE: ${{ vars.POLYMARKET_SIGNATURE_TYPE || '1' }}
           # only the default branch trades real money; every other branch paper-trades
           LIVE: ${{ github.ref_name == 'main' && (github.event.inputs.live || 'true') || 'false' }}

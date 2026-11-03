@@ -118,7 +118,9 @@ Without the secrets the bot paper-trades with a simulated $25 so you can watch i
 ## Development
 
 ```bash
-pip install -r requirements.txt pytest
+pip install --require-hashes -r requirements.txt   # pinned with hashes; pytest included
+# to change a dependency: edit requirements.in, then
+#   uv pip compile requirements.in --python-version 3.11 --generate-hashes -o requirements.txt
 python -m pytest -q            # offline tests with fake exchange data
 python -m polybot.run          # one paper cycle against the real APIs (needs network)
 ```
